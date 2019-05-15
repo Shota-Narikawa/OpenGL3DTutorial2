@@ -6,6 +6,7 @@
 #define SCENE_H_INCLUDED
 #include <memory>
 #include <string>
+#include <vector>
 
 class SceneStack;
 
@@ -20,7 +21,7 @@ public:
 	Scene& operator=(const Scene&) = delete;
 	virtual ~Scene();
 
-	virtual bool Initialize() = 0{}
+		virtual bool Initialize() = 0{}
 		virtual void ProcessInput() = 0{}
 		virtual void Update(float) = 0{}
 		virtual void Render () = 0{}
@@ -43,5 +44,34 @@ private:
 };
 using ScenePtr = std::shared_ptr<Scene>;
 
-#endif // !SCENE_H_INCLUDED
+/**
+*シーン管理クラス.
+*/
+
+class SceneStack {
+
+public:
+	static SceneStack& Instance();
+
+	void Push(ScenePtr);
+	void Pop();
+	void Replace(ScenePtr);
+	Scene& Current();
+	const Scene& Current() const;
+	size_t Size() const;
+	bool Empty() const;
+
+	void Update(float);
+	void Render();
+
+private:
+	SceneStack();
+	SceneStack(const SceneStack&) = delete;
+	SceneStack& operator=(const SceneStack&) = delete;
+	~SceneStack() = default;
+
+	std::vector<ScenePtr> stack;
+};
+
+#endif // SCENE_H_INCLUDED
 
