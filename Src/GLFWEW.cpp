@@ -134,7 +134,6 @@ namespace GLFWEW {
 	void Window::SwapBuffers()const {
 
 		glfwPollEvents();
-		
 		glfwSwapBuffers(window);
 	}
 
@@ -178,6 +177,7 @@ namespace GLFWEW {
 		if (deltaTime > upperLimit) {
 			deltaTime = 0.1f;
 		}
+		UpdateGamePad();
 	}
 
 	/**
