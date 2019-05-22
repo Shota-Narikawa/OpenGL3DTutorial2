@@ -21,6 +21,8 @@ public:
 	virtual void Update(float) override {}
 	virtual void Render() override {}
 	virtual void Finalize() override {}
+
+
 };
 
 #endif // GAMEOVERSCENE_H_INCLUDED

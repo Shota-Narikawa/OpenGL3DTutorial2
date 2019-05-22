@@ -4,6 +4,10 @@
 #include "MainGameScene.h"
 #include "StatusScene.h"
 #include "GameOverScene.h"
+#include "GLFWEW.h"
+#include <glm\gtc\matrix_transform.hpp>
+
+
 
 /**
 *ƒvƒŒƒCƒ„[‚Ì“ü—Í‚ğˆ—‚·‚é.

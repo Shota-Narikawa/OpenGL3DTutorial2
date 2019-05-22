@@ -5,6 +5,7 @@
 #include "GameOverScene.h"
 #include "TitleScene.h"
 
+
 /**
 *ƒvƒŒƒCƒ„[‚Ì“ü—Í‚ğˆ—‚·‚é.
 */

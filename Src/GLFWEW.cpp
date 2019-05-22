@@ -103,6 +103,9 @@ namespace GLFWEW {
 			return false;
 		}
 
+		width = w;
+		height = h;
+
 		//OpenGLの情報をコンソールウィンドウへ出力する.
 
 		const GLubyte* renderer = glGetString(GL_RENDERER);

@@ -25,6 +25,8 @@ namespace GLFWEW {
 		void IniTimer();
 		void UpDateTimer();
 		double DeltaTime() const;
+		int Width() const { return width; }
+		int Height() const { return height; }
 
 		bool IsKeyPressed(int key) const;
 
@@ -40,6 +42,9 @@ namespace GLFWEW {
 		bool isGLFWInitialized = false;
 		bool isInitialized = false;
 		GLFWwindow* window = nullptr;
+
+		int width = 0;
+		int height = 0;
 		double previousTime = 0;
 		double deltaTime = 0;
 		GamePad gamepad;
