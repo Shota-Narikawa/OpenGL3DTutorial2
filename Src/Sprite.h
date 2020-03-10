@@ -10,6 +10,7 @@
 #include <glm\glm.hpp>
 #include <vector>
 
+
 /**
 *	短形構造体.
 */
@@ -57,7 +58,18 @@ class Sprite {
 		void Texture(const Texture::Image2DPtr& tex);
 		const Texture::Image2DPtr& Texture() const { return texture; }
 
+		int id = -1;
+		//10	メニュー画面.
+		//9		ゲームクリア、ゲームオーバー.
+		//8		選択アイコン.
+		//7		リザルト画面.
+		//6		スキル画面.
+		//5		プレイヤー情報画面.
+		//4		プレイ画面.
+		//3		ロード画面.
+
 private:
+
 	glm::vec3 position = glm::vec3(0);
 	glm::f32 rotation = 0;
 	glm::vec2 scale = glm::vec2(1);
@@ -108,5 +120,8 @@ private:
 	};
 	std::vector<Primitive> primitives;
 };
+
+void DeleteSpriteA(std::vector<Sprite>& sprites,int id);
+void DeleteSpriteB(std::vector<Sprite>& sprites, int id);
 
 #endif // !SPRITE_H_INCLUDED

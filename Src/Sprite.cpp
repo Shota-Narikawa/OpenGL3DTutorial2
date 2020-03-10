@@ -43,7 +43,8 @@ void Sprite::Texture(const Texture::Image2DPtr& tex) {
 
 bool SpriteRenderer::Init(size_t maxSpriteCount, const char* vsPath, const char* fsPath) {
 
-	vbo.Create(GL_ARRAY_BUFFER, sizeof(Vertex) * maxSpriteCount * 4, nullptr, GL_STREAM_DRAW);
+	vbo.Create(GL_ARRAY_BUFFER, sizeof(Vertex) * maxSpriteCount * 4, 
+		nullptr, GL_STREAM_DRAW);
 
 	//四角形をmaxSpriteCount個作る.
 	std::vector<GLushort> indices;
@@ -59,7 +60,8 @@ bool SpriteRenderer::Init(size_t maxSpriteCount, const char* vsPath, const char*
 
 	}
 
-	ibo.Create(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLushort), indices.data(), GL_STATIC_DRAW);
+	ibo.Create(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLushort), 
+		indices.data(), GL_STATIC_DRAW);
 
 	//Vertex構造体に合わせて頂点アトリビュートを設定.
 	vao.Create(vbo.Id(), ibo.Id());
@@ -214,6 +216,36 @@ void SpriteRenderer::Draw(const glm::vec2& screenSize)const {
 	}
 	program->BindTexture(0, 0);
 	vao.Unbind();
+}
+
+/*
+*同じスプライトIDを削除する.
+*/
+void DeleteSpriteA(std::vector<Sprite>& sprites, int id) {
+
+	for (auto i = sprites.begin(); i != sprites.end();) {
+		if (i->id == id) {
+			i = sprites.erase(i);
+		}
+		else {
+			++i;
+		}
+	}
+}
+
+/*
+*該当するスプライトIDを全て削除する.
+*/
+void DeleteSpriteB(std::vector<Sprite>& sprites, int id) {
+
+	for (auto i = sprites.begin(); i != sprites.end();) {
+		if (i->id >= id) {
+			i = sprites.erase(i);
+		}
+		else {
+			++i;
+		}
+	}
 }
 
 /**

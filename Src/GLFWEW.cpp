@@ -1,39 +1,26 @@
 /**
-*@file GLFWEW.cpp
+*@ file GLFWEW.cpp
 */
-
 #include "GLFWEW.h"
 #include<iostream>
 
-///GLFWとGLFEWをラップするための名前空間.
-
 namespace GLFWEW {
 
-	/**
-	*GLFWからのエラー報告を処理する.
-	*
-	*@param error	エラー番号.
-	*@param desc	エラーの内容.
-	*/
-
-	void ErrorCallback(int error, const char* desc) {
-
+/**
+*GLFWからのエラー報告を処理する.
+*/
+	void ErrorCallback(int error, const char*desc) {
 		std::cerr << "ERROR:" << desc << std::endl;
-
 	}
 
-	/**
-	*シングルトンインスタンスを取得する.
-	*
-	*@return Windowのシングルトンインスタンス.
-	*/
-
-	Window& Window::Instance() {
-
+/**
+*シングルトンインスタンスを取得する.
+*/
+	Window&Window::Instance() {
 		static Window instance;
 		return instance;
-
 	}
+
 
 	/**
 	*コンストラクタ.
@@ -42,90 +29,61 @@ namespace GLFWEW {
 	Window::Window() {
 
 	}
-
 	/**
 	*デストラクタ.
 	*/
 
 	Window::~Window() {
-
 		if (isGLFWInitialized) {
 			glfwTerminate();
-
 		}
 	}
 
 	/**
 	*GLFW/GLEWの初期化.
-	*
-	*@param w		ウィンドウの描画範囲の幅（ピクセル）.
-	*@param h		ウィンドウの描画範囲の高さ（ピクセル）.
-	*@param title	ウィンドウタイトル（UTF-８の０終端文字列）.
-	*
-	*@retval true	初期化成功.
-	*@retval false	初期化失敗.
 	*/
 
-	bool Window::Init(int w, int h, const char* title) {
-
+	bool Window::Init(int w, int h, const char*title) {
 		if (isInitialized) {
-
 			std::cerr << "ERROR:GLFWEWは既に初期化されています." << std::endl;
 			return false;
-
 		}
-
 		if (!isGLFWInitialized) {
-
 			glfwSetErrorCallback(ErrorCallback);
-			
 			if (glfwInit() != GL_TRUE) {
 				return false;
 			}
-
 			isGLFWInitialized = true;
 		}
-
 		if (!window) {
-
 			window = glfwCreateWindow(w, h, title, nullptr, nullptr);
-
 			if (!window) {
 				return false;
-
 			}
 			glfwMakeContextCurrent(window);
 		}
-
 		if (glewInit() != GLEW_OK) {
-
-			std::cerr << "ERROR: GLEWの初期化に失敗しました." << std::endl;
+			std::cerr << "ERROR:GLEWの初期化に失敗しました." << std::endl;
 			return false;
 		}
 
 		width = w;
 		height = h;
 
-		//OpenGLの情報をコンソールウィンドウへ出力する.
-
-		const GLubyte* renderer = glGetString(GL_RENDERER);
+		//OpenGLの情報をコンソールウィンドウへ出力する
+		const GLubyte*renderer = glGetString(GL_RENDERER);
 		std::cout << "Renderer:" << renderer << std::endl;
-		const GLubyte* version = glGetString(GL_VERSION);
+		const GLubyte*version = glGetString(GL_VERSION);
 		std::cout << "Version:" << version << std::endl;
 
 		isInitialized = true;
 		return true;
-
 	}
 
 	/**
 	*ウィンドウを閉じるべきか調べる.
-	*
-	*@retval true	閉じる.
-	*@retval false	閉じない.
 	*/
-
-	bool Window::ShouldClose()const {
+	bool Window::ShouoldClose() const {
 
 		return glfwWindowShouldClose(window) != 0;
 	}
@@ -135,112 +93,86 @@ namespace GLFWEW {
 	*/
 
 	void Window::SwapBuffers()const {
-
 		glfwPollEvents();
+		
 		glfwSwapBuffers(window);
 	}
-
-	/**
-	*キーが押されているか調べる.
-	*
-	*@param key 調べたいキー・コード(GLFW_KEY_Aなど）.
-	*
-	*@retval true	キーが押されている.
-	*@retval false	キーが押されていない.
-	*
-	*使用できるキー・コードの一覧はglfw3.hにあります(「keyboard」で検索).
-	*/
-
-	bool Window::IsKeyPressed(int key) const {
+	bool Window::IsKeyPressed(int key)const {
 		return glfwGetKey(window, key) == GLFW_PRESS;
 	}
 
-	/**
-	*タイマーを初期化する.
-	*/
-	void Window::IniTimer() {
-
+	void Window::InitTimer() {
 		glfwSetTime(0.0);
 		previousTime = 0.0;
 		deltaTime = 0.0;
 	}
-
-	/**
-	*タイマーを更新する.
-	*/
-	void Window::UpDateTimer() {
-
-		//経過時間を計測.
+	void Window::UpdateTimer() {
 		const double currentTime = glfwGetTime();
 		deltaTime = currentTime - previousTime;
 		previousTime = currentTime;
-
-		//経過時間が長くなりすぎないように調整.
-		const float upperLimit = 0.25f;	//経過時間として許容される上限.
+		const float upperLimit = 0.25f;
 		if (deltaTime > upperLimit) {
-			deltaTime = 0.1f;
+			deltaTime = 1.0f / 60.0f;
 		}
+
 		UpdateGamePad();
 	}
 
-	/**
-	*経過時間を取得する.
-	*
-	*@return	直前の2回のUpdateTimer()呼び出しの間に経過した時間.
-	*/
-	double Window::DeltaTime() const {
+	double Window::DeltaTime()const {
 		return deltaTime;
 	}
 
 	/**
-	*ゲームパッドの状態を更新する.
+	* 総経過時間を取得する.
 	*
-	*@return	ゲームパッドの状態.
+	* @return GLFWが初期化されてからの経過時間(秒).
+	*/
+		double Window::Time() const
+		 {
+		return glfwGetTime();
+	}
+
+	/**
+	*ゲームパッドの状態を取得する.
 	*/
 
-	const GamePad& Window::GetGamePad() const {
-
+	const GamePad&Window::GetGamePad() const {
 		return gamepad;
 	}
 
 	/**
 	*ゲームパッドのアナログ入力装置ID.
-	*
-	*@note	順序はXBOX360ゲームパッド基準.
 	*/
 
 	enum GAMEPAD_AXES {
 
-		GAMEPAD_AXES_LEFT_X,	///<左スティックのX軸.
-		GAMEPAD_AXES_LEFT_Y,	///<左スティックのY軸.
-		GAMEPAD_AXES_TRIGGER,	///<アナログトリガー.
-		GAMEPAD_AXES_RIGHT_Y,	///<右スティックのY軸.
-		GAMEPAD_AXES_RIGHT_X,	///<右スティックのX軸.
-
+		GAMEPAD_AXES_LEFT_X,
+		GAMEPAD_AXES_LEFT_Y,
+		GAMEPAD_AXES_TRIGGER,
+		GAMEPAD_AXES_RIGHT_Y,
+		GAMEPAD_AXES_RIGHT_X,
 	};
 
 	/**
-	*ゲームパッドのデジタル入力装置.
-	*
-	*@note	XBOX360ゲームパッド準拠.
+	*ゲームパッドのデジタル入力装置ID.
 	*/
 
 	enum GAMEPAD_BUTTON {
+		GAMEPAD_BUTTON_A,
+		GAMEPAD_BUTTON_B,
+		GAMEPAD_BUTTON_X,
+		GAMEPAD_BUTTON_Y,
+		GAMEPAD_BUTTON_L,
+		GAMEPAD_BUTTON_R,
+		GAMEPAD_BUTTON_BACK,
+		GAMEPAD_BUTTON_START,
+		GAMEPAD_BUTTON_L_THUMB,
+		GAMEPAD_BUTTON_R_THUMB,
+		GAMEPAD_BUTTON_UP,
+		GAMEPAD_BUTTON_RIGHT,
+		GAMEPAD_BUTTON_DOWN,
+		GAMEPAD_BUTTON_LEFT,
 
-		GAMEPAD_BUTTON_A,		///<Aボタン.
-		GAMEPAD_BUTTON_B,		///<Bボタン.
-		GAMEPAD_BUTTON_X,		///<Xボタン.
-		GAMEPAD_BUTTON_Y,		///<Yボタン.
-		GAMEPAD_BUTTON_L,		///<Lボタン.
-		GAMEPAD_BUTTON_R,		///<Rボタン.
-		GAMEPAD_BUTTON_BACK,	///<Backボタン.
-		GAMEPAD_BUTTON_START,	///<Startボタン.
-		GAMEPAD_BUTTON_L_THUMB,	///<左スティックボタン.
-		GAMEPAD_BUTTON_R_THUMB,	///<右スティックボタン.
-		GAMEPAD_BUTTON_UP,		///<上キー.
-		GAMEPAD_BUTTON_RIGHT,	///<右キー.
-		GAMEPAD_BUTTON_DOWN,	///<下キー.
-		GAMEPAD_BUTTON_LEFT,	///<左キー.
 	};
 
 	/**
@@ -249,108 +181,115 @@ namespace GLFWEW {
 
 	void Window::UpdateGamePad() {
 
-		const uint32_t prevButtons = gamepad.buttons;	//buttonDownを生成するために、更新前の入力.
+		const uint32_t prevButtons = gamepad.buttons;
 
-		//アナログ入力とボタン入力を習得.
+		//アナログ入力とボタン入力を取得
 		int axesCount, buttonCount;
-		const float* axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
-		const uint8_t* buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
+		const float*axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
+		const uint8_t*buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1,&buttonCount);
 
-		//両方の配列がnullptrでなく、最低限必要なデータ数を満たしていれば、有効なゲームパッドが接続される.
-		if (axes && buttons && axesCount >= 2 && buttonCount >= 8) {
+		//両方の配列がnullptrでなく、最低限必要なデータ数を満たしていれば有効なゲームパッドが接続される
 
-			//方向キーの入力状態を消去して、左スティックの入力で置き換える.
-			gamepad.buttons &= ~(GamePad::DPAD_UP | GamePad::DPAD_DOWN | GamePad::DPAD_LEFT | GamePad::DPAD_RIGHT);
-			static const float digitalThreshoId = 0.3f;	//デジタル入力とみなすしきい値.
-			if (axes[GAMEPAD_AXES_LEFT_Y] >= digitalThreshoId) {
+		if (axes&&buttons&&axesCount >= 2 && buttonCount >= 8) {
+
+			//有効なゲームパッドが接続されている場合
+			gamepad.buttons &= ~(GamePad::L2 | GamePad::R2 | GamePad::DPAD_UP | GamePad::DPAD_DOWN | GamePad::DPAD_LEFT | GamePad::DPAD_RIGHT);
+			static const float digitalThreshold = 0.3f;
+
+			if (axes[GAMEPAD_AXES_TRIGGER] >= digitalThreshold) {
+				gamepad.buttons |= GamePad::L2;
+			}
+			if (axes[GAMEPAD_AXES_TRIGGER] <= -digitalThreshold) {
+				gamepad.buttons |= GamePad::R2;
+			}
+			if (axes[GAMEPAD_AXES_LEFT_Y] >= digitalThreshold) {
 				gamepad.buttons |= GamePad::DPAD_UP;
 			}
-			else if(axes[GAMEPAD_AXES_LEFT_Y] <= -digitalThreshoId){
-
+			else if (axes[GAMEPAD_AXES_LEFT_Y] <= -digitalThreshold) {
 				gamepad.buttons |= GamePad::DPAD_DOWN;
 			}
-			if (axes[GAMEPAD_AXES_LEFT_X] >= digitalThreshoId) {
-
+			if (axes[GAMEPAD_AXES_LEFT_X] >= digitalThreshold) {
 				gamepad.buttons |= GamePad::DPAD_LEFT;
 			}
-			else if (axes[GAMEPAD_AXES_LEFT_X] <= -digitalThreshoId) {
-
+			else if (axes[GAMEPAD_AXES_LEFT_X] <= -digitalThreshold) {
 				gamepad.buttons |= GamePad::DPAD_RIGHT;
 			}
 
 			//配列インデックスとGamePadキーの対応表.
 			static const struct {
-
 				int dataIndex;
-				uint32_t gamePadBit;
-
-			} keyMap[] = {
-				
-			{ GAMEPAD_BUTTON_A, GamePad::A },
-			{ GAMEPAD_BUTTON_B, GamePad::B },
-			{ GAMEPAD_BUTTON_X, GamePad::X },
-			{ GAMEPAD_BUTTON_Y, GamePad::Y },
-			{ GAMEPAD_BUTTON_L, GamePad::L },
-			{ GAMEPAD_BUTTON_R, GamePad::R },
-			{ GAMEPAD_BUTTON_START, GamePad::START },
-			{ GAMEPAD_BUTTON_UP, GamePad::DPAD_UP },
-			{ GAMEPAD_BUTTON_DOWN, GamePad::DPAD_DOWN },
-			{ GAMEPAD_BUTTON_LEFT, GamePad::DPAD_LEFT },
-			{ GAMEPAD_BUTTON_RIGHT, GamePad::DPAD_RIGHT },
-
-			};
-			for (const auto& e : keyMap) {
-
+				uint32_t gamepadBit;
+			}keyMap[]={
+				{GAMEPAD_BUTTON_A,GamePad::A},			//下.
+				{ GAMEPAD_BUTTON_B,GamePad::B },		//右.
+				{ GAMEPAD_BUTTON_X,GamePad::X },		//上.
+				{ GAMEPAD_BUTTON_Y,GamePad::Y },		//左.
+				{ GAMEPAD_BUTTON_L,GamePad::I },		//L.
+				{ GAMEPAD_BUTTON_R,GamePad::YY },		//R.
+				{ GAMEPAD_BUTTON_L_THUMB,GamePad::L},	//THUMBR
+				{ GAMEPAD_BUTTON_R_THUMB,GamePad::LL},	//THUMBL
+				{ GAMEPAD_BUTTON_START,GamePad::START },
+				{ GAMEPAD_BUTTON_BACK,GamePad::SPACE },
+				{ GAMEPAD_BUTTON_UP,GamePad::DPAD_UP },
+				{ GAMEPAD_BUTTON_DOWN,GamePad::DPAD_DOWN },
+				{ GAMEPAD_BUTTON_LEFT,GamePad::DPAD_LEFT },
+				{ GAMEPAD_BUTTON_RIGHT,GamePad::DPAD_RIGHT },
+		};
+			for (const auto&e : keyMap) {
 				if (buttons[e.dataIndex] == GLFW_PRESS) {
-					gamepad.buttons |= e.gamePadBit;
+					gamepad.buttons |= e.gamepadBit;
 				}
 				else if (buttons[e.dataIndex] == GLFW_RELEASE) {
-
-					gamepad.buttons &= ~e.gamePadBit;
-				}
-			}
-		}	else {
-
-			//有効なゲームパッドが接続されていないので、キーボード入力で代用.
-
-			//配列インデックスとGamePadキーの対応表.
-			static const struct {
-
-				int keyCord;
-				uint32_t gamePadBit;
-
-			} keyMap[] = {
-
-			{ GLFW_KEY_J, GamePad::A },
-			{ GLFW_KEY_K, GamePad::B },
-			{ GLFW_KEY_U, GamePad::X },
-			{ GLFW_KEY_I, GamePad::Y },
-			{ GLFW_KEY_O, GamePad::L },
-			{ GLFW_KEY_L, GamePad::R },
-			{ GLFW_KEY_ENTER, GamePad::START },
-			{ GLFW_KEY_W, GamePad::DPAD_UP },
-			{ GLFW_KEY_A, GamePad::DPAD_DOWN },
-			{ GLFW_KEY_S, GamePad::DPAD_LEFT },
-			{ GLFW_KEY_D, GamePad::DPAD_RIGHT },
-
-			};
-			for (const auto& e : keyMap) {
-
-				const int key = glfwGetKey(window, e.keyCord);
-
-				if (key == GLFW_PRESS) {
-
-					gamepad.buttons |= e.gamePadBit;
-				}
-				else if (key == GLFW_RELEASE) {
-
-					gamepad.buttons &= ~e.gamePadBit;
+					gamepad.buttons &= ~e.gamepadBit;
 				}
 			}
 		}
+		else {
+			//有効なゲームパッドが接続されていないのでキーボードで入力.
 
-		//前回の更新で押されてなくて、今回押されているキーの情報をbuttonDownに格納.
-		gamepad.buttonDown = gamepad.buttons & prevButtons;
+			//配列インデックスとgamePadキーの対応表.
+
+			static const struct {
+
+				int keyCode;
+				uint32_t gamepadBit;
+			}keyMap[]{
+			{GLFW_KEY_J,GamePad::A},		//下.
+			{ GLFW_KEY_K,GamePad::B },		//右.
+			{ GLFW_KEY_U,GamePad::Y },		//上.
+			{ GLFW_KEY_H,GamePad::X },		//左.
+			{ GLFW_KEY_I,GamePad::I },		//カメラ操作(寄せ).
+			{ GLFW_KEY_O,GamePad::L },		//道具ショートカット.
+			{ GLFW_KEY_Y,GamePad::YY },		//カメラ操作(引き).
+			{ GLFW_KEY_L,GamePad::R },		//ジャンプ.
+			{ GLFW_KEY_ENTER,GamePad::START },	//決定.
+			{ GLFW_KEY_SPACE,GamePad::SPACE },	//メニュー画面.
+			{ GLFW_KEY_W,GamePad::DPAD_UP },	//移動系.
+			{ GLFW_KEY_A,GamePad::DPAD_LEFT },
+			{ GLFW_KEY_S,GamePad::DPAD_DOWN},
+			{ GLFW_KEY_D,GamePad::DPAD_RIGHT },
+			//デバック用.または予備用.
+			{ GLFW_KEY_N,GamePad::N },
+			{ GLFW_KEY_M,GamePad::M },
+			{ GLFW_KEY_P,GamePad::P },
+			{ GLFW_KEY_Z,GamePad::Z },
+			{ GLFW_KEY_X,GamePad::XX },
+			{ GLFW_KEY_C,GamePad::C },
+			{ GLFW_KEY_V,GamePad::V },
+			{ GLFW_KEY_B,GamePad::BB },
+		};
+			for (const auto&e : keyMap) {
+				const int key = glfwGetKey(window, e.keyCode);
+				if (key == GLFW_PRESS) {
+					gamepad.buttons |= e.gamepadBit;
+				}
+				else if (key == GLFW_RELEASE) {
+					gamepad.buttons &= ~e.gamepadBit;
+				}
+			}
+		}
+		//前回の更新で押されていなくて今回押されているキーの情報をbuttonDownに格納.
+
+		gamepad.buttonDown = gamepad.buttons&~prevButtons;
 	}
-
 }//namespace GLFWEW
