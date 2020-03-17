@@ -1,0 +1,289 @@
+{
+    "accessors" : [
+        {
+            "bufferView" : 0,
+            "componentType" : 5123,
+            "count" : 3834,
+            "max" : [
+                1299
+            ],
+            "min" : [
+                0
+            ],
+            "type" : "SCALAR"
+        },
+        {
+            "bufferView" : 1,
+            "componentType" : 5126,
+            "count" : 1300,
+            "max" : [
+                10.034931182861328,
+                1.9639158248901367,
+                0.619466245174408
+            ],
+            "min" : [
+                -10.730816841125488,
+                -2.085273265838623,
+                -0.5639248490333557
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 2,
+            "componentType" : 5126,
+            "count" : 1300,
+            "max" : [
+                0.9970701932907104,
+                0.999786376953125,
+                0.99993896484375
+            ],
+            "min" : [
+                -0.999755859375,
+                -0.9918515682220459,
+                -0.999969482421875
+            ],
+            "type" : "VEC3"
+        },
+        {
+            "bufferView" : 3,
+            "componentType" : 5126,
+            "count" : 1300,
+            "max" : [
+                0.999999463558197,
+                0.7975570559501648,
+                0.998132050037384,
+                1.0
+            ],
+            "min" : [
+                -0.9999997019767761,
+                -0.8155481815338135,
+                -0.9997340440750122,
+                -1.0
+            ],
+            "type" : "VEC4"
+        },
+        {
+            "bufferView" : 4,
+            "componentType" : 5126,
+            "count" : 1300,
+            "max" : [
+                0.9996644258499146,
+                1.0019216537475586
+            ],
+            "min" : [
+                0.0001725591573631391,
+                -0.0007711648941040039
+            ],
+            "type" : "VEC2"
+        }
+    ],
+    "asset" : {
+        "generator" : "Khronos Blender glTF 2.0 exporter",
+        "version" : "2.0"
+    },
+    "bufferViews" : [
+        {
+            "buffer" : 0,
+            "byteLength" : 7668,
+            "byteOffset" : 0,
+            "target" : 34963
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 15600,
+            "byteOffset" : 7668,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 15600,
+            "byteOffset" : 23268,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 20800,
+            "byteOffset" : 38868,
+            "target" : 34962
+        },
+        {
+            "buffer" : 0,
+            "byteLength" : 10400,
+            "byteOffset" : 59668,
+            "target" : 34962
+        }
+    ],
+    "buffers" : [
+        {
+            "byteLength" : 70068,
+            "uri" : "wall_longStone2.bin"
+        }
+    ],
+    "images" : [
+        {
+            "name" : "wall_longStone",
+            "uri" : "wall_longStone.jpg"
+        }
+    ],
+    "materials" : [
+        {
+            "name" : "Material",
+            "pbrMetallicRoughness" : {
+                "baseColorFactor" : [
+                    0.6400000190734865,
+                    0.6400000190734865,
+                    0.6400000190734865,
+                    1.0
+                ],
+                "baseColorTexture" : {
+                    "index" : 0
+                },
+                "metallicFactor" : 0.0
+            }
+        }
+    ],
+    "meshes" : [
+        {
+            "name" : "StoneWall",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "NORMAL" : 2,
+                        "POSITION" : 1,
+                        "TANGENT" : 3,
+                        "TEXCOORD_0" : 4
+                    },
+                    "indices" : 0,
+                    "material" : 0
+                }
+            ]
+        },
+        {
+            "name" : "StoneWall_StoneWall",
+            "primitives" : [
+                {
+                    "attributes" : {
+                        "NORMAL" : 2,
+                        "POSITION" : 1,
+                        "TANGENT" : 3,
+                        "TEXCOORD_0" : 4
+                    },
+                    "indices" : 0,
+                    "material" : 0
+                }
+            ]
+        }
+    ],
+    "nodes" : [
+        {
+            "name" : "Camera",
+            "rotation" : [
+                0.483536034822464,
+                0.33687159419059753,
+                -0.20870360732078552,
+                0.7804827094078064
+            ],
+            "translation" : [
+                7.481131553649902,
+                5.34366512298584,
+                6.5076398849487305
+            ]
+        },
+        {
+            "name" : "Camera.001",
+            "rotation" : [
+                0.483536034822464,
+                0.33687159419059753,
+                -0.20870360732078552,
+                0.7804827094078064
+            ],
+            "translation" : [
+                7.481131553649902,
+                5.34366512298584,
+                6.5076398849487305
+            ]
+        },
+        {
+            "name" : "Lamp",
+            "rotation" : [
+                0.16907575726509094,
+                0.7558802962303162,
+                -0.27217137813568115,
+                0.570947527885437
+            ],
+            "scale" : [
+                1.0,
+                1.0,
+                0.9999999403953552
+            ],
+            "translation" : [
+                4.076245307922363,
+                5.903861999511719,
+                -1.0054539442062378
+            ]
+        },
+        {
+            "name" : "Lamp.001",
+            "rotation" : [
+                0.16907575726509094,
+                0.7558803558349609,
+                -0.27217137813568115,
+                0.570947527885437
+            ],
+            "scale" : [
+                0.9999999403953552,
+                1.0,
+                0.9999998807907104
+            ],
+            "translation" : [
+                4.076245307922363,
+                5.903861999511719,
+                -1.0054539442062378
+            ]
+        },
+        {
+            "mesh" : 1,
+            "name" : "StoneWall"
+        },
+        {
+            "children" : [
+                1,
+                3,
+                6
+            ],
+            "name" : "wall_longStone.gltf"
+        },
+        {
+            "children" : [
+                7
+            ],
+            "name" : "wall_longStone.gltf.001"
+        },
+        {
+            "children" : [
+                4
+            ],
+            "name" : "wall_stone.gltf"
+        }
+    ],
+    "samplers" : [
+        {}
+    ],
+    "scene" : 0,
+    "scenes" : [
+        {
+            "name" : "Scene",
+            "nodes" : [
+                5,
+                2,
+                0
+            ]
+        }
+    ],
+    "textures" : [
+        {
+            "sampler" : 0,
+            "source" : 0
+        }
+    ]
+}
