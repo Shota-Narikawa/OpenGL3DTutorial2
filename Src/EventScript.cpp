@@ -103,7 +103,6 @@
 			std::cerr << "[ƒGƒ‰[] EventScriptEngine‚ÍŠù‚É‰Šú‰»‚³‚ê‚Ä‚¢‚Ü‚·.\n";
 			return false;
 		}
-		
 		filename.reserve(256);
 		script.reserve(2048);
 		if (!textWindow.Init("Res/MenuWindow5.tga",

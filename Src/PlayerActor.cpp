@@ -110,6 +110,37 @@ void PlayerActor::Update(float deltaTime)
 			velocity.y -= gravity * deltaTime;
 		}
 	}
+
+	//スキルインターバル管理.
+	if (skillE == true) {
+		skillTimerE -= deltaTime;
+		if (skillTimerE <= -2.0f) {
+			skillE = false;
+		}
+	}
+	else {
+		skillTimerE = 0.0f;
+	}
+	if (skillN == true) {
+		skillTimerN -= deltaTime;
+		if (skillTimerN <= -3.0f) {
+			skillN = false;
+		}
+	}
+	else {
+		skillTimerN = 0.0f;
+	}
+
+	if (skillW == true) {
+		skillTimerW -= deltaTime;
+		if (skillTimerW <= -4.0f) {
+			skillW = false;
+		}
+	}
+	else {
+		skillTimerW = 0.0f;
+	}
+
 	//アニメーションの更新.
 	if (playerID == 1 || playerID == 2 || playerID == 3) {
 		switch (state) {
@@ -392,14 +423,35 @@ void PlayerActor::Update(float deltaTime)
 						attackTimer = 0;
 						state = State::attack;
 					}
-					if (pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X) {
+					if (skillE == false && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X) {
 
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Attack.Heavy", false);
 						attackTimer = 0;
+						skillE = true;
 						state = State::attack;
 						pMP -= 5;
+					}
+					if (skillN == false && pAbility >= 3 && pMP > 0 && gamepad.buttonDown & GamePad::Y) {
+
+						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
+						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+						GetMesh()->Play("Attack.Heavy", false);
+						attackTimer = 0;
+						skillN = true;
+						state = State::attack;
+						pMP -= 5;
+					}
+					if (skillW == false && pAbility >= 4 && pMP > 0 && gamepad.buttonDown & GamePad::B) {
+
+						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
+						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+						GetMesh()->Play("Attack.Jump", false);
+						attackTimer = 0;
+						skillW = true;
+						state = State::attack;
+						pMP -= 10;
 					}
 				}
 				else if (playerID == 3) {
@@ -411,30 +463,40 @@ void PlayerActor::Update(float deltaTime)
 						attackTimer = 0;
 						state = State::attack;
 					}
-					if (pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X) {
+					if (skillE == false && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X) {
 
+						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
+						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+						GetMesh()->Play("Attack", false);
+						attackTimer = 0;
+						skillE = true;
+						state = State::attack;
+						pMP -= 5;
+					}
+					if (skillE == true && skillTimerE <= -1.9f /*&& skillTimerE >= -1.1f && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X*/) {
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Wakigamae.Attack", false);
 						attackTimer = 0;
 						state = State::attack;
-						pMP -= 5;
 					}
-					if (pAbility >= 3 && pMP > 0 && gamepad.buttonDown & GamePad::Y) {
+					if (skillN == false && pAbility >= 3 && pMP > 0 && gamepad.buttonDown & GamePad::Y) {
 
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Attack.Virtical", false);
 						attackTimer = 0;
+						skillN = true;
 						state = State::attack;
 						pMP -= 10;
 					}
-					if (pAbility >= 4 && pMP > 0 && gamepad.buttonDown & GamePad::B) {
+					if (skillW == false && pAbility >= 4 && pMP > 0 && gamepad.buttonDown & GamePad::B) {
 
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Attack.Horizontal", false);
 						attackTimer = 0;
+						skillW = true;
 						state = State::attack;
 						pMP -= 10;
 					}

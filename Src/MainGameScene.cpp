@@ -3,7 +3,6 @@
 */
 #include "GLFWEW.h"
 #include "MainGameScene.h"
-#include "StatusScene.h"
 #include "EventScene.h"
 #include "GameOverScene.h"
 #include "ObjectiveActor.h"
@@ -187,8 +186,8 @@ void MainGameScene::EnemySpawn() {
 			if (enemySpawn >= 0) {
 				for (size_t i = 0; i < oniCountA; i++)
 				{
-					position.x += std::uniform_real_distribution<float>(50, 100)(rand);
-					position.z += std::uniform_real_distribution<float>(50, 100)(rand);
+					position.x += std::uniform_real_distribution<float>(60, 100)(rand);
+					position.z += std::uniform_real_distribution<float>(80, 120)(rand);
 					glm::vec3 rotation(0);
 					rotation.y = std::uniform_real_distribution<float>(0, 3.14f * 2.0f)(rand);
 					position.y = heightMap.Height(position);
@@ -210,8 +209,8 @@ void MainGameScene::EnemySpawn() {
 			if (enemySpawn >= 0) {
 				for (size_t i = 0; i < oniCountB; i++)
 				{
-					position.x += std::uniform_real_distribution<float>(50, 100)(rand);
-					position.z += std::uniform_real_distribution<float>(50, 100)(rand);
+					position.x += std::uniform_real_distribution<float>(60, 100)(rand);
+					position.z += std::uniform_real_distribution<float>(80, 120)(rand);
 					glm::vec3 rotation(0);
 					rotation.y = std::uniform_real_distribution<float>(0, 3.14f * 2.0f)(rand);
 					position.y = heightMap.Height(position);
@@ -233,8 +232,8 @@ void MainGameScene::EnemySpawn() {
 			if (enemySpawn >= 0) {
 				for (size_t i = 0; i < oniCountC; i++)
 				{
-					position.x += std::uniform_real_distribution<float>(50, 100)(rand);
-					position.z += std::uniform_real_distribution<float>(50, 100)(rand);
+					position.x += std::uniform_real_distribution<float>(60, 100)(rand);
+					position.z += std::uniform_real_distribution<float>(80, 120)(rand);
 					glm::vec3 rotation(0);
 					rotation.y = std::uniform_real_distribution<float>(0, 3.14f * 2.0f)(rand);
 					position.y = heightMap.Height(position);
@@ -252,11 +251,11 @@ void MainGameScene::EnemySpawn() {
 				enemySpawn -= 3;
 			}
 		}
-		if (enemyPopTimerD >= 5.0f) {
-				for (size_t i = 0; i < oniCountA; i++)
+		if (enemyPopTimerD >= 10.0f) {
+				for (size_t i = 0; i < oniCountD; i++)
 				{
-					position.x += std::uniform_real_distribution<float>(50, 100)(rand);
-					position.z += std::uniform_real_distribution<float>(50, 100)(rand);
+					position.x += std::uniform_real_distribution<float>(60, 100)(rand);
+					position.z += std::uniform_real_distribution<float>(80, 120)(rand);
 					glm::vec3 rotation(0);
 					rotation.y = std::uniform_real_distribution<float>(0, 3.14f * 2.0f)(rand);
 					position.y = heightMap.Height(position);
@@ -427,9 +426,9 @@ bool MainGameScene::Initialize() {
 	meshBuffer.LoadMesh("Res/Triangle.gltf");
 	meshBuffer.LoadMesh("Res/RangeStone.gltf");
 	meshBuffer.LoadMesh("Res/GateBlock.gltf");
-	meshBuffer.LoadMesh("Res/HP.gltf");
+	//meshBuffer.LoadMesh("Res/HP.gltf");
 	meshBuffer.LoadMesh("Res/MP.gltf");
-	meshBuffer.LoadMesh("Res/HPMP.gltf");
+	//meshBuffer.LoadMesh("Res/HPMP.gltf");
 	meshBuffer.LoadSkeletalMesh("Res/effect_hit_normal.gltf");
 	meshBuffer.LoadSkeletalMesh("Res/effect_curse.gltf");
 
@@ -643,27 +642,6 @@ bool MainGameScene::Initialize() {
 		IconGreen37.Scale(glm::vec2(0));	//IconGreen35.Scale(glm::vec2(1.55f));
 		sprites.push_back(IconGreen37);
 
-	if (StageNo == 1) {
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_4_field03.mp3");
-		bgm->Play(Audio::Flag_Loop);
-	}
-	else if (StageNo == 2) {
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock01.mp3");
-		bgm->Play(Audio::Flag_Loop);
-	}
-	else if (StageNo == 3) {
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock11.mp3");
-		bgm->Play(Audio::Flag_Loop);
-	}
-	else if (StageNo == 4) {
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock20.mp3");
-		bgm->Play(Audio::Flag_Loop);
-	}
-	else if (StageNo == 5) {
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock30.mp3");
-		bgm->Play(Audio::Flag_Loop);
-	}
-
 	progLighting.Reset(Shader::BuildFromFile("Res/FragmentLighting.vert", "Res/FragmentLighting.frag"));
 
 	fontRenderer.Init(1000);
@@ -748,44 +726,52 @@ bool MainGameScene::Initialize() {
 	rand.seed(rd());
 
 	//ハイトマップを作成する.
-	if (StageNo % 2 == 1) {
 		if (!heightMap.LoadFromFile("Res/WhiteFront.tga", 20.0f, 0.5f)) {
 
 			return false;
 		}
-	}
-	else if (StageNo % 2 == 0) {
-		if (!heightMap.LoadFromFile("Res/WhiteFront.tga", 20.0f, 0.5f)) {
+
+		if (!heightMap.CreateMesh(meshBuffer, "Terrain")) {
 
 			return false;
 		}
-	}
-
-	if (!heightMap.CreateMesh(meshBuffer, "Terrain")) {
-
-		return false;
-	}
 	//if (!heightMap.CreateWaterMesh(meshBuffer, "Water", 0.0)) { // 水面の高さは要調整.
 
 	//	return false;
 	//}
 
-	if (StageNo == 2) {
-		enemyStock = 20;
-		enemySpawn = 5;
-	}
-	else if (StageNo == 3) {
-		enemyStock = 30;
-		enemySpawn = 10;
-	}
-	else if (StageNo == 4) {
-		enemyStock = 40;
-		enemySpawn = 20;
-	}
-	else if (StageNo == 5) {
-		enemyStock = 100;
-		enemySpawn = 100;
-	}
+		if (StageNo == 1) {
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_4_field03.mp3");
+			bgm->Play(Audio::Flag_Loop);
+		}
+		else if (StageNo == 2) {
+			enemyStock = 20;
+			enemySpawn = 5;
+
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock01.mp3");
+			bgm->Play(Audio::Flag_Loop);
+		}
+		else if (StageNo == 3) {
+			enemyStock = 30;
+			enemySpawn = 10;
+
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock11.mp3");
+			bgm->Play(Audio::Flag_Loop);
+		}
+		else if (StageNo == 4) {
+			enemyStock = 40;
+			enemySpawn = 20;
+
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock20.mp3");
+			bgm->Play(Audio::Flag_Loop);
+		}
+		else if (StageNo == 5) {
+			enemyStock = 100;
+			enemySpawn = 100;
+
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock30.mp3");
+			bgm->Play(Audio::Flag_Loop);
+		}
 
 	glm::vec3 startPos(79, 0, 100);
 	startPos.y = heightMap.Height(startPos);
@@ -848,25 +834,20 @@ bool MainGameScene::Initialize() {
 
 	//ディフェンスポイントを配置
 	if (StageNo != 1) {
-		const Mesh::FilePtr meshDefencePoint = meshBuffer.GetFile("Res/jizo_statue.gltf");
+		const Mesh::FilePtr meshDefencePoint = meshBuffer.GetFile("Res/MP.gltf");
 		for (int i = 0; i < 3; ++i) {
 			glm::vec3 position(0);
-			position.x = static_cast<float>(std::uniform_int_distribution<>(40,120)(rand));
-			position.z = static_cast<float>(std::uniform_int_distribution<>(60,140)(rand));
-			position.y = heightMap.Height(position);
+			position.x = static_cast<float>(std::uniform_int_distribution<>(60,100)(rand));
+			position.z = static_cast<float>(std::uniform_int_distribution<>(80,120)(rand));
+			position.y = heightMap.Height(position) + 2.0f;
 			glm::vec3 rotation(0);
 			rotation.y = std::uniform_real_distribution<float>(0.0f, 3.14f * 2.0f)(rand);
-			if (position.y >= 4.0f) {
 				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 					meshDefencePoint, "DefencePoint", 100, position, glm::vec3(0, 0, 0));
 				p->colLocal = Collision::CreateCapsule(
-					glm::vec3(0, 1.5f, 0), glm::vec3(0, 1.5f, 0), 1.5f);
-				p->scale = glm::vec3(6); // 見つけやすいように拡大.
+					glm::vec3(0, 1.5f, 0), glm::vec3(0, 1.5f, 0), 2.0f);
+				p->scale = glm::vec3(1, 2 ,1); // 見つけやすいように拡大.
 				defencePoint.Add(p);
-			}
-			else {
-				--i;
-			}
 		}
 	}
 
@@ -933,7 +914,7 @@ bool MainGameScene::Initialize() {
 	{
 		if (StageNo != 1) {
 			//下側の壁.
-			const size_t wallCount = 20;
+			const size_t wallCount = 15;
 			walls.Reserve(wallCount);
 
 			const Mesh::FilePtr meshStoneWall = meshBuffer.GetFile("Res/Skeltal.gltf");
@@ -941,8 +922,8 @@ bool MainGameScene::Initialize() {
 			//下側の壁.
 			for (size_t i = 0; i < wallCount; ++i) {
 
-				const int posX = 65 - i * 6.0f;
-				glm::vec3 position = startPos + glm::vec3(posX, 2, 50);
+				const int posX = 45 - i * 6.0f;
+				glm::vec3 position = startPos + glm::vec3(posX, 2, 35);
 				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
 				p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
@@ -953,8 +934,8 @@ bool MainGameScene::Initialize() {
 			//上側の壁.
 			for (size_t i = 0; i < wallCount; ++i) {
 
-				const int posX = 65 - i * 6.0f;
-				glm::vec3 position = startPos + glm::vec3(posX, 2, -50);
+				const int posX = 45 - i * 6.0f;
+				glm::vec3 position = startPos + glm::vec3(posX, 2, -35);
 				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
 				p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
@@ -965,8 +946,8 @@ bool MainGameScene::Initialize() {
 			//右側の壁.
 			for (size_t i = 0; i < wallCount; ++i) {
 
-				const int posZ = 65 - i * 6.0f;
-				glm::vec3 position = startPos + glm::vec3(50, 2, posZ);
+				const int posZ = 45 - i * 6.0f;
+				glm::vec3 position = startPos + glm::vec3(35, 2, posZ);
 				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
 				p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
@@ -977,8 +958,8 @@ bool MainGameScene::Initialize() {
 			//左側の壁.
 			for (size_t i = 0; i < wallCount; ++i) {
 
-				const int posZ = 65 - i * 6.0f;
-				glm::vec3 position = startPos + glm::vec3(-50, 2, posZ);
+				const int posZ = 45 - i * 6.0f;
+				glm::vec3 position = startPos + glm::vec3(-35, 2, posZ);
 				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
 				p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
@@ -1232,31 +1213,31 @@ bool MainGameScene::Initialize() {
 	// オープニングスクリプトを実行.
 	if (!StClearedE && !StClearedN && !StClearedS && !StClearedW && StageNo == 1 && eventFrag == false) {
 		camera.target = player->position;
-		camera.position = camera.target + glm::vec3(0, 40, 60);
+		camera.position = camera.target + glm::vec3(0, 5, 5);
 		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/OpeningScript.txt"));
 		return true;
 	}
 	if (StageNo == 2) {
 		camera.target = player->position;
-		camera.position = player->position + glm::vec3(0, 40, 60);
+		camera.position = player->position + glm::vec3(0, 5, 5);
 		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage2.txt"));
 		return true;
 	}
 	else if (StageNo == 3) {
 		camera.target = player->position;
-		camera.position = camera.target + glm::vec3(0, 40, 60);
+		camera.position = camera.target + glm::vec3(0, 5, 5);
 		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage3.txt"));
 		return true;
 	}
 	else if (StageNo == 4) {
 		camera.target = player->position;
-		camera.position = camera.target + glm::vec3(0, 40, 60);
+		camera.position = camera.target + glm::vec3(0, 5, 5);
 		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage4.txt"));
 		return true;
 	}
 	else if (StageNo == 5) {
 		camera.target = player->position;
-		camera.position = camera.target + glm::vec3(0, 40, 60);
+		camera.position = camera.target + glm::vec3(0, 5, 5);
 		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage5.txt"));
 		return true;
 	}
@@ -1273,42 +1254,37 @@ void MainGameScene::ProcessInput() {
 		player->ProcessInput();
 	}
 	//デバック用ボタン.
-	//ステージのクリア表示.
+	//クリア条件.
 	if (window.GetGamePad().buttonDown & GamePad::Z) {
-		StClearedE = true;
-		StClearedW = true;
-		StClearedN = true;
-		StClearedS = true;
-	}
-	//敵の残数を減らす.
-	if (window.GetGamePad().buttonDown & GamePad::XX) {
-		enemyBlow += 1;
+		enemyBlow = enemyStock;
 	}
 	//防衛ラインを減らす.
-	if (window.GetGamePad().buttonDown & GamePad::C){
+	if (window.GetGamePad().buttonDown & GamePad::XX) {
 		defenceLine -= 10;
 	}
-	//全回復.
-	if (window.GetGamePad().buttonDown & GamePad::V) {
-		player->pHP += 100;
-		player->pMP += 10;
+	//HP減少.
+	if (window.GetGamePad().buttonDown & GamePad::C){
+		player->pHP -= 10;
 	}
-	//クリア条件.
-	if (window.GetGamePad().buttonDown & GamePad::BB) {
-		enemyBlow = 0;
+	//MP減少.
+	if (window.GetGamePad().buttonDown & GamePad::V) {
+		player->pMP -= 5;
 	}
 	//レベルアップ.
-	if (window.GetGamePad().buttonDown & GamePad::C) {
+	if (window.GetGamePad().buttonDown & GamePad::BB) {
 		player->pExPoint = 0;
 		player->pExCount = 0;
 	}
-	//MP減少.
-	if (window.GetGamePad().buttonDown & GamePad::N) {
-		player->pMP -= 5;
+	if (window.GetGamePad().buttonDown & GamePad::C) {
+		
 	}
-	//HP減少.
+	
+	if (window.GetGamePad().buttonDown & GamePad::N) {
+		
+	}
+	
 	if (window.GetGamePad().buttonDown & GamePad::M) {
-		player->pHP -= 10;
+		
 	}
 	
 		//メニュー画面の表示.
@@ -1469,10 +1445,10 @@ void MainGameScene::ProcessInput() {
 
 		//ステージ移行の有無時の選択アイコンを動かす.
 		if (state == State::select) {
-			selectUI(1,0,2,2,3,1);
+			selectUI(0,-1,1,1,2,0);
 			
 			//”はい”でステージ移行、”いいえ”でプレイに戻る.
-			if (selectCount == 1 && window.GetGamePad().buttonDown & GamePad::START) {
+			if (selectCount == 0 && window.GetGamePad().buttonDown & GamePad::START) {
 				Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
 
 				player->position += glm::vec3(0, 100, 0);
@@ -1481,7 +1457,7 @@ void MainGameScene::ProcessInput() {
 				timer = 2.0f;
 				selectCount = 0;
 			}
-			else if (selectCount == 2 && window.GetGamePad().buttonDown & GamePad::START) {
+			else if (selectCount == 1 && window.GetGamePad().buttonDown & GamePad::START) {
 				Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
 				sprites[2].Scale(glm::vec2(0));
 				sprites[3].Scale(glm::vec2(0));
@@ -1494,13 +1470,13 @@ void MainGameScene::ProcessInput() {
 			}
 
 			//ステージ移行の有無の選択ボタンの操作.
-				if (selectCount == 1) {
+				if (selectCount == 0) {
 					//選択アイコン.
 					sprites[24].Position(glm::vec3(82, -75, 0));
 					sprites[22].Position(glm::vec3(0, -75, 0));
 					sprites[23].Position(glm::vec3(-83, -75, 0));
 				}
-				else if (selectCount == 2) {
+				else if (selectCount == 1) {
 					//選択アイコン.
 					sprites[24].Position(glm::vec3(82, -115, 0));
 					sprites[22].Position(glm::vec3(0, -115, 0));
@@ -1511,9 +1487,9 @@ void MainGameScene::ProcessInput() {
 
 		//リザルト画面時の選択アイコンを動かす.
 		if (state == State::result) {
-			selectUI(1, 0, 2, 2, 3, 1);
+			selectUI(0, -1, 1, 1, 2, 0);
 			
-			if (selectCount == 1) {
+			if (selectCount == 0) {
 				//選択アイコン.
 				sprites[22].Scale(glm::vec2(1.61f, 0.22f));
 				sprites[23].Scale(glm::vec2(0.2f));
@@ -1522,7 +1498,7 @@ void MainGameScene::ProcessInput() {
 				sprites[22].Position(glm::vec3(100, 120, 0));
 				sprites[23].Position(glm::vec3(-60, 120, 0));
 			}
-			else if (selectCount == 2) {
+			else if (selectCount == 1) {
 				//選択アイコン.
 				sprites[22].Scale(glm::vec2(1.61f, 0.22f));
 				sprites[23].Scale(glm::vec2(0.2f));
@@ -1533,105 +1509,100 @@ void MainGameScene::ProcessInput() {
 			}
 
 			//リザルト画面から次のステージ移行.
-				if (selectCount == 1 && window.GetGamePad().buttonDown & GamePad::START)
+				if (selectCount == 0 && window.GetGamePad().buttonDown & GamePad::START)
 				{
 					Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
 					state = State::play;
 					nextStateFlag = false;
-					selectCount = 0;
 					StageNo = 1;
 					SceneStack::Instance().Replace(std::make_shared<MainGameScene>());
 					return;
 				}
-				else if (selectCount == 2 && window.GetGamePad().buttonDown & GamePad::START) {
+				else if (selectCount == 1 && window.GetGamePad().buttonDown & GamePad::START) {
 					Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-					selectCount = 0;
 					loadTimer = 0.5f;
 				}
 		}
 
 		//選択アイコン使用結果.
 		//プレイヤー情報画面.
-		if (selectCount == 1 && nextStateFlag == false &&
-			window.GetGamePad().buttonDown & GamePad::START) {
-			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-			state = State::menu;
+		if (nextStateFlag == false && window.GetGamePad().buttonDown & GamePad::START) {
+			if (selectCount == 1) {
+				Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
+				state = State::menu;
 
-			if (player->playerID == 0) {
-				sprites[12].Scale(glm::vec2(0.25f));
-			}
-			else if (player->playerID == 1) {
-				sprites[13].Scale(glm::vec2(0.3f));
-			}
-			else if (player->playerID == 2) {
-				sprites[14].Scale(glm::vec2(0.3f));
-			}
-			else if (player->playerID == 3) {
-				sprites[15].Scale(glm::vec2(0.3f));
-			}
+				if (player->playerID == 0) {
+					sprites[12].Scale(glm::vec2(0.25f));
+				}
+				else if (player->playerID == 1) {
+					sprites[13].Scale(glm::vec2(0.3f));
+				}
+				else if (player->playerID == 2) {
+					sprites[14].Scale(glm::vec2(0.3f));
+				}
+				else if (player->playerID == 3) {
+					sprites[15].Scale(glm::vec2(0.3f));
+				}
 
-		}
-		//コマンド表.
-		else if (selectCount == 2 && nextStateFlag == false &&
-			window.GetGamePad().buttonDown & GamePad::START) {
-			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-			sprites[12].Scale(glm::vec2(0));
-			sprites[13].Scale(glm::vec2(0));
-			sprites[14].Scale(glm::vec2(0));
-			sprites[15].Scale(glm::vec2(0));
+			}
+			//コマンド表.
+			else if (selectCount == 2) {
+				Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
+				sprites[12].Scale(glm::vec2(0));
+				sprites[13].Scale(glm::vec2(0));
+				sprites[14].Scale(glm::vec2(0));
+				sprites[15].Scale(glm::vec2(0));
 
-			sprites[16].Scale(glm::vec2(0));
-			sprites[17].Scale(glm::vec2(0));
-			gamePadText = true;
-			state = State::cMenu;
-		}
+				sprites[16].Scale(glm::vec2(0));
+				sprites[17].Scale(glm::vec2(0));
+				gamePadText = true;
+				state = State::cMenu;
+			}
 			//スキル表.
-		else if (selectCount == 3 && nextStateFlag == false &&
-			window.GetGamePad().buttonDown & GamePad::START) {
-			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-			sprites[12].Scale(glm::vec2(0));
-			sprites[13].Scale(glm::vec2(0));
-			sprites[14].Scale(glm::vec2(0));
-			sprites[15].Scale(glm::vec2(0));
+			else if (selectCount == 3) {
+				Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
+				sprites[12].Scale(glm::vec2(0));
+				sprites[13].Scale(glm::vec2(0));
+				sprites[14].Scale(glm::vec2(0));
+				sprites[15].Scale(glm::vec2(0));
 
-			sprites[16].Scale(glm::vec2(0));
-			sprites[17].Scale(glm::vec2(0));
-			state = State::sMenu;
-		}
-		//タイトルに戻る.
-		else if (selectCount == 4 && nextStateFlag == false &&
-			window.GetGamePad().buttonDown & GamePad::START) {
-			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-			bgm->Stop();
-			StageNo = 1;
-			eventFrag = true;
-			loadTimer = 0.5f;
-		}
-		//プレイに戻る.
-		else if (selectCount == 5 && nextStateFlag == false &&
-			window.GetGamePad().buttonDown & GamePad::START) {
-
-			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-			sprites[1].Scale(glm::vec2(0));
-			sprites[2].Scale(glm::vec2(0));
-			sprites[3].Scale(glm::vec2(0));
-			sprites[12].Scale(glm::vec2(0));
-			sprites[13].Scale(glm::vec2(0));
-			sprites[14].Scale(glm::vec2(0));
-			sprites[15].Scale(glm::vec2(0));
-			sprites[16].Scale(glm::vec2(0));
-			sprites[17].Scale(glm::vec2(0));
-			sprites[22].Scale(glm::vec2(0));
-			sprites[23].Scale(glm::vec2(0));
-			sprites[24].Scale(glm::vec2(0));
-			if (StageNo != 1) {
-				sprites[26].Scale(glm::vec2(1));
-				sprites[27].Scale(glm::vec2(1));
+				sprites[16].Scale(glm::vec2(0));
+				sprites[17].Scale(glm::vec2(0));
+				state = State::sMenu;
 			}
-			sprites[28].Scale(glm::vec2(0));
+			//タイトルに戻る.
+			else if (selectCount == 4) {
+				Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
+				bgm->Stop();
+				StageNo = 1;
+				eventFrag = true;
+				loadTimer = 0.5f;
+			}
+			//プレイに戻る.
+			else if (selectCount == 5) {
 
-			state = State::play;
-			selectCount = 0;
+				Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
+				sprites[1].Scale(glm::vec2(0));
+				sprites[2].Scale(glm::vec2(0));
+				sprites[3].Scale(glm::vec2(0));
+				sprites[12].Scale(glm::vec2(0));
+				sprites[13].Scale(glm::vec2(0));
+				sprites[14].Scale(glm::vec2(0));
+				sprites[15].Scale(glm::vec2(0));
+				sprites[16].Scale(glm::vec2(0));
+				sprites[17].Scale(glm::vec2(0));
+				sprites[22].Scale(glm::vec2(0));
+				sprites[23].Scale(glm::vec2(0));
+				sprites[24].Scale(glm::vec2(0));
+				if (StageNo != 1) {
+					sprites[26].Scale(glm::vec2(1));
+					sprites[27].Scale(glm::vec2(1));
+				}
+				sprites[28].Scale(glm::vec2(0));
+
+				state = State::play;
+				selectCount = 0;
+			}
 		}
 
 		if (state == State::cMenu) {
@@ -1646,58 +1617,60 @@ void MainGameScene::ProcessInput() {
 		}
 
 		//視点切り替え.
-		if (window.GetGamePad().buttons & GamePad::YY) {
+		if (state == State::play) {
+			if (window.GetGamePad().buttons & GamePad::YY) {
 
-			cameraFar = true;
-		}
-		else {
-			cameraFar = false;
-		}
-		if (window.GetGamePad().buttons & GamePad::I) {
+				cameraFar = true;
+			}
+			else {
+				cameraFar = false;
+			}
+			if (window.GetGamePad().buttons & GamePad::I) {
 
-			cameraNear = true;
-		}
-		else {
-			cameraNear = false;
-		}
+				cameraNear = true;
+			}
+			else {
+				cameraNear = false;
+			}
 
-		//範囲攻撃用フラグ立て.
-		if (player->playerID == 3 && window.GetGamePad().buttons & GamePad::B) {
+			//範囲攻撃用フラグ立て.
+			if (player->playerID == 3 && window.GetGamePad().buttons & GamePad::B) {
 
-			shotTimerFragB = true;
-			shotTimerFragC = true;
-		}
+				shotTimerFragB = true;
+				shotTimerFragC = true;
+			}
 
-		//スキルセット攻撃用フラグ立て.
+			//スキルセット攻撃用フラグ立て.
 
-		//初期攻撃用フラグ立て.
-		if (window.GetGamePad().buttons & GamePad::A) {
+			//初期攻撃用フラグ立て.
+			if (window.GetGamePad().buttons & GamePad::A) {
 
-			sCommand = true;
-		}
-		else {
-			sCommand = false;
-		}
+				sCommand = true;
+			}
+			else {
+				sCommand = false;
+			}
 
-		//強攻撃用フラグ立て.
-		if (wCommand == false && window.GetGamePad().buttons & GamePad::X) {
+			//強攻撃用フラグ立て.
+			if (wCommand == false && window.GetGamePad().buttons & GamePad::X) {
 
-			wCommand = true;
-			/*sprites[36].Scale(glm::vec2(0));*/
-		}
+				wCommand = true;
+				/*sprites[36].Scale(glm::vec2(0));*/
+			}
 
-		//溜め攻撃用フラグ立て.
-		if (eCommand == false && window.GetGamePad().buttons & GamePad::B) {
+			//溜め攻撃用フラグ立て.
+			if (eCommand == false && window.GetGamePad().buttons & GamePad::B) {
 
-			chargeShotFlagA = true;
-			eCommand = true;
-		}
+				chargeShotFlagA = true;
+				eCommand = true;
+			}
 
-		//遠距離攻撃用フラグ立て.
-		if (nCommand == false && window.GetGamePad().buttons & GamePad::Y) {
+			//遠距離攻撃用フラグ立て.
+			if (nCommand == false && window.GetGamePad().buttons & GamePad::Y) {
 
-			shotTimerFragA = true;
-			nCommand = true;
+				shotTimerFragA = true;
+				nCommand = true;
+			}
 		}
 }
 
@@ -1724,16 +1697,17 @@ void MainGameScene::Update(float deltaTime) {
 	{
 		if (state != State::select) {
 			camera.target = player->position;
-			camera.position = camera.target + glm::vec3(0, 15, 25);
+			camera.position = camera.target + glm::vec3(0, 15, 20);
 		}
 		if (cameraFar == true) {
-			camera.position = camera.target + glm::vec3(0, 10, 20);
-			camera.velocity += glm::vec3(3);
+			camera.position = camera.target + glm::vec3(0, 10, 15);
 		}
 
 		if (cameraNear == true) {
-			camera.position = camera.target + glm::vec3(0, 60, 30);
-			camera.velocity += glm::vec3(3);
+			camera.position = camera.target + glm::vec3(0, 25, 25);
+			if (player->pHP > 0) {
+				player->pHP -= 1;
+			}
 		}
 	}
 
@@ -1759,9 +1733,10 @@ void MainGameScene::Update(float deltaTime) {
 		warp[2].Update(deltaTime);
 		warp[3].Update(deltaTime);
 		bullet[0].Update(deltaTime);
-		upItem[0].Update(deltaTime);
+		bullet[1].Update(deltaTime);
+		/*upItem[0].Update(deltaTime);
 		upItem[1].Update(deltaTime);
-		upItem[2].Update(deltaTime);
+		upItem[2].Update(deltaTime);*/
 	}
 
 	/*if (actionWaitTimer > 0) {
@@ -1788,6 +1763,7 @@ void MainGameScene::Update(float deltaTime) {
 		enemyPopTimerA += deltaTime;
 		enemyPopTimerB += deltaTime;
 		enemyPopTimerC += deltaTime;
+		enemyPopTimerD += deltaTime;
 
 		EnemySpawn();
 		EnemyAI(deltaTime, defencePoint, 0, 0);
@@ -1899,7 +1875,7 @@ void MainGameScene::Update(float deltaTime) {
 					Shot->rotation += rot.y;
 					Shot->scale = glm::vec3(1, 1, 1);
 					Shot->colLocal = Collision::CreateCapsule(
-						glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
+						glm::vec3(0, 1.0f, 0), glm::vec3(0, 1.0f, 0), 3.0f);
 					Shot->velocity = matRotY * glm::vec4(0, 0, speed, 1);
 					bullet[0].Add(Shot);
 					playerBulletTimerA = 100.0f;
@@ -1929,12 +1905,12 @@ void MainGameScene::Update(float deltaTime) {
 							meshMeteo, "Shot", 100, setPosition, glm::vec3(0, 0, 0));
 						Meteo->scale = glm::vec3(3);
 						Meteo->velocity = matRotY * glm::vec4(0, -speed, speed, 1);
-						bullet[0].Add(Meteo);
+						bullet[1].Add(Meteo);
 						playerBulletTimerB = 100.0f;
 
 					}
 					else if (playerBulletTimerB <= 98.0f) {
-						for (ActorPtr& e : bullet[0]) {
+						for (ActorPtr& e : bullet[1]) {
 							e->health = 0;
 							chargeShotFlagA = false;
 							playerBulletTimerB = 0.0f;
@@ -1987,111 +1963,111 @@ void MainGameScene::Update(float deltaTime) {
 	//	}
 	//}
 
-	//アイテムの出現.
-	if (StageNo != 1) {
-		if (state == State::play) {
-			itemTimerA -= deltaTime;
-			itemTimerB -= deltaTime;
-			itemTimerC -= deltaTime;
+	////アイテムの出現.
+	//if (StageNo != 1) {
+	//	if (state == State::play) {
+	//		itemTimerA -= deltaTime;
+	//		itemTimerB -= deltaTime;
+	//		itemTimerC -= deltaTime;
 
-			const Mesh::FilePtr meshUpItemHP = meshBuffer.GetFile("Res/HP.gltf");
-			const Mesh::FilePtr meshUpItemMP = meshBuffer.GetFile("Res/MP.gltf");
-			const Mesh::FilePtr meshUpItemHPMP = meshBuffer.GetFile("Res/HPMP.gltf");
-			if (itemTimerA <= -5.0f) {
-				//ランダムにアイテムを配置
-				glm::vec3 position(0);
-				position.x = static_cast<float>(std::uniform_int_distribution<>(50, 150)(rand));
-				position.z = static_cast<float>(std::uniform_int_distribution<>(50, 150)(rand));
-				position.y = heightMap.Height(position) + 1;
+	//		const Mesh::FilePtr meshUpItemHP = meshBuffer.GetFile("Res/HP.gltf");
+	//		const Mesh::FilePtr meshUpItemMP = meshBuffer.GetFile("Res/MP.gltf");
+	//		const Mesh::FilePtr meshUpItemHPMP = meshBuffer.GetFile("Res/HPMP.gltf");
+	//		if (itemTimerA <= -5.0f) {
+	//			//ランダムにアイテムを配置
+	//			glm::vec3 position(0);
+	//			position.x = static_cast<float>(std::uniform_int_distribution<>(50, 150)(rand));
+	//			position.z = static_cast<float>(std::uniform_int_distribution<>(50, 150)(rand));
+	//			position.y = heightMap.Height(position) + 1;
 
-				StaticMeshActorPtr itemHP = std::make_shared<StaticMeshActor>(
-					meshUpItemHP, "HP", 100, position, glm::vec3(0, 0, 0));	
+	//			StaticMeshActorPtr itemHP = std::make_shared<StaticMeshActor>(
+	//				meshUpItemHP, "HP", 100, position, glm::vec3(0, 0, 0));	
 
-				itemHP->colLocal = Collision::CreateCapsule(
-					glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-				itemHP->scale = glm::vec3(0.7f, 1, 0.7f);
+	//			itemHP->colLocal = Collision::CreateCapsule(
+	//				glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
+	//			itemHP->scale = glm::vec3(0.7f, 1, 0.7f);
 
-				upItem[0].Add(itemHP);
-				itemTimerA = 100.0f;
-			}
-			else if (itemTimerA <= 95.0f) {
-				for (ActorPtr& e : upItem[0]) {
-					e->health = 0;
-				}
-				itemTimerA = 0.0f;
-			}
-			if (itemTimerB <= -5.0f) {
-				glm::vec3 position(0);
-				position.x = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
-				position.z = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
-				position.y = heightMap.Height(position) + 1;
-				StaticMeshActorPtr itemMP = std::make_shared<StaticMeshActor>(
-					meshUpItemMP, "MP", 100, position, glm::vec3(0, 0, 0));
-				itemMP->colLocal = Collision::CreateCapsule(
-					glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-				itemMP->scale = glm::vec3(0.7f, 1, 0.7f);
-				upItem[1].Add(itemMP);
+	//			upItem[0].Add(itemHP);
+	//			itemTimerA = 100.0f;
+	//		}
+	//		else if (itemTimerA <= 95.0f) {
+	//			for (ActorPtr& e : upItem[0]) {
+	//				e->health = 0;
+	//			}
+	//			itemTimerA = 0.0f;
+	//		}
+	//		if (itemTimerB <= -5.0f) {
+	//			glm::vec3 position(0);
+	//			position.x = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
+	//			position.z = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
+	//			position.y = heightMap.Height(position) + 1;
+	//			StaticMeshActorPtr itemMP = std::make_shared<StaticMeshActor>(
+	//				meshUpItemMP, "MP", 100, position, glm::vec3(0, 0, 0));
+	//			itemMP->colLocal = Collision::CreateCapsule(
+	//				glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
+	//			itemMP->scale = glm::vec3(0.7f, 1, 0.7f);
+	//			upItem[1].Add(itemMP);
 
-				itemTimerB = 0.0f;
-			}
-			else if (itemTimerB <= 95.0f) {
-				for (ActorPtr& e : upItem[1]) {
-					e->health = 0;
-				}
-				itemTimerB = 0.0f;
-			}
-			if (itemTimerC <= -5.0f) {
-				glm::vec3 position(0);
-				position.x = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
-				position.z = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
-				position.y = heightMap.Height(position) + 1;
-				StaticMeshActorPtr itemAll = std::make_shared<StaticMeshActor>(
-					meshUpItemHPMP, "All", 100, position, glm::vec3(0, 0, 0));
+	//			itemTimerB = 0.0f;
+	//		}
+	//		else if (itemTimerB <= 95.0f) {
+	//			for (ActorPtr& e : upItem[1]) {
+	//				e->health = 0;
+	//			}
+	//			itemTimerB = 0.0f;
+	//		}
+	//		if (itemTimerC <= -5.0f) {
+	//			glm::vec3 position(0);
+	//			position.x = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
+	//			position.z = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
+	//			position.y = heightMap.Height(position) + 1;
+	//			StaticMeshActorPtr itemAll = std::make_shared<StaticMeshActor>(
+	//				meshUpItemHPMP, "All", 100, position, glm::vec3(0, 0, 0));
 
-				itemAll->colLocal = Collision::CreateCapsule(
-					glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-				itemAll->scale = glm::vec3(0.7f, 1, 0.7f);
+	//			itemAll->colLocal = Collision::CreateCapsule(
+	//				glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
+	//			itemAll->scale = glm::vec3(0.7f, 1, 0.7f);
 
-				upItem[2].Add(itemAll);
-				itemTimerC = 100.0f;
-			}
-			else if (itemTimerC <= 95.0f) {
-				for (ActorPtr& e : upItem[2]) {
-					e->health = 0;
-				}
-				itemTimerC = 0.0f;
-			}
-		}
-	}
+	//			upItem[2].Add(itemAll);
+	//			itemTimerC = 100.0f;
+	//		}
+	//		else if (itemTimerC <= 95.0f) {
+	//			for (ActorPtr& e : upItem[2]) {
+	//				e->health = 0;
+	//			}
+	//			itemTimerC = 0.0f;
+	//		}
+	//	}
+	//}
 
 	//右のステージ移行.
 	if (state == State::play) {
 
-		//アイテムの取得.
-		DetectCollision(player, upItem[0],
-			[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
-			b->health = 0;
-			Audio::Engine::Instance().Prepare("Res/Audio/CharacterGet.mp3")->Play();
-			player->pHP = player->maxHP;
-		}
-		);
+		////アイテムの取得.
+		//DetectCollision(player, upItem[0],
+		//	[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
+		//	b->health = 0;
+		//	Audio::Engine::Instance().Prepare("Res/Audio/CharacterGet.mp3")->Play();
+		//	player->pHP = player->maxHP;
+		//}
+		//);
 
-		DetectCollision(player, upItem[1],
-			[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
-			b->health = 0;
-			Audio::Engine::Instance().Prepare("Res/Audio/CharacterGet.mp3")->Play();
-			player->pMP = player->maxMP;
-		}
-		);
+		//DetectCollision(player, upItem[1],
+		//	[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
+		//	b->health = 0;
+		//	Audio::Engine::Instance().Prepare("Res/Audio/CharacterGet.mp3")->Play();
+		//	player->pMP = player->maxMP;
+		//}
+		//);
 
-		DetectCollision(player, upItem[2],
-			[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
-			b->health = 0;
-			Audio::Engine::Instance().Prepare("Res/Audio/CharacterGet.mp3")->Play();
-			player->pHP = player->maxHP;
-			player->pMP = player->maxMP;
-		}
-		);
+		//DetectCollision(player, upItem[2],
+		//	[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
+		//	b->health = 0;
+		//	Audio::Engine::Instance().Prepare("Res/Audio/CharacterGet.mp3")->Play();
+		//	player->pHP = player->maxHP;
+		//	player->pMP = player->maxMP;
+		//}
+		//);
 
 		////敵と自分の攻撃.
 		//DetectCollision(bullet[0], enemies[0],
@@ -2302,9 +2278,10 @@ void MainGameScene::Update(float deltaTime) {
 	warp[2].UpdateDrawData(deltaTime);
 	warp[3].UpdateDrawData(deltaTime);
 	bullet[0].UpdateDrawData(deltaTime);
-	upItem[0].UpdateDrawData(deltaTime);
+	bullet[1].UpdateDrawData(deltaTime);
+	/*upItem[0].UpdateDrawData(deltaTime);
 	upItem[1].UpdateDrawData(deltaTime);
-	upItem[2].UpdateDrawData(deltaTime);
+	upItem[2].UpdateDrawData(deltaTime);*/
 
 	fontRenderer.BeginUpdate();
 
@@ -2417,9 +2394,16 @@ void MainGameScene::Update(float deltaTime) {
 		}
 		else if (player->playerID == 2) {
 			sprites[18].Scale(glm::vec2(0.2f));
-			sprites[19].Scale(glm::vec2(0.2f));
-			sprites[20].Scale(glm::vec2(0.2f));
-			sprites[21].Scale(glm::vec2(0.12f));
+
+			if (player->pAbility >= 4) {
+				sprites[21].Scale(glm::vec2(0.12f));
+			}
+			if (player->pAbility >= 3) {
+				sprites[20].Scale(glm::vec2(0.2f));
+			}
+			if (player->pAbility >= 2) {
+				sprites[19].Scale(glm::vec2(0.2f));
+			}
 
 			sprites[31].Scale(glm::vec2(0));
 			sprites[32].Scale(glm::vec2(0));
@@ -2429,10 +2413,17 @@ void MainGameScene::Update(float deltaTime) {
 		}
 		else if (player->playerID == 3) {
 			sprites[18].Scale(glm::vec2(0.2f));
-			sprites[19].Scale(glm::vec2(0.2f));
-			sprites[29].Scale(glm::vec2(0.2f));
-			sprites[30].Scale(glm::vec2(0.2f));
 
+			if (player->pAbility >= 4) {
+				sprites[30].Scale(glm::vec2(0.2f));
+			}
+			if (player->pAbility >= 3) {
+				sprites[29].Scale(glm::vec2(0.2f));
+			}
+			if (player->pAbility >= 2) {
+				sprites[19].Scale(glm::vec2(0.2f));
+			}
+			
 			sprites[20].Scale(glm::vec2(0));
 			sprites[21].Scale(glm::vec2(0));
 			sprites[31].Scale(glm::vec2(0));
@@ -2455,39 +2446,44 @@ void MainGameScene::Update(float deltaTime) {
 			sprites[36].Position(glm::vec3(500, -310, 0));
 		}
 
-		//左.
-		if (wCommand == true) {
-			wIntTimer += deltaTime;
-			
-			sprites[35].Scale(glm::vec2(1.55f, 1.55f * wIntTimer / 2.0f));
-			sprites[35].Position(glm::vec3(420, 24.8f * 2.5f * wIntTimer / 2.0f / 2 - 261, 0));
-		}
-		else if (wCommand == false) {
-			sprites[35].Scale(glm::vec2(1.55f, 1.55f));
-			sprites[35].Position(glm::vec3(420, -230, 0));
-		}
-
 		//右.
-		if (eCommand == true) {
-			eIntTimer += deltaTime;
-			
-			sprites[34].Scale(glm::vec2(1.55f, 1.55f * eIntTimer / 4.0f));
-			sprites[34].Position(glm::vec3(580, 24.8f * 2.5f * eIntTimer / 4.0f / 2 - 261, 0));
-		}
-		else if (eCommand == false) {
-			sprites[34].Scale(glm::vec2(1.55f, 1.55f));
-			sprites[34].Position(glm::vec3(580, -230, 0));
+		if (player->pAbility >= 4) {
+			if (eCommand == true) {
+				eIntTimer += deltaTime;
+
+				sprites[34].Scale(glm::vec2(1.55f, 1.55f * eIntTimer / 4.0f));
+				sprites[34].Position(glm::vec3(580, 24.8f * 2.5f * eIntTimer / 4.0f / 2 - 261, 0));
+			}
+			else if (eCommand == false) {
+				sprites[34].Scale(glm::vec2(1.55f, 1.55f));
+				sprites[34].Position(glm::vec3(580, -230, 0));
+			}
 		}
 		//上.
-		if (nCommand == true) {
-			nIntTimer += deltaTime;
-			
-			sprites[37].Scale(glm::vec2(1.55f, 1.55f * nIntTimer / 3.0f));
-			sprites[37].Position(glm::vec3(500, 24.8f * 2.5f * nIntTimer / 3.0f / 2 - 181, 0));
+		if (player->pAbility >= 3) {
+			if (nCommand == true) {
+				nIntTimer += deltaTime;
+
+				sprites[37].Scale(glm::vec2(1.55f, 1.55f * nIntTimer / 3.0f));
+				sprites[37].Position(glm::vec3(500, 24.8f * 2.5f * nIntTimer / 3.0f / 2 - 181, 0));
+			}
+			else if (nCommand == false) {
+				sprites[37].Scale(glm::vec2(1.55f, 1.55f));
+				sprites[37].Position(glm::vec3(500, -150, 0));
+			}
 		}
-		else if (nCommand == false) {
-			sprites[37].Scale(glm::vec2(1.55f, 1.55f));
-			sprites[37].Position(glm::vec3(500, -150, 0));
+		//左.
+		if (player->pAbility >= 2) {
+			if (wCommand == true) {
+				wIntTimer += deltaTime;
+
+				sprites[35].Scale(glm::vec2(1.55f, 1.55f * wIntTimer / 2.0f));
+				sprites[35].Position(glm::vec3(420, 24.8f * 2.5f * wIntTimer / 2.0f / 2 - 261, 0));
+			}
+			else if (wCommand == false) {
+				sprites[35].Scale(glm::vec2(1.55f, 1.55f));
+				sprites[35].Position(glm::vec3(420, -230, 0));
+			}
 		}
 
 		if(player->playerID == 1){
@@ -3521,9 +3517,10 @@ bool MainGameScene::HandleCoinEffects(int id, const glm::vec3& pos)
 			warp[2].Draw(drawType);
 			warp[3].Draw(drawType);
 			bullet[0].Draw(drawType);
-			upItem[0].Draw(drawType);
+			bullet[1].Draw(drawType);
+			/*upItem[0].Draw(drawType);
 			upItem[1].Draw(drawType);
-			upItem[2].Draw(drawType);
+			upItem[2].Draw(drawType);*/
 
 			/*if (drawType == Mesh::DrawType::color) {
 				glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);

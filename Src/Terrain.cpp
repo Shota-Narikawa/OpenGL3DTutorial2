@@ -176,7 +176,6 @@ namespace Terrain {
 		Mesh::Primitive p =
 			meshBuffer.CreatePrimitive(indices.size(), GL_UNSIGNED_INT, iOffset, vOffset);
 		Mesh::Material m = meshBuffer.CreateMaterial(glm::vec4(1), nullptr);
-
 		m.texture[0] = Texture::Image2D::Create("Res/Terrain_Ratio.tga");
 		m.texture[1] = Texture::Image2D::Create("Res/Terrain_Soil.tga");
 		m.texture[2] = Texture::Image2D::Create("Res/Terrain_Rock.tga");

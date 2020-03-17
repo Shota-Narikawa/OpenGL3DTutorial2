@@ -77,7 +77,9 @@ private:
 	bool playerNoDamege = false;	//無敵状態.
 	float noDamegeTimer = 0.0f;		//無敵時間.
 	bool dashFrag = false;	//ゴブリンのダッシュフラグ.
+
 	float skillTimerW = 0.0f , skillTimerE = 0.0f, skillTimerN = 0.0f;	//スキルインターバル.
+	bool skillW = false, skillE = false, skillN = false;	//スキルインターバル.
 
 	Audio::SoundPtr bgm;
 
