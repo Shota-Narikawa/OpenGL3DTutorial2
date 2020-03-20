@@ -1294,9 +1294,7 @@ void MainGameScene::ProcessInput() {
 			Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
 			state = State::menu;
 			selectCount = 1;
-			if (player->playerID != 0) {
-				player->GetMesh()->Play("Idle");
-			}
+			
 			sprites[1].Scale(glm::vec2(1, 3.5f));
 			sprites[2].Scale(glm::vec2(0.4f, 2.5f));
 			sprites[3].Scale(glm::vec2(0.4f, 0.9f));
@@ -1445,20 +1443,21 @@ void MainGameScene::ProcessInput() {
 
 		//ステージ移行の有無時の選択アイコンを動かす.
 		if (state == State::select) {
-			selectUI(0,-1,1,1,2,0);
-			
+			if (timer < 0.1f) {
+				selectUI(0, -1, 1, 1, 2, 0);
+			}
 			//”はい”でステージ移行、”いいえ”でプレイに戻る.
 			if (selectCount == 0 && window.GetGamePad().buttonDown & GamePad::START) {
 				Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
 
 				player->position += glm::vec3(0, 100, 0);
-				selectCount2 = 0;
 				bgm->Stop();
 				timer = 2.0f;
 				selectCount = 0;
 			}
 			else if (selectCount == 1 && window.GetGamePad().buttonDown & GamePad::START) {
 				Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
+
 				sprites[2].Scale(glm::vec2(0));
 				sprites[3].Scale(glm::vec2(0));
 				sprites[22].Scale(glm::vec2(0));
@@ -2253,7 +2252,7 @@ void MainGameScene::Update(float deltaTime) {
 	}
 
 	//敵を全滅させたらゲームクリア.
-	if (player->pHP > 0 && defenceLine > 0 && enemyStock == enemyBlow) {
+	if (player->pHP > 0 && defenceLine > 0 && enemyStock <= enemyBlow) {
 		if (gameOverFlag == false && nextStateFlag == false) {
 			gameClearFlag = true;
 		}
