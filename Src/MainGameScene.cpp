@@ -194,7 +194,7 @@ void MainGameScene::EnemySpawn() {
 
 					const Mesh::SkeletalMeshPtr mesh = meshBuffer.GetSkeletalMesh("oni_small");
 					SkeletalMeshActorPtr p = std::make_shared<SkeletalMeshActor>(
-						mesh, "Kooni", 13, position, rotation);
+						mesh, "Kooni", 15, position, rotation);
 					p->colLocal = Collision::CreateCapsule(
 						glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
 					enemies[0].Add(p);
@@ -216,7 +216,7 @@ void MainGameScene::EnemySpawn() {
 					position.y = heightMap.Height(position);
 					const Mesh::SkeletalMeshPtr mesh = meshBuffer.GetSkeletalMesh("oni_small");
 					SkeletalMeshActorPtr p = std::make_shared<SkeletalMeshActor>(
-						mesh, "Kooni", 13, position, rotation);
+						mesh, "Kooni", 15, position, rotation);
 					p->colLocal = Collision::CreateCapsule(
 						glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 1.0f);
 					p->scale = glm::vec3(2);
@@ -239,7 +239,7 @@ void MainGameScene::EnemySpawn() {
 					position.y = heightMap.Height(position);
 					const Mesh::SkeletalMeshPtr mesh = meshBuffer.GetSkeletalMesh("oni_small");
 					SkeletalMeshActorPtr p = std::make_shared<SkeletalMeshActor>(
-						mesh, "Kooni", 13, position, rotation);
+						mesh, "Kooni", 15, position, rotation);
 					p->colLocal = Collision::CreateCapsule(
 						glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 1.5f);
 					p->scale = glm::vec3(3);
@@ -251,7 +251,7 @@ void MainGameScene::EnemySpawn() {
 				enemySpawn -= 3;
 			}
 		}
-		if (enemyPopTimerD >= 10.0f) {
+		if (enemyPopTimerD >= 15.0f) {
 				for (size_t i = 0; i < oniCountD; i++)
 				{
 					position.x += std::uniform_real_distribution<float>(60, 100)(rand);
@@ -262,7 +262,7 @@ void MainGameScene::EnemySpawn() {
 
 					const Mesh::SkeletalMeshPtr mesh = meshBuffer.GetSkeletalMesh("oni_small");
 					SkeletalMeshActorPtr p = std::make_shared<SkeletalMeshActor>(
-						mesh, "Kooni", 13, position, rotation);
+						mesh, "Kooni", 15, position, rotation);
 					p->colLocal = Collision::CreateCapsule(
 						glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
 					enemies[3].Add(p);
@@ -367,7 +367,7 @@ void MainGameScene::EnemyDetectCollision(int i) {
 		DetectCollision(attackCollision, enemies[i],
 			[this, &hit](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
 			SkeletalMeshActorPtr bb = std::static_pointer_cast<SkeletalMeshActor>(b);
-			bb->health -= a->health;
+			bb->health -= a->health * player->pLevel;
 			float scaleFactor = 1;
 			if (bb->health <= 0) {
 				bb->colLocal = Collision::Shape{};
@@ -378,7 +378,7 @@ void MainGameScene::EnemyDetectCollision(int i) {
 			else {
 				bb->GetMesh()->Play("Hit", false);
 			}
-			std::cerr << "[INFO] enemy hp=" << bb->health << "\n";
+			/*std::cerr << "[INFO] enemy hp=" << bb->health << "\n";*/
 
 			auto mesh = meshBuffer.GetSkeletalMesh("Effect.Hit");
 			mesh->Play(mesh->GetAnimationList()[0].name, false);
@@ -1780,8 +1780,6 @@ void MainGameScene::Update(float deltaTime) {
 					enemyBlow += 1;
 					player->pExPoint -= 10;
 					player->pExCount -= 50;
-
-					enemySpawn += 1;
 				}
 				continue;
 			}
@@ -2475,7 +2473,7 @@ void MainGameScene::Update(float deltaTime) {
 			}
 		}
 		//¶.
-		if (player->pAbility >= 2) {
+		if (player->pAbility >= 2 && player->playerID != 1) {
 			if (wCommand == true) {
 				wIntTimer += deltaTime;
 
@@ -2603,7 +2601,7 @@ void MainGameScene::Update(float deltaTime) {
 	if (clearTimer > 0.0f) {
 		clearTimer -= deltaTime;
 		if (clearTimer <= 0.0f) {
-			if (nextStateFlag == true && player->pHP > 0 && defenceLine > 0 && enemyStock == enemyBlow) {
+			if (nextStateFlag == true && player->pHP > 0 && defenceLine > 0 && enemyStock <= enemyBlow) {
 				if (player->playerID != 0) {
 					player->GetMesh()->Play("Idle");
 				}
