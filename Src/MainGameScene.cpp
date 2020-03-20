@@ -30,9 +30,14 @@ int PlayerActor::pExPoint = 100;	//経験値.
 int PlayerActor::pExCount = 500;	//レベルアップまで.
 int PlayerActor::pMP = 50;			//MP.
 int PlayerActor::pHP = 200;			//HP.
-int PlayerActor::maxHP;				//最大HP.
-int PlayerActor::maxMP;				//最大MP.
+int PlayerActor::maxHP = 200;				//最大HP.
+int PlayerActor::maxMP = 50;				//最大MP.
 int PlayerActor::playerID = 0;		//プレイヤーのメッシュ.
+bool MainGameScene::StClearedE = false;
+bool MainGameScene::StClearedS = false;
+bool MainGameScene::StClearedW = false;
+bool MainGameScene::StClearedN = false;
+
 
 /**
 *衝突を解決する.
@@ -791,8 +796,8 @@ bool MainGameScene::Initialize() {
 		player->SetMesh(meshBuffer.GetSkeletalMesh("Skeleton"), 0);
 		player->GetMesh()->Play("Idle");
 	}
-	player->maxHP = player->pHP;
-	player->maxMP = player->pMP;
+	/*player->maxHP = player->pHP;
+	player->maxMP = player->pMP;*/
 
 	// ライトを配置
 	lights.Add(std::make_shared<DirectionalLightActor>
@@ -2301,6 +2306,19 @@ void MainGameScene::Update(float deltaTime) {
 		nextStateFlag = true;
 		defenceFrag = false;
 		clearTimer = 3.0f;
+
+		if (StageNo == 2) {
+			StClearedE = true;
+		}
+		else if (StageNo == 3) {
+			StClearedS = true;
+		}
+		else if (StageNo == 4) {
+			StClearedW = true;
+		}
+		else if (StageNo == 5) {
+			StClearedN = true;
+		}
 	}
 
 	if (StageNo != 1) {
@@ -2488,6 +2506,7 @@ void MainGameScene::Update(float deltaTime) {
 
 		if(player->playerID == 1){
 			sprites[34].Scale(glm::vec2(0));
+			sprites[35].Scale(glm::vec2(0));
 			sprites[37].Scale(glm::vec2(0));
 		}
 		else if (player->playerID == 0) {

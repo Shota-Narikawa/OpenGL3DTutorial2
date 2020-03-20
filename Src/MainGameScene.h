@@ -49,6 +49,7 @@ public:
 	void EnemyDetectCollision(int i);
 
 	static int StageNo;
+	static bool StClearedE, StClearedW , StClearedS , StClearedN ;	///<ステート移行可能状態.
 
 private:
 	void RenderMesh(Mesh::DrawType);
@@ -165,7 +166,7 @@ private:
 	bool gameOverFlag = false;						///<ゲームオーバー状態.
 	bool gameClearFlag = false;						///<ゲームクリア状態.
 	bool nextStateFlag = false;						///<ステート移行可能状態.
-	bool StClearedE = false, StClearedW = false, StClearedS = false, StClearedN = false;	///<ステート移行可能状態.
+	
 	bool selectIconFlag = false;					///<セレクトアイコン.
 	bool shotTimerFragA = false, shotTimerFragB = false , shotTimerFragC = false;			///<攻撃でタイマーを動かすフラグ.
 	bool chargeShotFlagA, chargeShotFlagB = false;	///<溜め攻撃用フラグ.
