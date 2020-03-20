@@ -226,7 +226,7 @@ void PlayerActor::Update(float deltaTime)
 		case State::attack:
 			isAttack = true;
 			attackTimer += deltaTime;
-			if (attackTimer > 0.7f && attackTimer < 1.0f) {
+			if (attackTimer > 0.4f && attackTimer < 0.9f) {
 				if (!attackCollision) {
 					static const float radian = 1.0f;
 					const glm::vec3 front = glm::rotate(glm::mat4(1), rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0, 1.5f, 1);
@@ -406,13 +406,6 @@ void PlayerActor::Update(float deltaTime)
 						attackTimer = 0;
 						state = State::attack;
 					}
-					if (pAbility >= 1 && pMP > 0 && gamepad.buttons & GamePad::X) {
-
-						/*GetMesh()->Play("Attack.Heavy", false);
-						attackTimer = 0;
-						state = State::attack;*/
-						/*pMP -= 1;*/
-					}
 				}
 				else if (playerID == 2) {
 					if (pAbility >= 1 && gamepad.buttonDown & GamePad::A) {
@@ -473,13 +466,13 @@ void PlayerActor::Update(float deltaTime)
 						state = State::attack;
 						pMP -= 5;
 					}
-					if (skillE == true && skillTimerE <= -1.9f /*&& skillTimerE >= -1.1f && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X*/) {
-						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
-						GetMesh()->Play("Wakigamae.Attack", false);
-						attackTimer = 0;
-						state = State::attack;
-					}
+					//if (skillE == true && skillTimerE <= -1.9f /*&& skillTimerE >= -1.1f && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X*/) {
+					//	Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
+					//	Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+					//	GetMesh()->Play("Wakigamae.Attack", false);
+					//	attackTimer = 0;
+					//	state = State::attack;
+					//}
 					if (skillN == false && pAbility >= 3 && pMP > 0 && gamepad.buttonDown & GamePad::Y) {
 
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();

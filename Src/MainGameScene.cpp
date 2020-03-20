@@ -1576,7 +1576,7 @@ void MainGameScene::ProcessInput() {
 				bgm->Stop();
 				StageNo = 1;
 				eventFrag = true;
-				loadTimer = 0.5f;
+				exit(0);
 			}
 			//プレイに戻る.
 			else if (selectCount == 5) {
@@ -2070,19 +2070,19 @@ void MainGameScene::Update(float deltaTime) {
 		//);
 
 		////敵と自分の攻撃.
-		//DetectCollision(bullet[0], enemies[0],
+		//DetectCollision(enemies[0], bullet[0],
 		//	[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p) {
 		//	b->health = 0;
 		//});
 
 		////敵と自分の攻撃.
-		//DetectCollision(bullet[0], enemies[1],
+		//DetectCollision( enemies[1],bullet[0],
 		//	[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p) {
 		//	b->health = 0;
 		//});
 
 		////敵と自分の攻撃.
-		//DetectCollision(bullet[0], enemies[2],
+		//DetectCollision( enemies[2],bullet[0],
 		//	[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p) {
 		//	b->health = 0;
 		//});
@@ -2380,9 +2380,10 @@ void MainGameScene::Update(float deltaTime) {
 			sprites[29].Scale(glm::vec2(0));
 			sprites[30].Scale(glm::vec2(0));
 		}
+		//ゴブリンのスキルコマンドパネル.
 		else if (player->playerID == 1) {
 			sprites[31].Scale(glm::vec2(0.2f));
-			sprites[32].Scale(glm::vec2(0.2f));
+			/*sprites[32].Scale(glm::vec2(0.2f));*/
 
 			sprites[18].Scale(glm::vec2(0));
 			sprites[19].Scale(glm::vec2(0));
@@ -2392,6 +2393,7 @@ void MainGameScene::Update(float deltaTime) {
 			sprites[30].Scale(glm::vec2(0));
 			sprites[33].Scale(glm::vec2(0));
 		}
+		//ウィザードのスキルコマンドパネル.
 		else if (player->playerID == 2) {
 			sprites[18].Scale(glm::vec2(0.2f));
 
@@ -2411,6 +2413,7 @@ void MainGameScene::Update(float deltaTime) {
 			sprites[30].Scale(glm::vec2(0));
 			sprites[33].Scale(glm::vec2(0));
 		}
+		//骸骨のスキルコマンドパネル.
 		else if (player->playerID == 3) {
 			sprites[18].Scale(glm::vec2(0.2f));
 
@@ -3054,6 +3057,7 @@ void MainGameScene::Render() {
 		else if (state == State::sMenu) {
 			fontRenderer.AddString(glm::vec2(-510, -190), L"スキルの確認が");
 			fontRenderer.AddString(glm::vec2(-510, -230), L"できます。");
+			fontRenderer.AddString(glm::vec2(-125, -100), L"説明");
 			/*fontRenderer.AddString(glm::vec2(-510, -190), L"スキルの確認や");
 			fontRenderer.AddString(glm::vec2(-510, -230), L"スキルパネルの");
 			fontRenderer.AddString(glm::vec2(-510, -270), L"カスタムができます");
@@ -3065,10 +3069,34 @@ void MainGameScene::Render() {
 				fontRenderer.AddString(glm::vec2(-125, 100), L"何もできない");
 				fontRenderer.AddString(glm::vec2(-125, 50), L"何もできない");
 				fontRenderer.AddString(glm::vec2(-125, 0), L"何もできない");
+
+				fontRenderer.AddString(glm::vec2(-125, -150), L"今のままでは何もできない");
+				fontRenderer.AddString(glm::vec2(-125, -200), L"他のキャラクターに憑依しよう");
 			}
 			if (player->playerID == 1) {
 				fontRenderer.AddString(glm::vec2(-110, 200), L"ゴブリン");
 				int n = player->pAbility;
+				//スキルの説明.
+				if (skComCount == 1) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"強靭な爪で相手を攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"その爪は岩でも砕いてしまう");
+				}
+				else if (skComCount == 2) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"早歩きができるようになる");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
+				}
+				else if (skComCount == 3) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"ダッシュができるようになる");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
+				}
+				else if (skComCount == 4) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"高速移動ができるようになる");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
+				}
 				
 				fontRenderer.AddString(glm::vec2(-105, 150), L"通常攻撃");
 				//使えないスキルは半透明.
@@ -3093,6 +3121,27 @@ void MainGameScene::Render() {
 			if (player->playerID == 2) {
 				fontRenderer.AddString(glm::vec2(-110, 200), L"ウィザード");
 				int n = player->pAbility;
+				//スキルの説明.
+				if (skComCount == 1) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"杖で突く近距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"杖は父からもらったものである");
+				}
+				else if (skComCount == 2) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"杖を振り下ろす近距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"父からは杖で人を殴るなと教えられた");
+				}
+				else if (skComCount == 3) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"直線状に魔法を飛ばす遠距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"命中率はほぼ０に近い");
+				}
+				else if (skComCount == 4) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"空から魔法を落とす遠距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"宴会ではかなりウケた技である");
+				}
 
 				fontRenderer.AddString(glm::vec2(-105, 150), L"通常攻撃");
 				//使えないスキルは半透明.
@@ -3117,6 +3166,27 @@ void MainGameScene::Render() {
 			if (player->playerID == 3) {
 				fontRenderer.AddString(glm::vec2(-110, 200), L"スケルトン");
 				int n = player->pAbility;
+				//スキルの説明.
+				if (skComCount == 1) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"剣を振り下ろす近距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"型は自己流である");
+				}
+				else if (skComCount == 2) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"剣を水平に振る近距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"滝をも真っ二つに斬るという");
+				}
+				else if (skComCount == 3) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"勢いよく振り下ろす近距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"ガード不可と言われた攻撃である");
+				}
+				else if (skComCount == 4) {
+
+					fontRenderer.AddString(glm::vec2(-125, -150), L"洗練された究極の近距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"受けたもの生きてはいないとの噂");
+				}
 
 				fontRenderer.AddString(glm::vec2(-105, 150), L"通常攻撃");
 				//使えないスキルは半透明.

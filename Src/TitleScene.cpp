@@ -145,25 +145,27 @@ void TitleScene::ProcessInput() {
 		}
 	}
 
-	if (state == State::tutorial) {
-		if (tutorialCount == 1 && window.GetGamePad().buttonDown & GamePad::START) {
+	//操作確認画面時.
+	if (state == State::tutorial && window.GetGamePad().buttonDown & GamePad::START) {
+		if (tutorialCount == 1) {
 			tutorialText = true;
 			Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
 			sprites[5].Scale(glm::vec2(0.5f));
 			sprites[6].Scale(glm::vec2(0));
 		}
-		else if (tutorialCount == 2 && window.GetGamePad().buttonDown & GamePad::START) {
+		else if (tutorialCount == 2) {
 			Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
 			tutorialText = false;
 			sprites[5].Scale(glm::vec2(0));
 			sprites[6].Scale(glm::vec2(0.4f));
 		}
-		else if (tutorialCount == 3 && window.GetGamePad().buttonDown & GamePad::START) {
+		else if (tutorialCount == 3) {
 			Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
 			timer = 0.5f;
 		}
 	}
 
+	//ストーリーかクレジット確認時.
 	if (state == State::story || state == State::credit) {
 		if (window.GetGamePad().buttonDown & GamePad::B) {
 			Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
@@ -181,9 +183,9 @@ void TitleScene::ProcessInput() {
 		}
 	}
 
-		
-	if (state == State::title) {
-		if (selectCount == 1 && window.GetGamePad().buttonDown & GamePad::START) {
+		//タイトル画面時.
+	if (state == State::title && window.GetGamePad().buttonDown & GamePad::START) {
+		if (selectCount == 1) {
 
 			Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
 			tutorialCount = 1;
@@ -200,7 +202,7 @@ void TitleScene::ProcessInput() {
 			sprites[1].Scale(glm::vec2(1.5f, 4.0f));
 			sprites[5].Scale(glm::vec2(0.5f));
 		}
-		else if (selectCount == 2 && window.GetGamePad().buttonDown & GamePad::START) {
+		else if (selectCount == 2) {
 			Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
 			state = State::story;
 
@@ -216,7 +218,7 @@ void TitleScene::ProcessInput() {
 
 			sprites[1].Scale(glm::vec2(1.5f, 4.0f));
 		}
-		else if (selectCount == 3 && window.GetGamePad().buttonDown & GamePad::START) {
+		else if (selectCount == 3) {
 			Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
 			state = State::credit;
 
@@ -232,11 +234,9 @@ void TitleScene::ProcessInput() {
 
 			sprites[1].Scale(glm::vec2(1.5f, 4.0f));
 		}
-		else if (selectCount == 4 && window.GetGamePad().buttonDown & GamePad::START) {
+		else if (selectCount == 4) {
 			Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
-				//押されていたら終了ウィンドウを表示.
-				if (MessageBox(nullptr, "ゲームを終了しますか？", "終了", MB_OKCANCEL) == IDOK) {
-				}
+			exit(0);
 		}
 	}
 }
