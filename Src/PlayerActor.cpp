@@ -225,13 +225,42 @@ void PlayerActor::Update(float deltaTime)
 
 		case State::attack:
 			isAttack = true;
-			attackTimer += deltaTime;
-			if (attackTimer > 0.4f && attackTimer < 0.9f) {
+			if (attackTimerA >= 0) {
+				attackTimerA += deltaTime;
+			}
+			if (attackTimerB >= 0) {
+				attackTimerB += deltaTime;
+			}
+			if (attackTimerC >= 0) {
+				attackTimerC += deltaTime;
+			}
+			//’ÊíUŒ‚‚Ì”ÍˆÍ.
+			if (attackTimerA > 0.4f && attackTimerA < 0.9f) {
 				if (!attackCollision) {
 					static const float radian = 1.0f;
 					const glm::vec3 front = glm::rotate(glm::mat4(1), rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0, 1.5f, 1);
 					attackCollision = std::make_shared<Actor>("PlayerAttackCollision", 5, position + front + glm::vec3(0, 1, 0), glm::vec3(0), glm::vec3(radian));
 					attackCollision->colLocal = Collision::CreateSphere(glm::vec3(0), radian);
+
+				}
+			}
+			//‘O•û‚Ì”ÍˆÍUŒ‚iŠ[œê—pj.
+			else if (attackTimerB > 0.7f && attackTimerB < 0.9f) {
+				if (!attackCollision) {
+					static const float radian = 1.0f;
+					const glm::vec3 front = glm::rotate(glm::mat4(1), rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0, 5.0f, 1);
+					attackCollision = std::make_shared<Actor>("PlayerAttackCollision", 5, position + front + glm::vec3(0, 1, 0), glm::vec3(0), glm::vec3(3.0f));
+					attackCollision->colLocal = Collision::CreateSphere(glm::vec3(0), 3.0f);
+
+				}
+			}
+			//ŽüˆÍ‚Ì”ÍˆÍUŒ‚iŠ[œê—pj.
+			else if (attackTimerC > 0.7f && attackTimerC < 0.9f) {
+				if (!attackCollision) {
+					static const float radian = 1.0f;
+					const glm::vec3 front = glm::rotate(glm::mat4(1), rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0, 0, 1);
+					attackCollision = std::make_shared<Actor>("PlayerAttackCollision", 5, position + front + glm::vec3(0, 1, 0), glm::vec3(0), glm::vec3(5.0f));
+					attackCollision->colLocal = Collision::CreateSphere(glm::vec3(0), 5.0f);
 
 				}
 			}
@@ -403,7 +432,7 @@ void PlayerActor::Update(float deltaTime)
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/Enemy.mp3")->Play();
 						GetMesh()->Play("Attack", false);
-						attackTimer = 0;
+						attackTimerA = 0;
 						state = State::attack;
 					}
 				}
@@ -413,7 +442,7 @@ void PlayerActor::Update(float deltaTime)
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack2.mp3")->Play();
 						GetMesh()->Play("Attack.Light", false);
-						attackTimer = 0;
+						attackTimerA = 0;
 						state = State::attack;
 					}
 					if (skillE == false && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X) {
@@ -421,7 +450,7 @@ void PlayerActor::Update(float deltaTime)
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Attack.Heavy", false);
-						attackTimer = 0;
+						attackTimerA = 0;
 						skillE = true;
 						state = State::attack;
 						pMP -= 5;
@@ -431,7 +460,6 @@ void PlayerActor::Update(float deltaTime)
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Attack.Heavy", false);
-						attackTimer = 0;
 						skillN = true;
 						state = State::attack;
 						pMP -= 5;
@@ -441,7 +469,6 @@ void PlayerActor::Update(float deltaTime)
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Attack.Jump", false);
-						attackTimer = 0;
 						skillW = true;
 						state = State::attack;
 						pMP -= 10;
@@ -453,7 +480,7 @@ void PlayerActor::Update(float deltaTime)
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack2.mp3")->Play();
 						GetMesh()->Play("Attack", false);
-						attackTimer = 0;
+						attackTimerA = 0;
 						state = State::attack;
 					}
 					if (skillE == false && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X) {
@@ -461,24 +488,24 @@ void PlayerActor::Update(float deltaTime)
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Attack", false);
-						attackTimer = 0;
+						attackTimerA = 0;
 						skillE = true;
 						state = State::attack;
 						pMP -= 5;
 					}
-					//if (skillE == true && skillTimerE <= -1.9f /*&& skillTimerE >= -1.1f && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X*/) {
-					//	Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-					//	Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
-					//	GetMesh()->Play("Wakigamae.Attack", false);
-					//	attackTimer = 0;
-					//	state = State::attack;
-					//}
+					if (skillE == true && skillTimerE <= -1.9f /*&& skillTimerE >= -1.1f && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X*/) {
+						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
+						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+						GetMesh()->Play("Wakigamae.Attack", false);
+						attackTimerA = 0;
+						state = State::attack;
+					}
 					if (skillN == false && pAbility >= 3 && pMP > 0 && gamepad.buttonDown & GamePad::Y) {
 
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Attack.Virtical", false);
-						attackTimer = 0;
+						attackTimerB = 0;
 						skillN = true;
 						state = State::attack;
 						pMP -= 10;
@@ -488,7 +515,7 @@ void PlayerActor::Update(float deltaTime)
 						Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
 						Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
 						GetMesh()->Play("Attack.Horizontal", false);
-						attackTimer = 0;
+						attackTimerC = 0;
 						skillW = true;
 						state = State::attack;
 						pMP -= 10;

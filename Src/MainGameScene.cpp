@@ -290,7 +290,7 @@ void MainGameScene::EnemyAI(float deltaTime ,ActorList& x,int a ,int b) {
 			if (mesh->IsFinished()) {
 				enemy->health = 0;
 				enemyBlow += 1;
-				player->pExPoint -= 10;
+				player->pExPoint -= 20;
 				player->pExCount -= 50;
 
 				enemySpawn += 1;
@@ -365,6 +365,54 @@ void MainGameScene::EnemyAI(float deltaTime ,ActorList& x,int a ,int b) {
 
 void MainGameScene::EnemyDetectCollision(int i) {
 
+	//“G‚Æ©•ª‚ÌUŒ‚.
+	DetectCollision(bullet[0], enemies[i],
+		[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p) {
+		Audio::Engine::Instance().Prepare("Res/Audio/Enemy.mp3")->Play();
+		b->health = 0;
+		enemyBlow += 1;
+		player->pExPoint -= 20;
+		player->pExCount -= 100;
+
+		enemySpawn += 1;
+
+		auto mesh = meshBuffer.GetSkeletalMesh("Effect.Hit");
+		mesh->Play(mesh->GetAnimationList()[0].name, false);
+		mesh->SetAnimationSpeed(std::uniform_real_distribution<float>(0.75f, 1.0f)(rand) / 1.5f);
+		glm::vec3 rot = player->rotation;
+		rot.x += std::uniform_real_distribution<float>(0, glm::radians(360.0f))(rand);
+		rot.y += std::uniform_real_distribution<float>(0, glm::radians(360.0f))(rand);
+		rot.z += std::uniform_real_distribution<float>(0, glm::radians(360.0f))(rand);
+		glm::vec3 scale(std::uniform_real_distribution<float>(1.0f, 1.5f)(rand) * 1.5f);
+		auto effect = std::make_shared<SkeletalMeshActor>(mesh, "Effect.Hit", 1, p, rot, scale * b->scale);
+		effects.Add(effect);
+
+	});
+
+	//“G‚Æ©•ª‚ÌUŒ‚.
+	DetectCollision(bullet[1], enemies[i],
+		[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p) {
+		Audio::Engine::Instance().Prepare("Res/Audio/Enemy.mp3")->Play();
+		b->health = 0;
+		enemyBlow += 1;
+		player->pExPoint -= 20;
+		player->pExCount -= 100;
+
+		enemySpawn += 1;
+
+		auto mesh = meshBuffer.GetSkeletalMesh("Effect.Hit");
+		mesh->Play(mesh->GetAnimationList()[0].name, false);
+		mesh->SetAnimationSpeed(std::uniform_real_distribution<float>(0.75f, 1.0f)(rand) / 1.5f);
+		glm::vec3 rot = player->rotation;
+		rot.x += std::uniform_real_distribution<float>(0, glm::radians(360.0f))(rand);
+		rot.y += std::uniform_real_distribution<float>(0, glm::radians(360.0f))(rand);
+		rot.z += std::uniform_real_distribution<float>(0, glm::radians(360.0f))(rand);
+		glm::vec3 scale(std::uniform_real_distribution<float>(1.0f, 1.5f)(rand) * 1.5f);
+		auto effect = std::make_shared<SkeletalMeshActor>(mesh, "Effect.Hit", 1, p, rot, scale * b->scale);
+		effects.Add(effect);
+
+	});
+
 	// ƒvƒŒƒCƒ„[‚ÌUŒ‚”»’è.
 	ActorPtr attackCollision = player->GetAttackCollision();
 	if (attackCollision) {
@@ -399,7 +447,7 @@ void MainGameScene::EnemyDetectCollision(int i) {
 		}
 		);
 		if (hit) {
-			attackCollision->health = 0;
+			/*attackCollision->health = 0;*/
 			Audio::Engine::Instance().Prepare("Res/Audio/Enemy.mp3")->Play();
 		}
 	}
@@ -1216,6 +1264,7 @@ bool MainGameScene::Initialize() {
 		SceneFader::Instance().FadeIn(1);
 	}
 	// ƒI[ƒvƒjƒ“ƒOƒXƒNƒŠƒvƒg‚ğÀs.
+	player->Update(0);
 	if (!StClearedE && !StClearedN && !StClearedS && !StClearedW && StageNo == 1 && eventFrag == false) {
 		camera.target = player->position;
 		camera.position = camera.target + glm::vec3(0, 5, 5);
@@ -1783,8 +1832,8 @@ void MainGameScene::Update(float deltaTime) {
 				if (mesh->IsFinished()) {
 					enemy->health = 0;
 					enemyBlow += 1;
-					player->pExPoint -= 10;
-					player->pExCount -= 50;
+					player->pExPoint -= 20;
+					player->pExCount -= 100;
 				}
 				continue;
 			}
@@ -1876,8 +1925,8 @@ void MainGameScene::Update(float deltaTime) {
 					rot.y += std::uniform_real_distribution<float>(0, glm::radians(360.0f))(rand);
 					Shot->rotation += rot.y;
 					Shot->scale = glm::vec3(1, 1, 1);
-					Shot->colLocal = Collision::CreateCapsule(
-						glm::vec3(0, 1.0f, 0), glm::vec3(0, 1.0f, 0), 3.0f);
+					Shot->colLocal = Collision::CreateSphere(
+						glm::vec3(0, 0.5f, 0),0.5f);
 					Shot->velocity = matRotY * glm::vec4(0, 0, speed, 1);
 					bullet[0].Add(Shot);
 					playerBulletTimerA = 100.0f;
@@ -1907,6 +1956,8 @@ void MainGameScene::Update(float deltaTime) {
 							meshMeteo, "Shot", 100, setPosition, glm::vec3(0, 0, 0));
 						Meteo->scale = glm::vec3(3);
 						Meteo->velocity = matRotY * glm::vec4(0, -speed, speed, 1);
+						Meteo->colLocal = Collision::CreateSphere(
+							glm::vec3(0, 0.2f, 0), 5.0f);
 						bullet[1].Add(Meteo);
 						playerBulletTimerB = 100.0f;
 
@@ -2071,24 +2122,6 @@ void MainGameScene::Update(float deltaTime) {
 		//}
 		//);
 
-		////“G‚Æ©•ª‚ÌUŒ‚.
-		//DetectCollision(enemies[0], bullet[0],
-		//	[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p) {
-		//	b->health = 0;
-		//});
-
-		////“G‚Æ©•ª‚ÌUŒ‚.
-		//DetectCollision( enemies[1],bullet[0],
-		//	[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p) {
-		//	b->health = 0;
-		//});
-
-		////“G‚Æ©•ª‚ÌUŒ‚.
-		//DetectCollision( enemies[2],bullet[0],
-		//	[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p) {
-		//	b->health = 0;
-		//});
-
 		//‰E‚ÌƒXƒe[ƒWˆÚs.
 		DetectCollision(player, warp[0],
 			[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
@@ -2227,8 +2260,8 @@ void MainGameScene::Update(float deltaTime) {
 		Audio::Engine::Instance().Prepare("Res/Audio/LVUP.mp3")->Play();
 		player->pLevel += 1;
 		player->pAbility += 1;
-		player->pExPoint = 100 * player->pLevel;
-		player->pExCount = 500 * player->pLevel;
+		player->pExPoint = 100;
+		player->pExCount = 500;
 		player->maxHP += 100;
 		player->maxMP += 10;
 		player->pHP = player->maxHP;
@@ -3150,13 +3183,13 @@ void MainGameScene::Render() {
 				}
 				else if (skComCount == 3) {
 
-					fontRenderer.AddString(glm::vec2(-125, -150), L"’¼üó‚É–‚–@‚ğ”ò‚Î‚·‰“‹——£UŒ‚");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"–½’†—¦‚Í‚Ù‚Ú‚O‚É‹ß‚¢");
+					fontRenderer.AddString(glm::vec2(-125, -150), L"’¼üã‚É–‚–@‚ğ”ò‚Î‚·‰“‹——£UŒ‚");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"ƒXƒs[ƒh‚ÆŠÑ’Ê”\—Í‚ª‚ ‚é");
 				}
 				else if (skComCount == 4) {
 
 					fontRenderer.AddString(glm::vec2(-125, -150), L"‹ó‚©‚ç–‚–@‚ğ—‚Æ‚·‰“‹——£UŒ‚");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"‰ƒ‰ï‚Å‚Í‚©‚È‚èƒEƒP‚½‹Z‚Å‚ ‚é");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"L”ÍˆÍ‚Å“G‚ğˆê‘|‚·‚é");
 				}
 
 				fontRenderer.AddString(glm::vec2(-105, 150), L"’ÊíUŒ‚");
@@ -3190,18 +3223,18 @@ void MainGameScene::Render() {
 				}
 				else if (skComCount == 2) {
 
-					fontRenderer.AddString(glm::vec2(-125, -150), L"Œ•‚ğ…•½‚ÉU‚é‹ß‹——£UŒ‚");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"‘ê‚ğ‚à^‚Á“ñ‚Â‚Éa‚é‚Æ‚¢‚¤");
+					fontRenderer.AddString(glm::vec2(-125, -150), L"c‰¡‚Ì“ñ’iŠKUŒ‚");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"“ñ’iŠK‚É‚æ‚éUŒ‚‚Å“G‚ğ–|˜M‚·‚é");
 				}
 				else if (skComCount == 3) {
 
-					fontRenderer.AddString(glm::vec2(-125, -150), L"¨‚¢‚æ‚­U‚è‰º‚ë‚·‹ß‹——£UŒ‚");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"ƒK[ƒh•s‰Â‚ÆŒ¾‚í‚ê‚½UŒ‚‚Å‚ ‚é");
+					fontRenderer.AddString(glm::vec2(-125, -150), L"¨‚¢‚æ‚­Œ•‚ğU‚è‰º‚ë‚·’†‹——£UŒ‚");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"’¼üã‚É‚¢‚é“G‚ğ‘S‚Ä“ã‚¬•¥‚¤");
 				}
 				else if (skComCount == 4) {
 
-					fontRenderer.AddString(glm::vec2(-125, -150), L"ô—û‚³‚ê‚½‹†‹É‚Ì‹ß‹——£UŒ‚");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"ó‚¯‚½‚à‚Ì¶‚«‚Ä‚Í‚¢‚È‚¢‚Æ‚Ì‰\");
+					fontRenderer.AddString(glm::vec2(-125, -150), L"ô—û‚³‚ê‚½‹†‹É‚Ì’†‹——£UŒ‚");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"‘S•ûˆÊ‚Ì‹­—Í‚ÈaŒ‚‚Å“G‚ğˆê‘|‚·‚é");
 				}
 
 				fontRenderer.AddString(glm::vec2(-105, 150), L"’ÊíUŒ‚");

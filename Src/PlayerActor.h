@@ -62,7 +62,7 @@ private:
 	float moveSpeed = 7.0f;		///< ˆÚ“®‘¬“x.
 	ActorPtr attackCollision;	///< UŒ‚”»’è.
 	ActorPtr playerStatusUp;
-	float attackTimer = 0;		///< UŒ‚ŽžŠÔ.
+	float attackTimerA = -1,attackTimerB = -1, attackTimerC = -1;		///< UŒ‚ŽžŠÔ.;		///< UŒ‚ŽžŠÔ.
 	float intervalTimer = 0;		///< UŒ‚ŽžŠÔ.
 	int health = 10;
 
