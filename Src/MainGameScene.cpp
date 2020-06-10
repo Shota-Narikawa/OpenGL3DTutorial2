@@ -695,6 +695,14 @@ bool MainGameScene::Initialize() {
 		IconGreen37.Scale(glm::vec2(0));	//IconGreen35.Scale(glm::vec2(1.55f));
 		sprites.push_back(IconGreen37);
 
+		Sprite MiniMap38(Texture::Image2D::Create("Res/MiniMap.tga"));
+		MiniMap38.Position(glm::vec3(530, 270, 0));
+		sprites.push_back(MiniMap38);
+
+		Sprite PMiniIcon39(Texture::Image2D::Create("Res/PMiniIcon.tga"));
+		PMiniIcon39.Scale(glm::vec2(0.02f, 0.02f));
+		sprites.push_back(PMiniIcon39);
+
 	progLighting.Reset(Shader::BuildFromFile("Res/FragmentLighting.vert", "Res/FragmentLighting.frag"));
 
 	fontRenderer.Init(1000);
@@ -1123,31 +1131,6 @@ bool MainGameScene::Initialize() {
 		}
 	}
 
-
-//木を配置.
-	//{
-	//	const size_t treeCount = 10;
-	//	enemies.Reserve(treeCount);
-	//	const Mesh::FilePtr mesh = meshBuffer.GetFile("Res/red_pine_tree.gltf");
-	//	for (size_t i = 0; i < treeCount; ++i) {
-	//		//敵の位置を(50,50)-(150,150)の範囲からランダムに選択.
-	//		glm::vec3 position(0);
-	//		position.x = std::uniform_real_distribution<float>(50, 150)(rand);
-	//		position.z = std::uniform_real_distribution<float>(50, 150)(rand);
-	//		position.y = heightMap.Height(position);
-	//		// 敵の向きをランダムに選択.
-	//		glm::vec3 rotation(0);
-	//		rotation.y = std::uniform_real_distribution<float>(0, 6.3f)(rand);
-	//		if (position.y >= 4.0f) {
-	//			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
-	//				mesh, "tree", 13, position, rotation);
-	//			p->colLocal = Collision::CreateCapsule(
-	//				glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-	//			trees.Add(p);
-	//		}
-	//	}
-	//}
-
 	if (StageNo == 1) {
 		if (StClearedE) {
 			//パーティクル・システムのテスト用にエミッターを追加.
@@ -1329,10 +1312,6 @@ void MainGameScene::ProcessInput() {
 		player->pExPoint = 0;
 		player->pExCount = 0;
 	}
-	if (window.GetGamePad().buttonDown & GamePad::C) {
-		
-	}
-	
 	if (window.GetGamePad().buttonDown & GamePad::N) {
 		
 	}
@@ -1350,6 +1329,7 @@ void MainGameScene::ProcessInput() {
 			selectCount = 1;
 			
 			sprites[1].Scale(glm::vec2(1, 3.5f));
+			sprites[1].Position(glm::vec3(160, 0, 0));
 			sprites[2].Scale(glm::vec2(0.4f, 2.5f));
 			sprites[3].Scale(glm::vec2(0.4f, 0.9f));
 			sprites[2].Position(glm::vec3(-380, 85, 0));
@@ -1671,14 +1651,15 @@ void MainGameScene::ProcessInput() {
 
 		//視点切り替え.
 		if (state == State::play) {
-			if (window.GetGamePad().buttons & GamePad::YY) {
+
+			if (window.GetGamePad().buttons & GamePad::Q) {
 
 				cameraFar = true;
 			}
 			else {
 				cameraFar = false;
 			}
-			if (window.GetGamePad().buttons & GamePad::I) {
+			if (window.GetGamePad().buttons & GamePad::E) {
 
 				cameraNear = true;
 			}
@@ -1748,19 +1729,21 @@ void MainGameScene::Update(float deltaTime) {
 
 	// カメラの状態を更新.
 	{
+		const glm::vec3 vCameraFront = glm::rotate(
+			glm::mat4(1), camera.rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 5, 25, 1);
+		//元になる行列、回転・角度、回転の軸
+
 		if (state != State::select) {
 			camera.target = player->position;
-			camera.position = camera.target + glm::vec3(0, 15, 20);
+			camera.position = camera.target + vCameraFront;
+			/*camera.position = camera.target + glm::vec3(0, 5, 20);*/
 		}
 		if (cameraFar == true) {
-			camera.position = camera.target + glm::vec3(0, 10, 15);
+			camera.rotation.y += glm::radians(90.0f) * deltaTime;
+			/*camera.rotation = camera.target + glm::vec3(0, 10, 15);*/
 		}
-
 		if (cameraNear == true) {
-			camera.position = camera.target + glm::vec3(0, 25, 25);
-			if (player->pHP > 0) {
-				player->pHP -= 1;
-			}
+			camera.rotation.y -= glm::radians(90.0f) * deltaTime;
 		}
 	}
 
@@ -1787,9 +1770,6 @@ void MainGameScene::Update(float deltaTime) {
 		warp[3].Update(deltaTime);
 		bullet[0].Update(deltaTime);
 		bullet[1].Update(deltaTime);
-		/*upItem[0].Update(deltaTime);
-		upItem[1].Update(deltaTime);
-		upItem[2].Update(deltaTime);*/
 	}
 
 	/*if (actionWaitTimer > 0) {
@@ -1851,6 +1831,7 @@ void MainGameScene::Update(float deltaTime) {
 			}
 			const glm::vec3 vEnemyFront = glm::rotate(
 				glm::mat4(1), e->rotation.y + glm::radians(180.0f), glm::vec3(0, 1, 0)) * glm::vec4(0, 0, -1, 1);
+			//元になる行列、回転・角度、回転の軸
 
 			//ターゲットが正面にいなかったら、正面にとらえるような左右に旋回.
 			if (std::abs(radian - e->rotation.y) > frontRange) {
@@ -1930,6 +1911,29 @@ void MainGameScene::Update(float deltaTime) {
 					Shot->velocity = matRotY * glm::vec4(0, 0, speed, 1);
 					bullet[0].Add(Shot);
 					playerBulletTimerA = 100.0f;
+
+					{
+						//エミッター1個目.
+						ParticleEmitterParameter ep;
+						/*ep.imagePath = "Res/DiskParticle.tga";*/
+						ep.imagePath = "Res/FireParticle.tga";
+						ep.tiles = glm::ivec2(2, 2);
+						ep.position = player->position;
+						ep.position.y += 1.0f;
+						ep.emissionsPerSecond = 20.0f;
+						ep.dstFactor = GL_ONE; // 加算合成.
+						ep.gravity = 9.8f;
+						ep.angle = glm::radians(90.0f);//
+						ep.loop = false;
+						ParticleParameter pp;
+						pp.acceleration = glm::vec3(2);//
+						pp.scale = glm::vec2(0.5f);
+						pp.color = glm::vec4(0.9f, 0.3f, 0.1f, 1.0f);
+						ParticleEmitterPtr p = particleSystem.Add(ep, pp);
+						p->Position(Shot->position);
+					}
+
+
 				}
 				else if (playerBulletTimerA <= 98.0f) {
 					for (ActorPtr& e : bullet[0]) {
@@ -1974,153 +1978,8 @@ void MainGameScene::Update(float deltaTime) {
 		}
 	}
 
-	//if (player->playerID == 3) {
-	//	if (state == State::play) {
-	//		//プレイヤーの周囲に出す.
-	//		const Mesh::FilePtr meshRangeStone = meshBuffer.GetFile("Res/RangeStone.gltf");
-
-	//		if (shotTimerFragB == true && shotTimerFragC == true) {
-	//			playerBulletTimerC -= deltaTime;
-	//			playerBulletTimerD -= deltaTime;
-
-	//			if (playerBulletTimerC <= -0.1f) {
-	//				StaticMeshActorPtr Shot = std::make_shared<StaticMeshActor>(
-	//					meshRangeStone, "Shot", 100, player->position + glm::vec3(0, -0.7f, 0), glm::vec3(0, 0, 0));
-	//				Shot->colLocal = Collision::CreateCapsule(
-	//					glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-	//				bullet[0].Add(Shot);
-	//				playerBulletTimerC = 10.0f;
-	//			}
-	//			else if (playerBulletTimerC <= 9.0f) {
-	//				for (ActorPtr& e : bullet[0]) {
-	//					e->health = 0;
-	//					playerBulletTimerC = 0.0f;
-	//					shotTimerFragB = false;
-	//				}
-	//			}
-	//			if (playerBulletTimerD <= -1.5f) {
-	//				StaticMeshActorPtr Shot = std::make_shared<StaticMeshActor>(
-	//					meshRangeStone, "Shot", 100, player->position + glm::vec3(0, 0.5f, 0), glm::vec3(0, 0, 0));
-	//				Shot->colLocal = Collision::CreateCapsule(
-	//					glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-	//				bullet[0].Add(Shot);
-	//			}
-	//			else if (playerBulletTimerD <= -3.0f) {
-	//				for (ActorPtr& e : bullet[0]) {
-	//					e->health = 0;
-	//					playerBulletTimerD = 0.0f;
-	//					shotTimerFragC = false;
-	//				}
-	//			}
-	//		}
-	//	}
-	//}
-
-	////アイテムの出現.
-	//if (StageNo != 1) {
-	//	if (state == State::play) {
-	//		itemTimerA -= deltaTime;
-	//		itemTimerB -= deltaTime;
-	//		itemTimerC -= deltaTime;
-
-	//		const Mesh::FilePtr meshUpItemHP = meshBuffer.GetFile("Res/HP.gltf");
-	//		const Mesh::FilePtr meshUpItemMP = meshBuffer.GetFile("Res/MP.gltf");
-	//		const Mesh::FilePtr meshUpItemHPMP = meshBuffer.GetFile("Res/HPMP.gltf");
-	//		if (itemTimerA <= -5.0f) {
-	//			//ランダムにアイテムを配置
-	//			glm::vec3 position(0);
-	//			position.x = static_cast<float>(std::uniform_int_distribution<>(50, 150)(rand));
-	//			position.z = static_cast<float>(std::uniform_int_distribution<>(50, 150)(rand));
-	//			position.y = heightMap.Height(position) + 1;
-
-	//			StaticMeshActorPtr itemHP = std::make_shared<StaticMeshActor>(
-	//				meshUpItemHP, "HP", 100, position, glm::vec3(0, 0, 0));	
-
-	//			itemHP->colLocal = Collision::CreateCapsule(
-	//				glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-	//			itemHP->scale = glm::vec3(0.7f, 1, 0.7f);
-
-	//			upItem[0].Add(itemHP);
-	//			itemTimerA = 100.0f;
-	//		}
-	//		else if (itemTimerA <= 95.0f) {
-	//			for (ActorPtr& e : upItem[0]) {
-	//				e->health = 0;
-	//			}
-	//			itemTimerA = 0.0f;
-	//		}
-	//		if (itemTimerB <= -5.0f) {
-	//			glm::vec3 position(0);
-	//			position.x = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
-	//			position.z = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
-	//			position.y = heightMap.Height(position) + 1;
-	//			StaticMeshActorPtr itemMP = std::make_shared<StaticMeshActor>(
-	//				meshUpItemMP, "MP", 100, position, glm::vec3(0, 0, 0));
-	//			itemMP->colLocal = Collision::CreateCapsule(
-	//				glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-	//			itemMP->scale = glm::vec3(0.7f, 1, 0.7f);
-	//			upItem[1].Add(itemMP);
-
-	//			itemTimerB = 0.0f;
-	//		}
-	//		else if (itemTimerB <= 95.0f) {
-	//			for (ActorPtr& e : upItem[1]) {
-	//				e->health = 0;
-	//			}
-	//			itemTimerB = 0.0f;
-	//		}
-	//		if (itemTimerC <= -5.0f) {
-	//			glm::vec3 position(0);
-	//			position.x = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
-	//			position.z = static_cast<float>(std::uniform_int_distribution<>(50, 100)(rand));
-	//			position.y = heightMap.Height(position) + 1;
-	//			StaticMeshActorPtr itemAll = std::make_shared<StaticMeshActor>(
-	//				meshUpItemHPMP, "All", 100, position, glm::vec3(0, 0, 0));
-
-	//			itemAll->colLocal = Collision::CreateCapsule(
-	//				glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-	//			itemAll->scale = glm::vec3(0.7f, 1, 0.7f);
-
-	//			upItem[2].Add(itemAll);
-	//			itemTimerC = 100.0f;
-	//		}
-	//		else if (itemTimerC <= 95.0f) {
-	//			for (ActorPtr& e : upItem[2]) {
-	//				e->health = 0;
-	//			}
-	//			itemTimerC = 0.0f;
-	//		}
-	//	}
-	//}
-
 	//右のステージ移行.
 	if (state == State::play) {
-
-		////アイテムの取得.
-		//DetectCollision(player, upItem[0],
-		//	[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
-		//	b->health = 0;
-		//	Audio::Engine::Instance().Prepare("Res/Audio/CharacterGet.mp3")->Play();
-		//	player->pHP = player->maxHP;
-		//}
-		//);
-
-		//DetectCollision(player, upItem[1],
-		//	[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
-		//	b->health = 0;
-		//	Audio::Engine::Instance().Prepare("Res/Audio/CharacterGet.mp3")->Play();
-		//	player->pMP = player->maxMP;
-		//}
-		//);
-
-		//DetectCollision(player, upItem[2],
-		//	[this](const ActorPtr& a, const ActorPtr& b, const glm::vec3& p) {
-		//	b->health = 0;
-		//	Audio::Engine::Instance().Prepare("Res/Audio/CharacterGet.mp3")->Play();
-		//	player->pHP = player->maxHP;
-		//	player->pMP = player->maxMP;
-		//}
-		//);
 
 		//右のステージ移行.
 		DetectCollision(player, warp[0],
@@ -2268,18 +2127,6 @@ void MainGameScene::Update(float deltaTime) {
 		player->pMP = player->maxMP;
 	}
 
-	////落ちたら体力が減ってスタート地点に戻る
-	//if (player->position.y <= 0.0f) {
-
-	//	glm::vec3 startPos(79, 0, 100);
-	//	startPos.y = heightMap.Height(startPos);
-	//	player->position = startPos;
-
-	//	player->pHP -= 100;
-	//	player->SetStaticMesh(meshBuffer.GetFile("Res/Blackshadow.gltf"), 0);
-	//	player->playerID = 0;
-	//}
-
 	//HPが０か防衛ラインのHPが０になったらゲームオーバーフラグが立つ.
 	if (player->pHP <= 0 || defenceLine <= 0) {
 		if (gameClearFlag == false && nextStateFlag == false) {
@@ -2314,9 +2161,6 @@ void MainGameScene::Update(float deltaTime) {
 	warp[3].UpdateDrawData(deltaTime);
 	bullet[0].UpdateDrawData(deltaTime);
 	bullet[1].UpdateDrawData(deltaTime);
-	/*upItem[0].UpdateDrawData(deltaTime);
-	upItem[1].UpdateDrawData(deltaTime);
-	upItem[2].UpdateDrawData(deltaTime);*/
 
 	fontRenderer.BeginUpdate();
 
@@ -2393,6 +2237,8 @@ void MainGameScene::Update(float deltaTime) {
 	//HPバーの表示.
 	if (player->pHP >= 0) {
 		if (state == State::play) {
+			sprites[1].Position(glm::vec3(-495, 295, 0));
+			sprites[1].Scale(glm::vec2(0.38f,1.0f));
 			sprites[16].Scale(glm::vec2(5.0f * player->pHP / player->maxHP, 0.4f));
 			sprites[16].Position(glm::vec3((80 * 2.5f * player->pHP / player->maxHP) / 2 - 570, 310, 0));
 		}
@@ -2415,6 +2261,10 @@ void MainGameScene::Update(float deltaTime) {
 
 	//各キャラのスキルコマンドのアイコン.
 	if (state == State::play) {
+		const glm::vec3 startPos(79, 0, 100);
+		mapIcon.position = glm::vec3(player->position.x - startPos.x, -(player->position.z - startPos.z), 0) * 4.0f;
+		sprites[39].Position(mapIcon.position + glm::vec3(530, 270, 0));
+
 		//魂のスキルコマンドパネル.
 		if (player->playerID == 0) {
 			sprites[33].Scale(glm::vec2(0.2f));
@@ -3637,9 +3487,6 @@ bool MainGameScene::HandleCoinEffects(int id, const glm::vec3& pos)
 			warp[3].Draw(drawType);
 			bullet[0].Draw(drawType);
 			bullet[1].Draw(drawType);
-			/*upItem[0].Draw(drawType);
-			upItem[1].Draw(drawType);
-			upItem[2].Draw(drawType);*/
 
 			/*if (drawType == Mesh::DrawType::color) {
 				glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);

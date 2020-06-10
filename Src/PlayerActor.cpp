@@ -111,6 +111,9 @@ void PlayerActor::Update(float deltaTime)
 		}
 	}
 
+	/*const float rotationSpeed = glm::radians(60.0f);
+	rotation.y += rotationSpeed * deltaTime;*/
+
 	//スキルインターバル管理.
 	if (skillE == true) {
 		skillTimerE -= deltaTime;

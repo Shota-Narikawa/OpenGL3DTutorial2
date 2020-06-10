@@ -41,6 +41,8 @@ struct GamePad
 	static const uint32_t LL = 0x100'0000;
 	static const uint32_t V = 0x200'0000;
 	static const uint32_t BB = 0x400'0000;
+	static const uint32_t Q = 0x800'0000;
+	static const uint32_t E = 0x1000'0000;
 
 	
 	uint32_t buttons = 0;		///<‰Ÿ‚³‚ê‚Ä‚¢‚éŠÔƒtƒ‰ƒO‚ª—§‚Â.

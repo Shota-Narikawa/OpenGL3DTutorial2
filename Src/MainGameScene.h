@@ -191,6 +191,16 @@ private:
 	glm::vec3 velocity = glm::vec3(0);
 	glm::vec3 rotation = glm::vec3(0);
 
+	struct MiniMapIcon
+	{
+		glm::vec3 position = glm::vec3(530,280,0);
+		glm::vec3 velocity = glm::vec3(0);
+
+		float width = 1280 / 5; ///< 画面の幅(ピクセル数).
+		float height = 720 / 5; ///< 画面の高さ(ピクセル数).
+	};
+	MiniMapIcon mapIcon;
+
 	struct Camera {
 		glm::vec3 target = glm::vec3(100, 0, 100);
 		glm::vec3 position = glm::vec3(100, 50, 150);
@@ -206,7 +216,7 @@ private:
 
 							// カメラパラメータ.
 		float fNumber = 1.4f;            ///< エフ・ナンバー = カメラのF値.
-		float fov = glm::radians(60.0f); ///< フィールド・オブ・ビュー = カメラの視野角(ラジアン).
+		float fov = glm::radians(40.0f); ///< フィールド・オブ・ビュー = カメラの視野角(ラジアン).
 		float sensorSize = 36.0f;        ///< センサー・サイズ = カメラのセンサーの横幅(ミリ).
 
 										 // Update関数で計算するパラメータ.

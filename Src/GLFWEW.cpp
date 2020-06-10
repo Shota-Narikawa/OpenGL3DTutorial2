@@ -277,6 +277,8 @@ namespace GLFWEW {
 			{ GLFW_KEY_C,GamePad::C },
 			{ GLFW_KEY_V,GamePad::V },
 			{ GLFW_KEY_B,GamePad::BB },
+			{ GLFW_KEY_Q,GamePad::Q },
+			{ GLFW_KEY_E,GamePad::E },
 		};
 			for (const auto&e : keyMap) {
 				const int key = glfwGetKey(window, e.keyCode);

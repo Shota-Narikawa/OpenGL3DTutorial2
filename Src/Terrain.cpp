@@ -179,7 +179,7 @@ namespace Terrain {
 		m.texture[0] = Texture::Image2D::Create("Res/Terrain_Ratio.tga");
 		m.texture[1] = Texture::Image2D::Create("Res/Terrain_Soil.tga");
 		m.texture[2] = Texture::Image2D::Create("Res/Terrain_Rock.tga");
-		m.texture[3] = Texture::Image2D::Create("Res/Terrain_Plant.tga");
+		m.texture[3] = Texture::Image2D::Create("Res/Terrain_Plant2.tga");
 		m.texture[4] = lightIndex[0];
 		m.texture[5] = lightIndex[1];
 		m.texture[8] = Texture::Image2D::Create("Res/Terrain_Soil_Normal.tga");
