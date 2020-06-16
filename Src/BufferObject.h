@@ -24,10 +24,10 @@ public:
 
 	GLuint Id() const { return id; }
 	GLsizeiptr Size() const { return size; }
-	private:
-		GLenum target = 0;		///< バッファの種類.
-		GLuint id = 0;			///< 管理ID.
-		GLsizeiptr size = 0;	///< バッファのバイトサイズ.
+private:
+	GLenum target = 0;		///< バッファの種類.
+	GLuint id = 0;			///< 管理ID.
+	GLsizeiptr size = 0;	///< バッファのバイトサイズ.
 };
 
 /**
@@ -35,26 +35,26 @@ public:
 +*/
 class VertexArrayObject
 {
-	public:
-		VertexArrayObject() = default;
-		~VertexArrayObject() { Destroy(); }
-		VertexArrayObject(const VertexArrayObject&) = delete;
-		VertexArrayObject & operator=(const VertexArrayObject&) = delete;
-		
-		bool Create(GLuint vbo, GLuint ibo);
-		void Destroy();
-		void ResetVertexAttribPointer() const;
-		void Bind() const;
-		void Unbind() const;
-		void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, size_t offset) const;
-		GLuint Id() const { return id; }
-		GLuint Vbo() const { return vboId; }
-		GLuint Ibo() const { return iboId; }
-		
-			private:
-				GLuint id = 0;		///< 管理ID
-				GLuint vboId = 0;	///< VBOの管理ID
-				GLuint iboId = 0;	///< IBOの管理ID
+public:
+	VertexArrayObject() = default;
+	~VertexArrayObject() { Destroy(); }
+	VertexArrayObject(const VertexArrayObject&) = delete;
+	VertexArrayObject & operator=(const VertexArrayObject&) = delete;
+
+	bool Create(GLuint vbo, GLuint ibo);
+	void Destroy();
+	void ResetVertexAttribPointer() const;
+	void Bind() const;
+	void Unbind() const;
+	void VertexAttribPointer(GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, size_t offset) const;
+	GLuint Id() const { return id; }
+	GLuint Vbo() const { return vboId; }
+	GLuint Ibo() const { return iboId; }
+
+private:
+	GLuint id = 0;		///< 管理ID
+	GLuint vboId = 0;	///< VBOの管理ID
+	GLuint iboId = 0;	///< IBOの管理ID
 
 };
 

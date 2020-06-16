@@ -44,7 +44,7 @@ struct GamePad
 	static const uint32_t Q = 0x800'0000;
 	static const uint32_t E = 0x1000'0000;
 
-	
+
 	uint32_t buttons = 0;		///<押されている間フラグが立つ.
 	uint32_t buttonDown = 0;	///<押された瞬間だけフラグが立つ.
 };

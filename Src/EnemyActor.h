@@ -45,7 +45,7 @@ private:
 	void CheckAttack(const GamePad& gamepad);
 	void CheckShot(const GamePad& gamepad);
 */
-	//アニメーション状態.
+//アニメーション状態.
 	enum class State {
 		idle,		///<停止.
 		run,		///<移動.

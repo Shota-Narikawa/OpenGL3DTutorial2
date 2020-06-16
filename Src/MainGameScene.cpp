@@ -416,7 +416,7 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 			{
 				isAttacking = true;
 				defenceFrag = true;
-				defenceLine -= 1 + a;
+				defenceLine - 1 - a;
 			}
 		}
 	}
@@ -978,70 +978,8 @@ bool MainGameScene::Initialize()
 			p->scale = glm::vec3(1, 2, 1); // 見つけやすいように拡大.
 			defencePoint.Add(p);
 		}
-	}
 
-	//初期ステージ石壁を配置.
-	{
-		if (StageNo == 1)
-		{
-			//下側の壁.
-			const size_t wallCount = 9;
-			walls.Reserve(wallCount);
-			const Mesh::FilePtr meshStoneWall = meshBuffer.GetFile("Res/Skeltal.gltf");
-
-			//下側の壁.
-			for (size_t i = 0; i < wallCount; ++i)
-			{
-				const int posX = 25 - i * 6.0f;
-				glm::vec3 position = startPos + glm::vec3(posX, 2, 25);
-				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
-					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
-				p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
-					glm::vec3(1, 0, 0), glm::vec3(0, -10, 0), glm::vec3(0, 0, 1), glm::vec3(10, 20, 1));
-				p->scale = glm::vec3(1); // 見つけやすいように拡大.
-				walls.Add(p);
-			}
-			//上側の壁.
-			for (size_t i = 0; i < wallCount; ++i)
-			{
-				const int posX = 25 - i * 6.0f;
-				glm::vec3 position = startPos + glm::vec3(posX, 2, -23);
-				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
-					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
-				p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
-					glm::vec3(1, 0, 0), glm::vec3(0, -10, 0), glm::vec3(0, 0, 11), glm::vec3(10, 20, 1));
-				p->scale = glm::vec3(1); // 見つけやすいように拡大.
-				walls.Add(p);
-			}
-			//右側の壁.
-			for (size_t i = 0; i < wallCount; ++i)
-			{
-				const int posZ = 25 - i * 6.0f;
-				glm::vec3 position = startPos + glm::vec3(25, 2, posZ);
-				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
-					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
-				p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
-					glm::vec3(-1, 0, 0), glm::vec3(0, -10, 0), glm::vec3(0, 0, -1), glm::vec3(1, 20, 10));
-				p->scale = glm::vec3(1); // 見つけやすいように拡大.
-				walls.Add(p);
-			}
-			//左側の壁.
-			for (size_t i = 0; i < wallCount; ++i)
-			{
-				const int posZ = 25 - i * 6.0f;
-				glm::vec3 position = startPos + glm::vec3(-23, 2, posZ);
-				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
-					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
-				p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
-					glm::vec3(1, 0, 0), glm::vec3(0, -10, 0), glm::vec3(0, 0, -1), glm::vec3(1, 20, 10));
-				p->scale = glm::vec3(1); // 見つけやすいように拡大.
-				walls.Add(p);
-			}
-		}
-	}
-	//それ以外のステージの石壁を配置.
-	{
-		if (StageNo != 1)
+		//試練のステージの石壁を配置.
 		{
 			//下側の壁.
 			const size_t wallCount = 15;
@@ -1099,10 +1037,66 @@ bool MainGameScene::Initialize()
 		}
 	}
 
-	//ワープゲートの配置.
+	//初期ステージ石壁を配置.
+
+	if (StageNo == 1)
 	{
-		if (StageNo == 1)
+		//下側の壁.
+		const size_t wallCount = 9;
+		walls.Reserve(wallCount);
+		const Mesh::FilePtr meshStoneWall = meshBuffer.GetFile("Res/Skeltal.gltf");
+
+		//下側の壁.
+		for (size_t i = 0; i < wallCount; ++i)
 		{
+			const int posX = 25 - i * 6.0f;
+			glm::vec3 position = startPos + glm::vec3(posX, 2, 25);
+			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
+				meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
+			p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
+				glm::vec3(1, 0, 0), glm::vec3(0, -10, 0), glm::vec3(0, 0, 1), glm::vec3(10, 20, 1));
+			p->scale = glm::vec3(1); // 見つけやすいように拡大.
+			walls.Add(p);
+		}
+		//上側の壁.
+		for (size_t i = 0; i < wallCount; ++i)
+		{
+			const int posX = 25 - i * 6.0f;
+			glm::vec3 position = startPos + glm::vec3(posX, 2, -23);
+			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
+				meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
+			p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
+				glm::vec3(1, 0, 0), glm::vec3(0, -10, 0), glm::vec3(0, 0, 11), glm::vec3(10, 20, 1));
+			p->scale = glm::vec3(1); // 見つけやすいように拡大.
+			walls.Add(p);
+		}
+		//右側の壁.
+		for (size_t i = 0; i < wallCount; ++i)
+		{
+			const int posZ = 25 - i * 6.0f;
+			glm::vec3 position = startPos + glm::vec3(25, 2, posZ);
+			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
+				meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
+			p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
+				glm::vec3(-1, 0, 0), glm::vec3(0, -10, 0), glm::vec3(0, 0, -1), glm::vec3(1, 20, 10));
+			p->scale = glm::vec3(1); // 見つけやすいように拡大.
+			walls.Add(p);
+		}
+		//左側の壁.
+		for (size_t i = 0; i < wallCount; ++i)
+		{
+			const int posZ = 25 - i * 6.0f;
+			glm::vec3 position = startPos + glm::vec3(-23, 2, posZ);
+			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
+				meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
+			p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
+				glm::vec3(1, 0, 0), glm::vec3(0, -10, 0), glm::vec3(0, 0, -1), glm::vec3(1, 20, 10));
+			p->scale = glm::vec3(1); // 見つけやすいように拡大.
+			walls.Add(p);
+		}
+
+		{
+			//ワープゲートの配置.
 			//上から東西南北の順.
 			const Mesh::FilePtr meshWarpGate = meshBuffer.GetFile("Res/Gate.gltf");
 			const Mesh::FilePtr meshGateBlock = meshBuffer.GetFile("Res/GateBlock.gltf");
@@ -1157,11 +1151,8 @@ bool MainGameScene::Initialize()
 			warp[3].Add(GateN);
 			objects.Add(GateBlockN);
 		}
-	}
 
-	//乗り移れる体(初級)の配置.
-	if (StageNo == 1)
-	{
+		//乗り移れる体(初級)の配置.
 		{
 			glm::vec3 position = player->position + glm::vec3(-5, 0, -5);
 			position.y = heightMap.Height(position);
@@ -1199,11 +1190,9 @@ bool MainGameScene::Initialize()
 				glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
 			items[3].Add(p);
 		}
-	}
 
-	//ステージクリアしたゲートの上に火のパーティクルを表示.
-	if (StageNo == 1)
-	{
+
+		//ステージクリアしたゲートの上に火のパーティクルを表示.
 		if (StClearedE)
 		{
 			{
@@ -1213,7 +1202,7 @@ bool MainGameScene::Initialize()
 				ep.imagePath = "Res/FireParticle.tga";
 				ep.tiles = glm::ivec2(2, 2);
 				ep.position = player->position + glm::vec3(-15, 0, -15);
-				ep.position.y = heightMap.Height(ep.position) + 5;
+				ep.position.y = heightMap.Height(ep.position) + 4;
 				ep.emissionsPerSecond = 20.0f;
 				ep.dstFactor = GL_ONE; // 加算合成.
 				ep.gravity = 0;
@@ -1231,8 +1220,8 @@ bool MainGameScene::Initialize()
 				//ep.imagePath = "Res/DiskParticle.tga";
 				ep.imagePath = "Res/FireParticle.tga";
 				ep.tiles = glm::ivec2(2, 2);
-				ep.position = player->position + glm::vec3(-5, 0, -15);
-				ep.position.y = heightMap.Height(ep.position) + 5;
+				ep.position = player->position + glm::vec3(5, 0, -15);
+				ep.position.y = heightMap.Height(ep.position) + 4;
 				ep.emissionsPerSecond = 20.0f;
 				ep.dstFactor = GL_ONE; // 加算合成.
 				ep.gravity = 0;
@@ -1250,8 +1239,8 @@ bool MainGameScene::Initialize()
 				//ep.imagePath = "Res/DiskParticle.tga";
 				ep.imagePath = "Res/FireParticle.tga";
 				ep.tiles = glm::ivec2(2, 2);
-				ep.position = player->position + glm::vec3(5, 0, -15);
-				ep.position.y = heightMap.Height(ep.position) + 5;
+				ep.position = player->position + glm::vec3(-5, 0, -15);
+				ep.position.y = heightMap.Height(ep.position) + 4;
 				ep.emissionsPerSecond = 20.0f;
 				ep.dstFactor = GL_ONE; // 加算合成.
 				ep.gravity = 0;
@@ -1270,7 +1259,7 @@ bool MainGameScene::Initialize()
 				ep.imagePath = "Res/FireParticle.tga";
 				ep.tiles = glm::ivec2(2, 2);
 				ep.position = player->position + glm::vec3(15, 0, -15);
-				ep.position.y = heightMap.Height(ep.position) + 5;
+				ep.position.y = heightMap.Height(ep.position) + 4;
 				ep.emissionsPerSecond = 20.0f;
 				ep.dstFactor = GL_ONE; // 加算合成.
 				ep.gravity = 0;
@@ -1324,40 +1313,36 @@ bool MainGameScene::Initialize()
 
 	//オープニングスクリプトを実行.
 	player->Update(0);
-	if (!StClearedE && !StClearedN && !StClearedS && !StClearedW && StageNo == 1 && eventFrag == false)
+	if (StageNo >= 1 && StageNo <= 5)
 	{
-		camera.target = player->position;
-		camera.position = camera.target + glm::vec3(0, 5, 5);
-		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/OpeningScript.txt"));
-		return true;
-	}
-	if (StageNo == 2)
-	{
-		camera.target = player->position;
-		camera.position = player->position + glm::vec3(0, 5, 5);
-		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage2.txt"));
-		return true;
-	}
-	else if (StageNo == 3)
-	{
-		camera.target = player->position;
-		camera.position = camera.target + glm::vec3(0, 5, 5);
-		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage3.txt"));
-		return true;
-	}
-	else if (StageNo == 4)
-	{
-		camera.target = player->position;
-		camera.position = camera.target + glm::vec3(0, 5, 5);
-		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage4.txt"));
-		return true;
-	}
-	else if (StageNo == 5)
-	{
-		camera.target = player->position;
-		camera.position = camera.target + glm::vec3(0, 5, 5);
-		SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage5.txt"));
-		return true;
+		camera.target = player->position + glm::vec3(0, 0, -1);
+		camera.position = camera.target + glm::vec3(0, 5, 7);
+
+		if (!StClearedE && !StClearedN && !StClearedS && !StClearedW && StageNo == 1 && eventFrag == false)
+		{	
+			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/OpeningScript.txt"));
+			return true;
+		}
+		if (StageNo == 2)
+		{
+			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage2.txt"));
+			return true;
+		}
+		else if (StageNo == 3)
+		{
+			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage3.txt"));
+			return true;
+		}
+		else if (StageNo == 4)
+		{
+			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage4.txt"));
+			return true;
+		}
+		else if (StageNo == 5)
+		{
+			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage5.txt"));
+			return true;
+		}
 	}
 }
 
@@ -1913,6 +1898,12 @@ void MainGameScene::Update(float deltaTime)
 		bullet[1].Update(deltaTime);
 	}
 
+	DetectCollision(player, trees);
+	DetectCollision(player, objects);
+	DetectCollision(player, objectives);
+	DetectCollision(player, walls);
+
+	//敵の出現.
 	if (StageNo != 1)
 	{
 		DetectCollision(player, enemies[0]);
@@ -1924,15 +1915,7 @@ void MainGameScene::Update(float deltaTime)
 		DetectCollision(defencePoint, enemies[1]);
 		DetectCollision(defencePoint, enemies[2]);
 		DetectCollision(defencePoint, enemies[3]);
-	}
-	DetectCollision(player, trees);
-	DetectCollision(player, objects);
-	DetectCollision(player, objectives);
-	DetectCollision(player, walls);
 
-	//敵の出現.
-	if (StageNo != 1)
-	{
 		enemyPopTimerA += deltaTime;
 		enemyPopTimerB += deltaTime;
 		enemyPopTimerC += deltaTime;
@@ -2076,26 +2059,26 @@ void MainGameScene::Update(float deltaTime)
 					bullet[0].Add(Shot);
 					playerBulletTimerA = 100.0f;
 
-					{
-						//エミッター1個目.
-						ParticleEmitterParameter ep;
-						/*ep.imagePath = "Res/DiskParticle.tga";*/
-						ep.imagePath = "Res/FireParticle.tga";
-						ep.tiles = glm::ivec2(2, 2);
-						ep.position = player->position;
-						ep.position.y += 1.0f;
-						ep.emissionsPerSecond = 20.0f;
-						ep.dstFactor = GL_ONE; // 加算合成.
-						ep.gravity = 9.8f;
-						ep.angle = glm::radians(90.0f);//
-						ep.loop = false;
-						ParticleParameter pp;
-						pp.acceleration = glm::vec3(2);//
-						pp.scale = glm::vec2(0.5f);
-						pp.color = glm::vec4(0.9f, 0.3f, 0.1f, 1.0f);
-						ParticleEmitterPtr p = particleSystem.Add(ep, pp);
-						p->Position(Shot->position);
-					}
+					//{
+					//	//エミッター1個目.
+					//	ParticleEmitterParameter ep;
+					//	/*ep.imagePath = "Res/DiskParticle.tga";*/
+					//	ep.imagePath = "Res/FireParticle.tga";
+					//	ep.tiles = glm::ivec2(2, 2);
+					//	ep.position = player->position;
+					//	ep.position.y += 1.0f;
+					//	ep.emissionsPerSecond = 20.0f;
+					//	ep.dstFactor = GL_ONE; // 加算合成.
+					//	ep.gravity = 9.8f;
+					//	ep.angle = glm::radians(90.0f);//
+					//	ep.loop = false;
+					//	ParticleParameter pp;
+					//	pp.acceleration = glm::vec3(2);//
+					//	pp.scale = glm::vec2(0.5f);
+					//	pp.color = glm::vec4(0.9f, 0.3f, 0.1f, 1.0f);
+					//	ParticleEmitterPtr p = particleSystem.Add(ep, pp);
+					//	p->Position(Shot->position);
+					//}
 				}
 				else if (playerBulletTimerA <= 98.0f)
 				{
@@ -2369,23 +2352,6 @@ void MainGameScene::Update(float deltaTime)
 		nextStateFlag = true;
 		defenceFrag = false;
 		clearTimer = 3.0f;
-
-		if (StageNo == 2)
-		{
-			StClearedE = true;
-		}
-		else if (StageNo == 3)
-		{
-			StClearedS = true;
-		}
-		else if (StageNo == 4)
-		{
-			StClearedW = true;
-		}
-		else if (StageNo == 5)
-		{
-			StClearedN = true;
-		}
 	}
 
 	//ゲームステージのみに描画するUI.
@@ -2809,6 +2775,23 @@ void MainGameScene::Update(float deltaTime)
 				sprites[1].Position(glm::vec3(100, 0, 0));
 				sprites[8].Scale(glm::vec2(1));
 				sprites[9].Scale(glm::vec2(1));
+
+				if (StageNo == 2)
+				{
+					StClearedE = true;
+				}
+				else if (StageNo == 3)
+				{
+					StClearedS = true;
+				}
+				else if (StageNo == 4)
+				{
+					StClearedW = true;
+				}
+				else if (StageNo == 5)
+				{
+					StClearedN = true;
+				}
 			}
 		}
 	}
@@ -3237,8 +3220,8 @@ void MainGameScene::Render()
 				fontRenderer.AddString(glm::vec2(-100, 0), L"H：スキル２");
 				fontRenderer.AddString(glm::vec2(-100, -50), L"K：スキル３");
 				fontRenderer.AddString(glm::vec2(-100, -100), L"J：スキル４");
-				fontRenderer.AddString(glm::vec2(170, 150), L"Y：カメラズーム");
-				fontRenderer.AddString(glm::vec2(170, 100), L"I：カメラアプローチ");
+				fontRenderer.AddString(glm::vec2(170, 150), L"Q：カメラ左回転");
+				fontRenderer.AddString(glm::vec2(170, 100), L"E：カメラ右回転");
 				fontRenderer.AddString(glm::vec2(170, 50), L"SPACE:メニュー画面");
 				fontRenderer.AddString(glm::vec2(170, 0), L"ENTER:決定キー");
 				fontRenderer.AddString(glm::vec2(-100, -200), L"Yボタン　または　Uボタンで");
@@ -3253,8 +3236,8 @@ void MainGameScene::Render()
 				fontRenderer.AddString(glm::vec2(-100, 0), L"X：スキル２");
 				fontRenderer.AddString(glm::vec2(-100, -50), L"B：スキル３");
 				fontRenderer.AddString(glm::vec2(-100, -100), L"A：スキル４");
-				fontRenderer.AddString(glm::vec2(170, 150), L"LB：カメラズーム");
-				fontRenderer.AddString(glm::vec2(170, 100), L"RB：カメラアプローチ");
+				fontRenderer.AddString(glm::vec2(170, 150), L"LB：カメラ左回転");
+				fontRenderer.AddString(glm::vec2(170, 100), L"RB：カメラ右回転");
 				fontRenderer.AddString(glm::vec2(170, 50), L"BACK:メニュー画面");
 				fontRenderer.AddString(glm::vec2(170, 0), L"START:決定キー");
 				fontRenderer.AddString(glm::vec2(-100, -200), L"Yボタン　または　Uボタンで");

@@ -48,26 +48,26 @@ using ActorPtr = std::shared_ptr<Actor>;
 */
 class StaticMeshActor : public Actor
 {
-	public:
-		StaticMeshActor(const Mesh::FilePtr& m, const std::string& name, int hp,
-			const glm::vec3& pos, const glm::vec3& rot = glm::vec3(0),
-			const glm::vec3& scale = glm::vec3(1));
-		virtual ~StaticMeshActor() = default;
-		
-		virtual void Draw(Mesh::DrawType drawType) override;
-		
-			const Mesh::FilePtr& GetMesh() const { return mesh; }
-			void SetPointLightList(const std::vector<int>& v);
-			void SetSpotLightList(const std::vector<int>& v);
-		
-			private:
-				Mesh::FilePtr mesh;
+public:
+	StaticMeshActor(const Mesh::FilePtr& m, const std::string& name, int hp,
+		const glm::vec3& pos, const glm::vec3& rot = glm::vec3(0),
+		const glm::vec3& scale = glm::vec3(1));
+	virtual ~StaticMeshActor() = default;
 
-				int pointLightCount = 0;
-				int pointLightIndex[8] = {};
-				int spotLightCount = 0;
-				int spotLightIndex[8] = {};
-			};
+	virtual void Draw(Mesh::DrawType drawType) override;
+
+	const Mesh::FilePtr& GetMesh() const { return mesh; }
+	void SetPointLightList(const std::vector<int>& v);
+	void SetSpotLightList(const std::vector<int>& v);
+
+private:
+	Mesh::FilePtr mesh;
+
+	int pointLightCount = 0;
+	int pointLightIndex[8] = {};
+	int spotLightCount = 0;
+	int spotLightIndex[8] = {};
+};
 
 using StaticMeshActorPtr = std::shared_ptr<StaticMeshActor>;
 
@@ -76,45 +76,45 @@ using StaticMeshActorPtr = std::shared_ptr<StaticMeshActor>;
 */
 class ActorList
 {
-	public:
+public:
 
-		//イテレーターを定義する.
-		using iterator = std::vector<ActorPtr>::iterator;
-		using const_iterator = std::vector<ActorPtr>::const_iterator;
-		ActorList() = default;
-		~ActorList() = default;
-		
-		void Reserve(size_t);
-		void Add(const ActorPtr&);
-		bool Remove(const ActorPtr&);
-		void Update(float);
-		void UpdateDrawData(float);
-		void Draw(Mesh::DrawType drawType);
-		bool Empty() const { return actors.empty(); }
+	//イテレーターを定義する.
+	using iterator = std::vector<ActorPtr>::iterator;
+	using const_iterator = std::vector<ActorPtr>::const_iterator;
+	ActorList() = default;
+	~ActorList() = default;
 
-		//イテレーターを取得する関数.
-		iterator begin() { return actors.begin(); }
-		iterator end() { return actors.end(); }
-		const_iterator begin() const { return actors.begin(); }
-		const_iterator end() const { return actors.end(); }
-		
-		std::vector<ActorPtr> FindNearbyActors(const glm::vec3& pos, float maxDistance) const;
+	void Reserve(size_t);
+	void Add(const ActorPtr&);
+	bool Remove(const ActorPtr&);
+	void Update(float);
+	void UpdateDrawData(float);
+	void Draw(Mesh::DrawType drawType);
+	bool Empty() const { return actors.empty(); }
 
-			private:
-				std::vector<ActorPtr> actors;
-				static const int mapGridSizeX = 10;
-				static const int mapGridSizeY = 10;
-				static const int sepalationSizeY = 20;
-				static const int sepalationSizeX = 20;
-				std::vector<ActorPtr> grid[sepalationSizeY][sepalationSizeX];
-				glm::ivec2 CalcMapIndex(const glm::vec3& pos) const;
-				int health = 0;
+	//イテレーターを取得する関数.
+	iterator begin() { return actors.begin(); }
+	iterator end() { return actors.end(); }
+	const_iterator begin() const { return actors.begin(); }
+	const_iterator end() const { return actors.end(); }
+
+	std::vector<ActorPtr> FindNearbyActors(const glm::vec3& pos, float maxDistance) const;
+
+private:
+	std::vector<ActorPtr> actors;
+	static const int mapGridSizeX = 10;
+	static const int mapGridSizeY = 10;
+	static const int sepalationSizeY = 20;
+	static const int sepalationSizeX = 20;
+	std::vector<ActorPtr> grid[sepalationSizeY][sepalationSizeX];
+	glm::ivec2 CalcMapIndex(const glm::vec3& pos) const;
+	int health = 0;
 };
 
-	using CollisionHandlerType =
-	std::function<void(const ActorPtr&, const ActorPtr&, const glm::vec3&)>;
-	void DetectCollision(const ActorPtr& a, const ActorPtr& b, CollisionHandlerType handler = nullptr);
-	void DetectCollision(const ActorPtr& a, ActorList& b, CollisionHandlerType handler = nullptr);
-	void DetectCollision(ActorList& a, ActorList& b, CollisionHandlerType handler = nullptr);
+using CollisionHandlerType =
+std::function<void(const ActorPtr&, const ActorPtr&, const glm::vec3&)>;
+void DetectCollision(const ActorPtr& a, const ActorPtr& b, CollisionHandlerType handler = nullptr);
+void DetectCollision(const ActorPtr& a, ActorList& b, CollisionHandlerType handler = nullptr);
+void DetectCollision(ActorList& a, ActorList& b, CollisionHandlerType handler = nullptr);
 
 #endif // ACTOR_H_INCLUDED

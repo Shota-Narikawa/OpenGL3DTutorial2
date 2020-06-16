@@ -34,30 +34,30 @@ private:
 
 	//命令の種類.
 	enum class InstructionType {
-	nop,		//何もしないダミー命令.
-	print,		//文章を表示.
-	expression,	//演算式.
-	assign,		//変数に値を設定.
-	beginif,	//if命令の開始.
-	endif,		//if命令の終端.
-	
+		nop,		//何もしないダミー命令.
+		print,		//文章を表示.
+		expression,	//演算式.
+		assign,		//変数に値を設定.
+		beginif,	//if命令の開始.
+		endif,		//if命令の終端.
+
 	};
 
 	//関係演算子.
 	enum class Operator {
-	equal,			//==
-	notEqual,		//!=
-	less,			//<
-	lessEqual,		//<=
-	greater,		//>
-	greaterEqual,	//>=
-	
-	add,	// +
-	sub,	// -
-	mul,	// *
-	div,	// /
+		equal,			//==
+		notEqual,		//!=
+		less,			//<
+		lessEqual,		//<=
+		greater,		//>
+		greaterEqual,	//>=
+
+		add,	// +
+		sub,	// -
+		mul,	// *
+		div,	// /
 	};
-		//引数の型.
+	//引数の型.
 	using Text = std::wstring;	//文章.
 	using VariableId = int;		//変数(の番号).
 	using Number = double;		//数値.
@@ -67,8 +67,8 @@ private:
 	void SetOperator(Argument&, const char*);
 	Number Get(const Argument&) const;
 
-		//スクリプト命令型.
-		struct Instruction {
+	//スクリプト命令型.
+	struct Instruction {
 		InstructionType type = InstructionType::nop;
 		Argument arguments[4];
 		size_t jump = 0; // if命令のジャンプ先.

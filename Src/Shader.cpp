@@ -261,107 +261,107 @@ namespace Shader {
 	* @param count      描画に使用するポイントライトの数(0～8).
 	* @param indexList  描画に使用するポイントライト番号の配列.
 	*/
-		void Program::SetPointLightIndex(int count, const int* indexList)
-		 {
+	void Program::SetPointLightIndex(int count, const int* indexList)
+	{
 		if (locPointLightCount >= 0) {
 			glUniform1i(locPointLightCount, count);
-			
+
 		}
 		if (locPointLightIndex >= 0 && count > 0) {
 			glUniform1iv(locPointLightIndex, count, indexList);
-			
+
 		}
 	}
-	
-		/**
-		* 描画に使われるライトを設定する
-		*
-		* @param count      描画に使用するスポットライトの数(0～8).
-		* @param indexList  描画に使用するスポットライト番号の配列.
-		*/
-		void Program::SetSpotLightIndex(int count, const int* indexList)
-		 {
+
+	/**
+	* 描画に使われるライトを設定する
+	*
+	* @param count      描画に使用するスポットライトの数(0～8).
+	* @param indexList  描画に使用するスポットライト番号の配列.
+	*/
+	void Program::SetSpotLightIndex(int count, const int* indexList)
+	{
 		if (locSpotLightCount >= 0) {
 			glUniform1i(locSpotLightCount, count);
-			
+
 		}
 		if (locSpotLightIndex >= 0 && count > 0) {
 			glUniform1iv(locSpotLightIndex, count, indexList);
-		
+
 		}
 	}
 
-		/**
-		* カメラ座標を設定する.
-		*
-		* @param pos カメラ座標.
-		*/
-			void Program::SetCameraPosition(const glm::vec3& pos)
-			 {
-			if (locCameraPosition >= 0) {
-				glUniform3fv(locCameraPosition, 1, &pos.x);
-				
-			}
+	/**
+	* カメラ座標を設定する.
+	*
+	* @param pos カメラ座標.
+	*/
+	void Program::SetCameraPosition(const glm::vec3& pos)
+	{
+		if (locCameraPosition >= 0) {
+			glUniform3fv(locCameraPosition, 1, &pos.x);
+
 		}
-		
-			/**
-			* 総経過時間を設定する.
-			*
-			* @param time 総経過時間.
-			*/
-			void Program::SetTime(float time)
-			 {
-			if (locTime >= 0) {
-				glUniform1f(locTime, time);
-				
-			}
+	}
+
+	/**
+	* 総経過時間を設定する.
+	*
+	* @param time 総経過時間.
+	*/
+	void Program::SetTime(float time)
+	{
+		if (locTime >= 0) {
+			glUniform1f(locTime, time);
+
 		}
+	}
 
-			/**
-			* 画面の情報を設定する.
-			*
-			* @param w    ウィンドウの幅(ピクセル単位).
-			* @param h    ウィンドウの高さ(ピクセル単位).
-			* @param near 最小Z距離(m単位).
-			* @param far  最大Z距離(m単位).
-			*/
-			void Program::SetViewInfo(float w, float h, float near, float far)
-				{
-				if (locViewInfo >= 0) {
-					glUniform4f(locViewInfo, 1.0f / w, 1.0f / h, near, far);
-				
-				}
-			}
+	/**
+	* 画面の情報を設定する.
+	*
+	* @param w    ウィンドウの幅(ピクセル単位).
+	* @param h    ウィンドウの高さ(ピクセル単位).
+	* @param near 最小Z距離(m単位).
+	* @param far  最大Z距離(m単位).
+	*/
+	void Program::SetViewInfo(float w, float h, float near, float far)
+	{
+		if (locViewInfo >= 0) {
+			glUniform4f(locViewInfo, 1.0f / w, 1.0f / h, near, far);
 
-			/**
-			* カメラの情報を設定する.
-			*
-			* @param focalPlane  焦平面(ピントの合う位置のレンズからの距離. mm単位).
-			* @param focalLength 焦点距離(光が1点に集まる位置のレンズからの距離. mm単位).
-			* @param aperture    開口(光の取入口のサイズ. mm単位).
-			* @param sensorSize  センサーサイズ(光を受けるセンサーの横幅. mm単位).
-			*/
-				void Program::SetCameraInfo(float focalPlane, float focalLength, float aperture,
-					float sensorSize)
-				{
-				if (locCameraInfo >= 0) {
-					glUniform4f(locCameraInfo, focalPlane, focalLength, aperture, sensorSize);
-					
-				}
-			}
+		}
+	}
 
-				/**
-				*ぼかし方向を設定する.
-				*
-				*@param x	左右のぼかし方向にテクセルサイズを掛けた値.
-				*@param y	上下のぼかし方向にテクセルサイズを掛けた値.
-				*/
-					void Program::SetBlurDirection(float x, float y)
-					{
-					if (locBlurDirection >= 0) {
-						glUniform2f(locBlurDirection, x, y);
-					}
-				}
+	/**
+	* カメラの情報を設定する.
+	*
+	* @param focalPlane  焦平面(ピントの合う位置のレンズからの距離. mm単位).
+	* @param focalLength 焦点距離(光が1点に集まる位置のレンズからの距離. mm単位).
+	* @param aperture    開口(光の取入口のサイズ. mm単位).
+	* @param sensorSize  センサーサイズ(光を受けるセンサーの横幅. mm単位).
+	*/
+	void Program::SetCameraInfo(float focalPlane, float focalLength, float aperture,
+		float sensorSize)
+	{
+		if (locCameraInfo >= 0) {
+			glUniform4f(locCameraInfo, focalPlane, focalLength, aperture, sensorSize);
+
+		}
+	}
+
+	/**
+	*ぼかし方向を設定する.
+	*
+	*@param x	左右のぼかし方向にテクセルサイズを掛けた値.
+	*@param y	上下のぼかし方向にテクセルサイズを掛けた値.
+	*/
+	void Program::SetBlurDirection(float x, float y)
+	{
+		if (locBlurDirection >= 0) {
+			glUniform2f(locBlurDirection, x, y);
+		}
+	}
 
 	/**
 	*プログラム・オブジェクトが設定されているか調べる.
@@ -374,7 +374,7 @@ namespace Shader {
 
 		return id == 0;
 	}
-	
+
 
 	/**
 	*プログラム・オブジェクトをグラフィックス・パイプラインに割り当てる.
@@ -393,7 +393,7 @@ namespace Shader {
 	*@param texId	設定するテクスチャのID.
 	*/
 	void Program::BindTexture(GLuint unitNo, GLuint texId) {
-		
+
 		glActiveTexture(GL_TEXTURE0 + unitNo);
 		glBindTexture(GL_TEXTURE_2D, texId);
 	}
@@ -417,12 +417,12 @@ namespace Shader {
 	*
 	*@param matView 元になるビュー行列.
 	*/
-		void Program::SetInverseViewRotationMatrix(const glm::mat4& matView)
-		{
+	void Program::SetInverseViewRotationMatrix(const glm::mat4& matView)
+	{
 		if (locMatInverseViewRotation >= 0) {
 			const glm::mat3 m = glm::inverse(glm::mat3(glm::transpose(glm::inverse(matView))));
 			glUniformMatrix3fv(locMatInverseViewRotation, 1, GL_FALSE, &m[0][0]);
-			
+
 		}
 	}
 
@@ -431,8 +431,8 @@ namespace Shader {
 	*
 	*@param m 設定する影用ビュープロジェクション行列.
 	*/
-		void Program::SetShadowViewProjectionMatrix(const glm::mat4& m)
-		{
+	void Program::SetShadowViewProjectionMatrix(const glm::mat4& m)
+	{
 		if (locMatShadow >= 0) {
 			glUniformMatrix4fv(locMatShadow, 1, GL_FALSE, &m[0][0]);
 		}
@@ -443,7 +443,7 @@ namespace Shader {
 	*
 	*@param m	設定するモデル行列.
 	*/
-	void Program::SetModelMatrix(const glm::mat4& m){
+	void Program::SetModelMatrix(const glm::mat4& m) {
 
 		if (locMatModel >= 0) {
 
@@ -461,7 +461,7 @@ namespace Shader {
 	*
 	*この関数を使う前に、Use()を実行しておくこと.
 	*/
-	
+
 
 	/**
 	*プログラム・オブジェクトを作成する.

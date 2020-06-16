@@ -44,7 +44,7 @@ namespace GLFWEW {
 		GamePad gamepad;
 
 
-		
+
 	};
 }//namespace GLFWEW
 #endif //GLFWEW_H_INCLUDE

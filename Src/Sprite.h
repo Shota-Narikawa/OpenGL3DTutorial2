@@ -27,46 +27,46 @@ struct Rect
 
 class Sprite {
 
-	public:
-		Sprite() = default;
-		explicit Sprite(const Texture::Image2DPtr&);
-		~Sprite() = default;
-		Sprite(const Sprite&) = default;
-		Sprite& operator=(const Sprite&) = default;
+public:
+	Sprite() = default;
+	explicit Sprite(const Texture::Image2DPtr&);
+	~Sprite() = default;
+	Sprite(const Sprite&) = default;
+	Sprite& operator=(const Sprite&) = default;
 
-		//座標の設定・取得.
-		void Position(const glm::vec3& p) { position = p; }
-		const glm::vec3& Position() const { return position; }
+	//座標の設定・取得.
+	void Position(const glm::vec3& p) { position = p; }
+	const glm::vec3& Position() const { return position; }
 
-		//回転の設定・取得.
-		void Rotation(float r) { rotation = r; }
-		float Rotation() const { return rotation; }
+	//回転の設定・取得.
+	void Rotation(float r) { rotation = r; }
+	float Rotation() const { return rotation; }
 
-		//拡大率の設定・取得.
-		void Scale(const glm::vec2& s) { scale = s; }
-		const glm::vec2& Scale() const { return scale; }
+	//拡大率の設定・取得.
+	void Scale(const glm::vec2& s) { scale = s; }
+	const glm::vec2& Scale() const { return scale; }
 
-		//色の設定・取得.
-		void Color(const glm::vec4& c) { color = c; }
-		const glm::vec4& Color() const { return color; }
+	//色の設定・取得.
+	void Color(const glm::vec4& c) { color = c; }
+	const glm::vec4& Color() const { return color; }
 
-		//短形の設定・取得.
-		void Rectangle(const Rect& r) { rect = r; }
-		const Rect& Rectangle() const { return rect; }
+	//短形の設定・取得.
+	void Rectangle(const Rect& r) { rect = r; }
+	const Rect& Rectangle() const { return rect; }
 
-		//テクスチャの設定・取得.
-		void Texture(const Texture::Image2DPtr& tex);
-		const Texture::Image2DPtr& Texture() const { return texture; }
+	//テクスチャの設定・取得.
+	void Texture(const Texture::Image2DPtr& tex);
+	const Texture::Image2DPtr& Texture() const { return texture; }
 
-		int id = -1;
-		//10	メニュー画面.
-		//9		ゲームクリア、ゲームオーバー.
-		//8		選択アイコン.
-		//7		リザルト画面.
-		//6		スキル画面.
-		//5		プレイヤー情報画面.
-		//4		プレイ画面.
-		//3		ロード画面.
+	int id = -1;
+	//10	メニュー画面.
+	//9		ゲームクリア、ゲームオーバー.
+	//8		選択アイコン.
+	//7		リザルト画面.
+	//6		スキル画面.
+	//5		プレイヤー情報画面.
+	//4		プレイ画面.
+	//3		ロード画面.
 
 private:
 
@@ -89,7 +89,7 @@ public:
 	~SpriteRenderer() = default;
 	SpriteRenderer(const SpriteRenderer&) = delete;
 	SpriteRenderer& operator=(const SpriteRenderer&) = delete;
-	
+
 	bool Init(size_t maxSpriteCount, const char* vsPath, const char* fsPath);
 	void BeginUpdate();
 	bool AddVertices(const Sprite&);
@@ -121,7 +121,7 @@ private:
 	std::vector<Primitive> primitives;
 };
 
-void DeleteSpriteA(std::vector<Sprite>& sprites,int id);
+void DeleteSpriteA(std::vector<Sprite>& sprites, int id);
 void DeleteSpriteB(std::vector<Sprite>& sprites, int id);
 
 #endif // !SPRITE_H_INCLUDED

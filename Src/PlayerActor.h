@@ -16,7 +16,7 @@ class PlayerActor : public SkeletalMeshActor
 {
 public:
 	PlayerActor(const Terrain::HeightMap* hm, const Mesh::Buffer& buffer,
-	const glm::vec3& pos, const glm::vec3& rot = glm::vec3(0));
+		const glm::vec3& pos, const glm::vec3& rot = glm::vec3(0));
 	virtual ~PlayerActor() = default;
 
 	virtual void Update(float) override;
@@ -27,7 +27,7 @@ public:
 	const ActorPtr& GetAttackCollision() const { return attackCollision; }
 	const ActorPtr& GetPlayerStatusUp() const { return playerStatusUp; }
 	void StatusUp();
-	
+
 	static int pLevel;		//プレイヤーレベル.
 	static int pAbility;	//アビリティレベル.
 	static int pExPoint;	//経験値.
@@ -44,17 +44,17 @@ private:
 	void CheckJump(const GamePad& gamepad);
 	void CheckAttack(const GamePad& gamepad);
 	void CheckShot(const GamePad& gamepad);
-	
-		//アニメーション状態.
-		enum class State {
+
+	//アニメーション状態.
+	enum class State {
 		idle,		///<停止.
 		run,		///<移動.
 		jump,		///<ジャンプ.
 		attack,		///<攻撃.
 		shot,		///<ショット.
-		
+
 	};
-		Mesh::Buffer meshBuffer;
+	Mesh::Buffer meshBuffer;
 	State state = State::idle;	///< 現在のアニメーション状態.
 	bool isInAir = false;		///< 空中判定フラグ.
 	bool isAttack = false;		///<攻撃中判定フラグ.
@@ -62,7 +62,7 @@ private:
 	float moveSpeed = 7.0f;		///< 移動速度.
 	ActorPtr attackCollision;	///< 攻撃判定.
 	ActorPtr playerStatusUp;
-	float attackTimerA = -1,attackTimerB = -1, attackTimerC = -1;		///< 攻撃時間.;		///< 攻撃時間.
+	float attackTimerA = -1, attackTimerB = -1, attackTimerC = -1;		///< 攻撃時間.;		///< 攻撃時間.
 	float intervalTimer = 0;		///< 攻撃時間.
 	int health = 10;
 
@@ -78,7 +78,7 @@ private:
 	float noDamegeTimer = 0.0f;		//無敵時間.
 	bool dashFrag = false;	//ゴブリンのダッシュフラグ.
 
-	float skillTimerW = 0.0f , skillTimerE = 0.0f, skillTimerN = 0.0f;	//スキルインターバル.
+	float skillTimerW = 0.0f, skillTimerE = 0.0f, skillTimerN = 0.0f;	//スキルインターバル.
 	bool skillW = false, skillE = false, skillN = false;	//スキルインターバル.
 
 	Audio::SoundPtr bgm;

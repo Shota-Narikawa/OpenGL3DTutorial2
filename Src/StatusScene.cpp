@@ -54,7 +54,7 @@ bool StatusScene::Initialize() {
 void StatusScene::ProcessInput() {
 
 	GLFWEW::Window& window = GLFWEW::Window::Instance();
-	
+
 
 	if (window.GetGamePad().buttonDown & GamePad::START) {
 

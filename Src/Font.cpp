@@ -86,7 +86,7 @@ bool FontRenderer::LoadFromFile(const char* filename) {
 		}
 		tex[sizeof(tex) / sizeof(tex[0]) - 1] = '\0';	//0I’[‚ğ•ÛØ‚·‚é.
 		if (texNameList.size() <= static_cast<size_t>(id)) {
-			
+
 			texNameList.resize(id + 1);
 		}
 		texNameList[id] = std::string("Res/") + tex;
@@ -269,9 +269,9 @@ float FontRenderer::LineHeight() const {
 *@return		•¶šc‚Ì‰¡•.
 */
 float FontRenderer::XAdvance(wchar_t c) const
- {
+{
 	if (c < 0 || c >= characterInfoList.size()) {
 		return 0;
 	}
 	return characterInfoList[c].xadvance;
-	}
+}

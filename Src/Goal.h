@@ -25,7 +25,7 @@ private:
 	int id = 0;
 	MainGameScene* parent = nullptr;
 	bool isCointed = false;
-	
+
 };
 using GoalActorPtr = std::shared_ptr<GoalActor>;
 

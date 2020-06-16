@@ -61,80 +61,80 @@ struct LightUniformBlock
 /**
 * ディレクショナルライトアクター.
 */
-	class DirectionalLightActor : public Actor
-	 {
-	public:
-		DirectionalLightActor(const std::string& name, const glm::vec3& c,
-			const glm::vec3& d) : Actor(name, 1, glm::vec3(0)), color(c), direction(d)
-			 {}
-		~DirectionalLightActor() = default;
-		
-			public:
-				glm::vec3 color;
-				glm::vec3 direction;
-				};
+class DirectionalLightActor : public Actor
+{
+public:
+	DirectionalLightActor(const std::string& name, const glm::vec3& c,
+		const glm::vec3& d) : Actor(name, 1, glm::vec3(0)), color(c), direction(d)
+	{}
+	~DirectionalLightActor() = default;
+
+public:
+	glm::vec3 color;
+	glm::vec3 direction;
+};
 using DirectionalLightActorPtr = std::shared_ptr<DirectionalLightActor>;
 
 /**
 * ポイントライトアクター.
 */
-	class PointLightActor : public Actor
-	 {
-	public:
-		PointLightActor(const std::string& name, const glm::vec3& c,
-			const glm::vec3& p) : Actor(name, 1, p), color(c)
-			 {}
-		~PointLightActor() = default;
-		
-			public:
-				glm::vec3 color;
-				glm::vec3 direction;
-				int index = -1;
-				};
+class PointLightActor : public Actor
+{
+public:
+	PointLightActor(const std::string& name, const glm::vec3& c,
+		const glm::vec3& p) : Actor(name, 1, p), color(c)
+	{}
+	~PointLightActor() = default;
+
+public:
+	glm::vec3 color;
+	glm::vec3 direction;
+	int index = -1;
+};
 using PointLightActorPtr = std::shared_ptr<PointLightActor>;
 
 /**
 * スポットライトアクター.
 */
-	class SpotLightActor : public Actor
-	 {
-	public:
-		SpotLightActor(const std::string& name, const glm::vec3& c,
-			const glm::vec3& p, const glm::vec3& d, float cutOff, float innerCutOff) :
-			Actor(name, 1, p), color(c), direction(d),
-			cutOff(std::cos(cutOff)), innerCutOff(std::cos(innerCutOff))
-			 {
-			position = p;
-			}
-		~SpotLightActor() = default;
-		
-			public:
-				glm::vec3 color;
-				glm::vec3 direction;
-				float cutOff;
-				float innerCutOff;
-				int index = -1;
-				};
+class SpotLightActor : public Actor
+{
+public:
+	SpotLightActor(const std::string& name, const glm::vec3& c,
+		const glm::vec3& p, const glm::vec3& d, float cutOff, float innerCutOff) :
+		Actor(name, 1, p), color(c), direction(d),
+		cutOff(std::cos(cutOff)), innerCutOff(std::cos(innerCutOff))
+	{
+		position = p;
+	}
+	~SpotLightActor() = default;
+
+public:
+	glm::vec3 color;
+	glm::vec3 direction;
+	float cutOff;
+	float innerCutOff;
+	int index = -1;
+};
 using SpotLightActorPtr = std::shared_ptr<SpotLightActor>;
 
 /**
 * UBOを利用してライトデータをGPUに転送するためのクラス.
 */
-	class LightBuffer
-	 {
-	public:
-		LightBuffer() = default;
-		~LightBuffer() = default;
-		bool Init(GLuint bindingPoint);
-		bool BindToShader(const Shader::ProgramPtr& program);
-		void Update(const ActorList& al, const glm::vec3& ambientColor);
-		void Upload();
-		void Bind();
-		
-			private:
-				LightUniformBlock data;
-				UniformBufferPtr ubo[2];
-				int currentUboIndex = 0; ///< UBOダブルバッファの書き込み側インデックス.
-			};
+class LightBuffer
+{
+public:
+	LightBuffer() = default;
+	~LightBuffer() = default;
+	bool Init(GLuint bindingPoint);
+	bool BindToShader(const Shader::ProgramPtr& program);
+	void Update(const ActorList& al, const glm::vec3& ambientColor);
+	void Upload();
+	void Bind();
+
+private:
+	LightUniformBlock data;
+	UniformBufferPtr ubo[2];
+	int currentUboIndex = 0; ///< UBOダブルバッファの書き込み側インデックス.
+};
 
 #endif // LIGHT_H_INCLUDED

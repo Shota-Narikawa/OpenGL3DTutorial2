@@ -12,13 +12,13 @@
 
 namespace Terrain {
 
-/**
-*高さマップ.
-*
-*1.LoadFromFile()で画像ファイルから高さ情報を読み込む.
-*2.CreateMesh()で読み込んだ高さ情報から地形メッシュを作成する.
-*3.ある地点の高さを調べるにはHeight()を使う.
-*/
+	/**
+	*高さマップ.
+	*
+	*1.LoadFromFile()で画像ファイルから高さ情報を読み込む.
+	*2.CreateMesh()で読み込んだ高さ情報から地形メッシュを作成する.
+	*3.ある地点の高さを調べるにはHeight()を使う.
+	*/
 	class HeightMap {
 
 	public:

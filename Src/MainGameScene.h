@@ -45,11 +45,11 @@ public:
 	void skSelectUI(int a, int b, int c, int d, int e, int f);
 	void EnemyTargetID(ActorList& a);
 	void EnemySpawn();
-	void EnemyAI(float ,ActorList& x, int a ,int b);
+	void EnemyAI(float, ActorList& x, int a, int b);
 	void EnemyDetectCollision(int i);
 
 	static int StageNo;
-	static bool StClearedE, StClearedW , StClearedS , StClearedN ;	///<ステート移行可能状態.
+	static bool StClearedE, StClearedW, StClearedS, StClearedN;	///<ステート移行可能状態.
 
 private:
 	void RenderMesh(Mesh::DrawType);
@@ -100,7 +100,7 @@ private:
 		load,		//ロード画面.
 		select,		//Yes or No画面.
 		//メニュー画面.
-		pMenu, cMenu, sMenu,gameClose,menuClose
+		pMenu, cMenu, sMenu, gameClose, menuClose
 	};
 
 	State state = State::play;
@@ -120,7 +120,7 @@ private:
 	float allTimer = 0.0f;										//予備用タイマー.
 	float evFragTimer = 0.0f;
 
-		
+
 	//ID.
 	int warpID = -1;
 	int CoinID = -1;
@@ -132,7 +132,7 @@ private:
 	int selectCount3 = 0;	////選択アイコン用.
 	int stageChage = 0;		//どの試練か.
 	int defenceLine = 100;	//０になるとゲームオーバ.
-	
+
 	//敵の情報.
 	int enemySpawn = 100;	//一度に湧く敵の出現数.
 	int enemyBlow = 0;		//敵を倒した数.
@@ -145,7 +145,7 @@ private:
 	float skillIntervalMax = 5.0f;
 
 	glm::vec3 comammdSetPos[4] =					//好きな場所にアイコンをセットする為の配列.(上から時計回り)
-		{glm::vec3(500, -150, 0),glm::vec3(580, -230, 0),glm::vec3(500, -310, 0),glm::vec3(420, -230, 0) };
+	{ glm::vec3(500, -150, 0),glm::vec3(580, -230, 0),glm::vec3(500, -310, 0),glm::vec3(420, -230, 0) };
 	int eCommandA = 0, wCommandA = 0, sCommandA = 0, nCommandA = 0;	//表側のスキル.
 	int eCommandB = 0, wCommandB = 0, sCommandB = 0, nCommandB = 0;	//裏側のスキル.
 	int skComAttack = 0;							//数字に応じて攻撃するスキルが異なる.
@@ -166,16 +166,16 @@ private:
 	bool gameOverFlag = false;						///<ゲームオーバー状態.
 	bool gameClearFlag = false;						///<ゲームクリア状態.
 	bool nextStateFlag = false;						///<ステート移行可能状態.
-	
+
 	bool selectIconFlag = false;					///<セレクトアイコン.
-	bool shotTimerFragA = false, shotTimerFragB = false , shotTimerFragC = false;			///<攻撃でタイマーを動かすフラグ.
+	bool shotTimerFragA = false, shotTimerFragB = false, shotTimerFragC = false;			///<攻撃でタイマーを動かすフラグ.
 	bool chargeShotFlagA, chargeShotFlagB = false;	///<溜め攻撃用フラグ.
 	bool isAttacking = false;						///<敵の攻撃.
 	bool bulletFragA, bulletFragB = false;			///<周囲に出る.
-	bool eInterval = false, wInterval = false , sInterval = false, nInterval = false;		///<各ボタンのインターバル状態のフラグ.
+	bool eInterval = false, wInterval = false, sInterval = false, nInterval = false;		///<各ボタンのインターバル状態のフラグ.
 	bool eCommand = false, wCommand = false, sCommand = false, nCommand = false;			///<どの攻撃ボタンを押しているか.
 
-	bool iconUpFlag = false ,iconDownFlag = false;	//アイコン動作状態.
+	bool iconUpFlag = false, iconDownFlag = false;	//アイコン動作状態.
 	bool mHouseFlag = false;				//モンスターハウス.
 	bool defenceFrag = false;				//防衛ラインが攻撃されているか.
 
@@ -187,13 +187,13 @@ private:
 	bool keybordText = false;
 
 	Actor* target = nullptr;
-	glm::vec3 position = glm::vec3 (0);
+	glm::vec3 position = glm::vec3(0);
 	glm::vec3 velocity = glm::vec3(0);
 	glm::vec3 rotation = glm::vec3(0);
 
 	struct MiniMapIcon
 	{
-		glm::vec3 position = glm::vec3(530,280,0);
+		glm::vec3 position = glm::vec3(530, 280, 0);
 		glm::vec3 velocity = glm::vec3(0);
 
 		float width = 1280 / 5; ///< 画面の幅(ピクセル数).
@@ -225,7 +225,7 @@ private:
 		float focalPlane = 10000.0f; ///< フォーカル・プレーン = ピントの合う距離.
 
 		void Update(const glm::mat4& matView);
-		
+
 	};
 	Camera camera;
 };

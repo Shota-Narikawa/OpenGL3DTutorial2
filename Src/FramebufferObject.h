@@ -13,7 +13,7 @@ using FramebufferObjectPtr = std::shared_ptr<FramebufferObject>;
 /**
 * フレームバッファの種類.
 */
-	enum class FrameBufferType {
+enum class FrameBufferType {
 	colorAndDepth,
 	colorOnly,
 	depthOnly,

@@ -126,8 +126,8 @@ namespace Mesh {
 		const Shader::ProgramPtr& GetWaterShader() const { return progWater; }
 		const Shader::ProgramPtr& GetSkeletalMeshShader() const { return progSkeletalMesh; }
 		const Shader::ProgramPtr& GetShadowShader() const { return progShadow; }
-		const Shader::ProgramPtr& GetNonTexturedShadowShader() const { return progNonTexturedShadow;}
-		const Shader::ProgramPtr& GetSkeletalShadowShader() const {return progSkeletalShadow;}
+		const Shader::ProgramPtr& GetNonTexturedShadowShader() const { return progNonTexturedShadow; }
+		const Shader::ProgramPtr& GetSkeletalShadowShader() const { return progSkeletalShadow; }
 
 	private:
 		BufferObject vbo;
@@ -147,8 +147,8 @@ namespace Mesh {
 		//スケルタル・アニメーションに対応したメッシュを保持するメンバ変数.
 		Shader::ProgramPtr progSkeletalMesh;
 		struct MeshIndex {
-		ExtendedFilePtr file;
-		const Node* node = nullptr;
+			ExtendedFilePtr file;
+			const Node* node = nullptr;
 
 		};
 		std::unordered_map<std::string, MeshIndex> meshes;
@@ -160,7 +160,7 @@ namespace Mesh {
 	/**
 	*描画するデータの種類.
 	*/
-		enum class DrawType{
+	enum class DrawType {
 		color,  // 通常の描画.
 		shadow, // 影の描画.
 	};

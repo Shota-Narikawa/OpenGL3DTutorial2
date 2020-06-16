@@ -41,7 +41,7 @@ namespace Shader {
 		void SetTime(float);
 		void SetViewInfo(float w, float h, float near, float far);
 		void SetCameraInfo(float focalPlane, float focalLength, float aperture,
-		float sensorSize);
+			float sensorSize);
 		void SetBlurDirection(float x, float y);
 		void SetShadowViewProjectionMatrix(const glm::mat4&);
 		static const GLint shadowTextureBindingPoint = 16;

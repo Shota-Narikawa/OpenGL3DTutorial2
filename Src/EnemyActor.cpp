@@ -62,7 +62,7 @@ void EnemyActor::Update(float deltaTime)
 			velocity.y -= gravity * deltaTime;
 		}
 	}
-	
+
 	//“G‚ª’Ç‚¢‚©‚¯‚Ä‚­‚é.
 	Mesh::SkeletalMeshPtr mesh = GetMesh();
 

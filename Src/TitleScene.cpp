@@ -63,12 +63,12 @@ bool TitleScene::Initialize() {
 
 	Sprite TitleLogoGS8(Texture::Image2D::Create("Res/GameStart2.tga"));
 	TitleLogoGS8.Scale(glm::vec2(1));
-	TitleLogoGS8.Position(glm::vec3(0 ,-50 , 0));
+	TitleLogoGS8.Position(glm::vec3(0, -50, 0));
 	sprites.push_back(TitleLogoGS8);
 
 	Sprite TitleLogoS9(Texture::Image2D::Create("Res/Story.tga"));
 	TitleLogoS9.Scale(glm::vec2(1));
-	TitleLogoS9.Position(glm::vec3(0 ,-140 , 0));
+	TitleLogoS9.Position(glm::vec3(0, -140, 0));
 	sprites.push_back(TitleLogoS9);
 
 	Sprite TitleLogoC10(Texture::Image2D::Create("Res/Credit.tga"));
@@ -183,7 +183,7 @@ void TitleScene::ProcessInput() {
 		}
 	}
 
-		//タイトル画面時.
+	//タイトル画面時.
 	if (state == State::title && window.GetGamePad().buttonDown & GamePad::START) {
 		if (selectCount == 1) {
 
@@ -256,7 +256,7 @@ void TitleScene::Update(float deltaTime) {
 		spriteRenderer.AddVertices(e);
 	}
 	spriteRenderer.EndUpdate();
-	
+
 	//ロード画面中.
 	if (loadTimer > 0.0f) {
 		loadTimer -= deltaTime;
@@ -275,7 +275,7 @@ void TitleScene::Update(float deltaTime) {
 			state = State::load;
 			loadTimer = 2.0f;
 
-			sprites[1].Scale(glm::vec2(1.5f,4.0f));
+			sprites[1].Scale(glm::vec2(1.5f, 4.0f));
 
 			sprites[2].Scale(glm::vec2(0));
 			sprites[3].Scale(glm::vec2(0));
@@ -302,20 +302,20 @@ void TitleScene::Update(float deltaTime) {
 
 		if (tutorialText) {
 			fontRenderer.Color(glm::vec4(0.0f, 0.0f, 0.0f, 1));
-			fontRenderer.AddString(glm::vec2(-340, 140), L"視点寄せ");
+			fontRenderer.AddString(glm::vec2(-340, 140), L"視点左回転");
 			fontRenderer.AddString(glm::vec2(-310, 10), L"決定");
 			fontRenderer.AddString(glm::vec2(-340, -50), L"メニュー");
 			fontRenderer.AddString(glm::vec2(-310, -120), L"移動");
 
 			fontRenderer.AddString(glm::vec2(215, 200), L"ジャンプ");
-			fontRenderer.AddString(glm::vec2(215, 140), L"視点引く");
+			fontRenderer.AddString(glm::vec2(215, 140), L"視点右回転");
 			fontRenderer.AddString(glm::vec2(215, 75), L"スキル１");
 			fontRenderer.AddString(glm::vec2(215, 10), L"スキル２");
 			fontRenderer.AddString(glm::vec2(215, -55), L"スキル３");
 			fontRenderer.AddString(glm::vec2(215, -115), L"スキル４");
 		}
-		else {
-
+		else
+		{
 			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
 			fontRenderer.AddString(glm::vec2(-460, 210), L"WSAD:移動");
 			fontRenderer.AddString(glm::vec2(-460, 170), L"L：ジャンプ");
@@ -323,8 +323,8 @@ void TitleScene::Update(float deltaTime) {
 			fontRenderer.AddString(glm::vec2(-460, 90), L"H：スキル２");
 			fontRenderer.AddString(glm::vec2(-460, 50), L"K：スキル３");
 			fontRenderer.AddString(glm::vec2(-460, 10), L"J：スキル４");
-			fontRenderer.AddString(glm::vec2(-460, -30), L"Y：視点寄せ");
-			fontRenderer.AddString(glm::vec2(-460, -70), L"I：視点引く");
+			fontRenderer.AddString(glm::vec2(-460, -30), L"Q：カメラ左回転");
+			fontRenderer.AddString(glm::vec2(-460, -70), L"E：カメラ右回転");
 			fontRenderer.AddString(glm::vec2(-460, -110), L"SPACE:メニュー");
 			fontRenderer.AddString(glm::vec2(-460, -150), L"ENTER:決定");
 		}
@@ -370,7 +370,7 @@ void TitleScene::Update(float deltaTime) {
 		fontRenderer.AddString(glm::vec2(-200, -300), L"BボタンまたはKボタンでタイトルへ戻ります");
 
 	}
-		fontRenderer.EndUpdate();
+	fontRenderer.EndUpdate();
 }
 
 /**

@@ -43,7 +43,7 @@ void Sprite::Texture(const Texture::Image2DPtr& tex) {
 
 bool SpriteRenderer::Init(size_t maxSpriteCount, const char* vsPath, const char* fsPath) {
 
-	vbo.Create(GL_ARRAY_BUFFER, sizeof(Vertex) * maxSpriteCount * 4, 
+	vbo.Create(GL_ARRAY_BUFFER, sizeof(Vertex) * maxSpriteCount * 4,
 		nullptr, GL_STREAM_DRAW);
 
 	//四角形をmaxSpriteCount個作る.
@@ -60,7 +60,7 @@ bool SpriteRenderer::Init(size_t maxSpriteCount, const char* vsPath, const char*
 
 	}
 
-	ibo.Create(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLushort), 
+	ibo.Create(GL_ELEMENT_ARRAY_BUFFER, indices.size() * sizeof(GLushort),
 		indices.data(), GL_STATIC_DRAW);
 
 	//Vertex構造体に合わせて頂点アトリビュートを設定.
@@ -162,7 +162,7 @@ bool SpriteRenderer::AddVertices(const Sprite& sprite) {
 		//同じテクスチャを使っているならインデックス数と四角形ひとつぶん（インデックス6個）増やす.
 		//テクスチャが使う場合は新しいプリミティブを作成する.
 		Primitive& data = primitives.back();
-		
+
 		if (data.texture == texture) {
 			data.count += 6;
 		}
@@ -211,7 +211,7 @@ void SpriteRenderer::Draw(const glm::vec2& screenSize)const {
 
 	for (const Primitive& primitive : primitives) {
 		program->BindTexture(0, primitive.texture->Get());
-		glDrawElements(GL_TRIANGLES, primitive.count, GL_UNSIGNED_SHORT, 
+		glDrawElements(GL_TRIANGLES, primitive.count, GL_UNSIGNED_SHORT,
 			reinterpret_cast<const GLvoid*>(primitive.offset));
 	}
 	program->BindTexture(0, 0);

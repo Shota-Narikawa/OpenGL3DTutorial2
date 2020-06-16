@@ -30,15 +30,15 @@ FramebufferObjectPtr FramebufferObject::Create(int w, int h, GLenum internalForm
 			imageType = GL_FLOAT;
 		}
 
-	fbo->texColor = std::make_shared<Texture::Image2D>(Texture::CreateImage2D(
-		w, h, nullptr, GL_RGBA, imageType, internalFormat));
-	fbo->texColor->SetWrapMode(GL_CLAMP_TO_EDGE);
+		fbo->texColor = std::make_shared<Texture::Image2D>(Texture::CreateImage2D(
+			w, h, nullptr, GL_RGBA, imageType, internalFormat));
+		fbo->texColor->SetWrapMode(GL_CLAMP_TO_EDGE);
 	}
 
 	if (type != FrameBufferType::colorOnly) {
-	fbo->texDepth = std::make_shared<Texture::Image2D>(Texture::CreateImage2D(
-		w, h, nullptr, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_COMPONENT32F));
-	fbo->texDepth->SetWrapMode(GL_CLAMP_TO_EDGE);
+		fbo->texDepth = std::make_shared<Texture::Image2D>(Texture::CreateImage2D(
+			w, h, nullptr, GL_DEPTH_COMPONENT, GL_FLOAT, GL_DEPTH_COMPONENT32F));
+		fbo->texDepth->SetWrapMode(GL_CLAMP_TO_EDGE);
 	}
 
 	// フレームバッファを作成する.
@@ -46,8 +46,8 @@ FramebufferObjectPtr FramebufferObject::Create(int w, int h, GLenum internalForm
 	glBindFramebuffer(GL_FRAMEBUFFER, fbo->id);
 
 	if (fbo->texColor) {
-	glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
-		fbo->texColor->Target(), fbo->texColor->Get(), 0);
+		glFramebufferTexture2D(GL_FRAMEBUFFER, GL_COLOR_ATTACHMENT0,
+			fbo->texColor->Target(), fbo->texColor->Get(), 0);
 	}
 
 	if (fbo->texDepth) {
@@ -62,39 +62,39 @@ FramebufferObjectPtr FramebufferObject::Create(int w, int h, GLenum internalForm
 /**
 * デストラクタ.
 */
-	FramebufferObject::~FramebufferObject()
-	 {
+FramebufferObject::~FramebufferObject()
+{
 	if (id) {
 		glDeleteFramebuffers(1, &id);
 	}
 }
 
-	/**
-	* FBOのIDを取得する.
-	*
-	* @return FBOのID.
-	*/
-	GLuint FramebufferObject::GetFramebuffer() const
-		{
-		return id;
-	}
+/**
+* FBOのIDを取得する.
+*
+* @return FBOのID.
+*/
+GLuint FramebufferObject::GetFramebuffer() const
+{
+	return id;
+}
 
-	/**
-	* カラーバッファ用テクスチャを取得する.
-	*
-	* @return カラーバッファ用テクスチャ.
-	*/
-	const Texture::Image2DPtr& FramebufferObject::GetColorTexture() const
-		{
-		return texColor;
-	}
+/**
+* カラーバッファ用テクスチャを取得する.
+*
+* @return カラーバッファ用テクスチャ.
+*/
+const Texture::Image2DPtr& FramebufferObject::GetColorTexture() const
+{
+	return texColor;
+}
 
-		/**
-		* 深度バッファ用テクスチャを取得する.
-		*
-		* @return 深度バッファ用テクスチャ.
-		*/
-		const Texture::Image2DPtr& FramebufferObject::GetDepthTexture() const
-		{
-		return texDepth;
-	}
+/**
+* 深度バッファ用テクスチャを取得する.
+*
+* @return 深度バッファ用テクスチャ.
+*/
+const Texture::Image2DPtr& FramebufferObject::GetDepthTexture() const
+{
+	return texDepth;
+}

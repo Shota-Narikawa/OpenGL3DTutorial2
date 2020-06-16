@@ -28,7 +28,7 @@ bool BufferObject::Create(GLenum target, GLsizeiptr size, const GLvoid* data, GL
 	const GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
 		std::cerr << "[エラー] " << __func__ << ": バッファの作成に失敗.\n";
-	
+
 	}
 	return error == GL_NO_ERROR;
 }
@@ -43,7 +43,7 @@ bool BufferObject::Create(GLenum target, GLsizeiptr size, const GLvoid* data, GL
 *@retval true	転送成功.
 *@retval false	転送失敗.
 */
-bool BufferObject::BufferSubData(GLintptr offset, GLsizeiptr size, const GLvoid* data){
+bool BufferObject::BufferSubData(GLintptr offset, GLsizeiptr size, const GLvoid* data) {
 
 	if (size <= 0) {
 		return true;
@@ -54,11 +54,11 @@ bool BufferObject::BufferSubData(GLintptr offset, GLsizeiptr size, const GLvoid*
 		std::cerr << "  buffer size:" << this->size << " offset:" << offset << " size:" << size << "\n";
 		if (offset >= this->size) {
 			return false;
-			
+
 		}
-			//可能な範囲だけ転送を行う.
-			size = this->size - offset;
-		
+		//可能な範囲だけ転送を行う.
+		size = this->size - offset;
+
 	}
 	glBindBuffer(target, id);
 	glBufferSubData(target, offset, size, data);
@@ -66,7 +66,7 @@ bool BufferObject::BufferSubData(GLintptr offset, GLsizeiptr size, const GLvoid*
 	const GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
 		std::cerr << "[エラー] " << __func__ << ": データの転送に失敗.\n";
-	
+
 	}
 	return error == GL_NO_ERROR;
 }
@@ -75,12 +75,12 @@ bool BufferObject::BufferSubData(GLintptr offset, GLsizeiptr size, const GLvoid*
 *Buffer Objectを破棄する.
 */
 
-void BufferObject::Destroy(){
+void BufferObject::Destroy() {
 
 	if (id) {
 		glDeleteBuffers(1, &id);
 		id = 0;
-		
+
 	}
 }
 
@@ -94,7 +94,7 @@ void BufferObject::Destroy(){
 *@retval false	作成失敗.
 */
 
-bool VertexArrayObject::Create(GLuint vbo, GLuint ibo){
+bool VertexArrayObject::Create(GLuint vbo, GLuint ibo) {
 
 	Destroy();
 	glGenVertexArrays(1, &id);
@@ -109,7 +109,7 @@ bool VertexArrayObject::Create(GLuint vbo, GLuint ibo){
 	const GLenum error = glGetError();
 	if (error != GL_NO_ERROR) {
 		std::cerr << "[エラー] " << __func__ << ": VAOの作成に失敗.\n";
-	
+
 	}
 	return error == GL_NO_ERROR;
 }
@@ -124,7 +124,7 @@ void VertexArrayObject::Destroy() {
 		id = 0;
 		vboId = 0;
 		iboId = 0;
-	
+
 	}
 }
 
@@ -137,7 +137,7 @@ void VertexArrayObject::Destroy() {
 *@sa Unbind(), VertexAttribPointer(), ResetVertexAttribPointer()
 */
 
-void VertexArrayObject::Bind() const{
+void VertexArrayObject::Bind() const {
 
 	glBindVertexArray(id);
 	glBindBuffer(GL_ARRAY_BUFFER, vboId);
@@ -175,11 +175,11 @@ void VertexArrayObject::Unbind() const {
 */
 
 void VertexArrayObject::VertexAttribPointer(
-	GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, size_t offset) const{
+	GLuint index, GLint size, GLenum type, GLboolean normalized, GLsizei stride, size_t offset) const {
 	glEnableVertexAttribArray(index);
 	glVertexAttribPointer(index, size, type, normalized, stride, reinterpret_cast<GLvoid*>(offset));
 
-	}
+}
 
 /**
 *全ての頂点アトリビュートを無効化する.
@@ -193,6 +193,6 @@ void VertexArrayObject::ResetVertexAttribPointer() const {
 	glGetIntegerv(GL_MAX_VERTEX_ATTRIBS, &maxAttr);
 	for (int i = 0; i < maxAttr; ++i) {
 		glDisableVertexAttribArray(i);
-		
+
 	}
 }

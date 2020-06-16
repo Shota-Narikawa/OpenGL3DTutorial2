@@ -14,7 +14,7 @@
 class StatusScene : public Scene {
 
 public:
-	StatusScene() : Scene("StatusScene"){}
+	StatusScene() : Scene("StatusScene") {}
 	virtual ~StatusScene() = default;
 
 	virtual bool Initialize() override;

@@ -39,9 +39,9 @@ void GameOverScene::ProcessInput() {
 
 	if (window.GetGamePad().buttonDown & GamePad::START) {
 		bgm->Stop();
-			SceneStack::Instance().Replace(std::make_shared<TitleScene>());
+		SceneStack::Instance().Replace(std::make_shared<TitleScene>());
 
-	}	
+	}
 }
 
 /**
@@ -64,7 +64,7 @@ void GameOverScene::Update(float deltaTime) {
 
 	fontRenderer.BeginUpdate();
 	fontRenderer.Color(glm::vec4(1, 0.2f, 0.1f, 1));
-	fontRenderer.AddString(glm::vec2(-100,0), L"ゲームオーバー");
+	fontRenderer.AddString(glm::vec2(-100, 0), L"ゲームオーバー");
 	fontRenderer.AddString(glm::vec2(-250, -100), L"Enterを押すとタイトルに戻ります");
 	fontRenderer.EndUpdate();
 }

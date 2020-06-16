@@ -39,7 +39,7 @@ namespace Texture {
 
 	GLuint CreateImage2D(GLsizei width, GLsizei height, const GLvoid* data, GLenum format, GLenum type);
 	GLuint CreateImage2D(GLsizei width, GLsizei height, const GLvoid* data,
-	GLenum format, GLenum type, GLenum internalFormat);
+		GLenum format, GLenum type, GLenum internalFormat);
 	GLuint LoadImage2D(const char* path);
 
 	bool LoadImage2D(const char* path, ImageData* imageData);
@@ -47,19 +47,19 @@ namespace Texture {
 	/**
 	* テクスチャ操作インターフェイス.
 	*/
-		class Interface
-		 {
-		public:
-			Interface() = default;
-			virtual ~Interface() = default;
-			virtual bool IsNull() const = 0;
-			virtual GLuint Get() const = 0;
-			virtual GLint Width() const = 0;
-			virtual GLint Height() const = 0;
-			virtual GLenum Target() const = 0;
+	class Interface
+	{
+	public:
+		Interface() = default;
+		virtual ~Interface() = default;
+		virtual bool IsNull() const = 0;
+		virtual GLuint Get() const = 0;
+		virtual GLint Width() const = 0;
+		virtual GLint Height() const = 0;
+		virtual GLenum Target() const = 0;
 
-			void SetWrapMode(GLenum mode);
-		};
+		void SetWrapMode(GLenum mode);
+	};
 
 	/**
 	* テクスチャ・イメージ.
@@ -90,50 +90,50 @@ namespace Texture {
 	/**
 	* バッファ・テクスチャ.
 	*/
-		class Buffer : public Interface
-		 {
-		public:
-			static BufferPtr Create(GLenum internalFormat, GLsizeiptr size,
-				const GLvoid* data = nullptr, GLenum usage = GL_STATIC_DRAW);
-			Buffer() = default;
-			virtual ~Buffer();
-			
-			virtual bool IsNull() const override { return !id; }
-			virtual GLuint Get() const override { return id; }
-			virtual GLint Width() const override { return bo.Size(); }
-			virtual GLint Height() const override { return 1; }
-			virtual GLenum Target() const override { return GL_TEXTURE_BUFFER; }
-			
-			bool BufferSubData(GLintptr offset, GLsizeiptr size, const GLvoid* data);
-			GLuint BufferId() const { return bo.Id(); }
-			GLsizeiptr Size() const { return bo.Size(); }
-			
-				private:
-					GLuint id = 0;
-					BufferObject bo;
-				};
+	class Buffer : public Interface
+	{
+	public:
+		static BufferPtr Create(GLenum internalFormat, GLsizeiptr size,
+			const GLvoid* data = nullptr, GLenum usage = GL_STATIC_DRAW);
+		Buffer() = default;
+		virtual ~Buffer();
 
-		/**
-		* キューブマップ・テクスチャ.
-		*/
-		class Cube : public Interface
-			{
-			public:
-				static CubePtr Create(const std::vector<std::string>&);
-				Cube() = default;
-				virtual ~Cube();
-				
-				virtual bool IsNull() const override { return !id; }
-				virtual GLuint Get() const override { return id; }
-				virtual GLint Width() const override { return width; }
-				virtual GLint Height() const override { return height; }
-				virtual GLenum Target() const override { return GL_TEXTURE_CUBE_MAP; }
-				
-					private:
-						GLuint id = 0;
-						GLint width = 0;
-						GLint height = 0;
-						};
+		virtual bool IsNull() const override { return !id; }
+		virtual GLuint Get() const override { return id; }
+		virtual GLint Width() const override { return bo.Size(); }
+		virtual GLint Height() const override { return 1; }
+		virtual GLenum Target() const override { return GL_TEXTURE_BUFFER; }
+
+		bool BufferSubData(GLintptr offset, GLsizeiptr size, const GLvoid* data);
+		GLuint BufferId() const { return bo.Id(); }
+		GLsizeiptr Size() const { return bo.Size(); }
+
+	private:
+		GLuint id = 0;
+		BufferObject bo;
+	};
+
+	/**
+	* キューブマップ・テクスチャ.
+	*/
+	class Cube : public Interface
+	{
+	public:
+		static CubePtr Create(const std::vector<std::string>&);
+		Cube() = default;
+		virtual ~Cube();
+
+		virtual bool IsNull() const override { return !id; }
+		virtual GLuint Get() const override { return id; }
+		virtual GLint Width() const override { return width; }
+		virtual GLint Height() const override { return height; }
+		virtual GLenum Target() const override { return GL_TEXTURE_CUBE_MAP; }
+
+	private:
+		GLuint id = 0;
+		GLint width = 0;
+		GLint height = 0;
+	};
 
 } // namespace Texture
 

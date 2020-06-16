@@ -6,16 +6,16 @@
 
 namespace GLFWEW {
 
-/**
-*GLFWからのエラー報告を処理する.
-*/
+	/**
+	*GLFWからのエラー報告を処理する.
+	*/
 	void ErrorCallback(int error, const char*desc) {
 		std::cerr << "ERROR:" << desc << std::endl;
 	}
 
-/**
-*シングルトンインスタンスを取得する.
-*/
+	/**
+	*シングルトンインスタンスを取得する.
+	*/
 	Window&Window::Instance() {
 		static Window instance;
 		return instance;
@@ -94,7 +94,7 @@ namespace GLFWEW {
 
 	void Window::SwapBuffers()const {
 		glfwPollEvents();
-		
+
 		glfwSwapBuffers(window);
 	}
 	bool Window::IsKeyPressed(int key)const {
@@ -127,8 +127,8 @@ namespace GLFWEW {
 	*
 	* @return GLFWが初期化されてからの経過時間(秒).
 	*/
-		double Window::Time() const
-		 {
+	double Window::Time() const
+	{
 		return glfwGetTime();
 	}
 
@@ -186,7 +186,7 @@ namespace GLFWEW {
 		//アナログ入力とボタン入力を取得
 		int axesCount, buttonCount;
 		const float*axes = glfwGetJoystickAxes(GLFW_JOYSTICK_1, &axesCount);
-		const uint8_t*buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1,&buttonCount);
+		const uint8_t*buttons = glfwGetJoystickButtons(GLFW_JOYSTICK_1, &buttonCount);
 
 		//両方の配列がnullptrでなく、最低限必要なデータ数を満たしていれば有効なゲームパッドが接続される
 
@@ -219,7 +219,7 @@ namespace GLFWEW {
 			static const struct {
 				int dataIndex;
 				uint32_t gamepadBit;
-			}keyMap[]={
+			}keyMap[] = {
 				{GAMEPAD_BUTTON_A,GamePad::A},			//下.
 				{ GAMEPAD_BUTTON_B,GamePad::B },		//右.
 				{ GAMEPAD_BUTTON_X,GamePad::X },		//上.
@@ -234,7 +234,7 @@ namespace GLFWEW {
 				{ GAMEPAD_BUTTON_DOWN,GamePad::DPAD_DOWN },
 				{ GAMEPAD_BUTTON_LEFT,GamePad::DPAD_LEFT },
 				{ GAMEPAD_BUTTON_RIGHT,GamePad::DPAD_RIGHT },
-		};
+			};
 			for (const auto&e : keyMap) {
 				if (buttons[e.dataIndex] == GLFW_PRESS) {
 					gamepad.buttons |= e.gamepadBit;
@@ -279,7 +279,7 @@ namespace GLFWEW {
 			{ GLFW_KEY_B,GamePad::BB },
 			{ GLFW_KEY_Q,GamePad::Q },
 			{ GLFW_KEY_E,GamePad::E },
-		};
+			};
 			for (const auto&e : keyMap) {
 				const int key = glfwGetKey(window, e.keyCode);
 				if (key == GLFW_PRESS) {

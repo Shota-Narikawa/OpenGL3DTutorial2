@@ -153,7 +153,7 @@ void SceneStack::Push(ScenePtr p) {
 void SceneStack::Pop() {
 
 	if (stack.empty()) {
-		std::cout <<"[シーン ポップ][警告]シーンスタックが空です.\n";
+		std::cout << "[シーン ポップ][警告]シーンスタックが空です.\n";
 		return;
 	}
 	Current().Stop();
@@ -177,7 +177,7 @@ void SceneStack::Replace(ScenePtr p) {
 
 	std::string sceneName = "(Empty)";
 	if (stack.empty()) {
-		std::cout << "[シーン　リプレース][警告]シーンスタックが空です.\n"; 
+		std::cout << "[シーン　リプレース][警告]シーンスタックが空です.\n";
 	}
 	else {
 		sceneName = Current().Name();
@@ -242,7 +242,7 @@ bool SceneStack::Empty() const {
 
 void SceneStack::Update(float deltaTime) {
 
-	
+
 	if (!Empty()) {
 
 		Current().ProcessInput();
