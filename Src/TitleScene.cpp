@@ -302,13 +302,13 @@ void TitleScene::Update(float deltaTime) {
 
 		if (tutorialText) {
 			fontRenderer.Color(glm::vec4(0.0f, 0.0f, 0.0f, 1));
-			fontRenderer.AddString(glm::vec2(-340, 140), L"視点左回転");
+			fontRenderer.AddString(glm::vec2(-340, 140), L"視点左回");
 			fontRenderer.AddString(glm::vec2(-310, 10), L"決定");
 			fontRenderer.AddString(glm::vec2(-340, -50), L"メニュー");
 			fontRenderer.AddString(glm::vec2(-310, -120), L"移動");
 
 			fontRenderer.AddString(glm::vec2(215, 200), L"ジャンプ");
-			fontRenderer.AddString(glm::vec2(215, 140), L"視点右回転");
+			fontRenderer.AddString(glm::vec2(215, 140), L"視点右回");
 			fontRenderer.AddString(glm::vec2(215, 75), L"スキル１");
 			fontRenderer.AddString(glm::vec2(215, 10), L"スキル２");
 			fontRenderer.AddString(glm::vec2(215, -55), L"スキル３");
