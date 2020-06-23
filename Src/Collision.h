@@ -35,6 +35,14 @@ namespace Collision {
 	};
 
 	/**
+	*軸平行境界ボックス.
+	*/
+	struct AABB {
+		glm::vec3 min; ///< 各軸の最小値.
+		glm::vec3 max; ///< 各軸の最大値.
+	};
+
+	/**
 	*有向境界ボックス.
 	*/
 	struct OrientedBoundingBox {
@@ -68,10 +76,25 @@ namespace Collision {
 	Shape CreateOBB(const glm::vec3& center, const glm::vec3& axisX,
 		const glm::vec3& axisY, const glm::vec3& axisZ, const glm::vec3& e);
 
+/**
+* 衝突結果を表す構造体.
+*/
+struct Result
+{
+		bool isHit = false; ///< 衝突の有無.
+		glm::vec3 pa; ///< 形状A上の衝突点.
+		glm::vec3 na; ///< 形状A上の衝突平面の法線.
+		glm::vec3 pb; ///< 形状B上の衝突点.
+		glm::vec3 nb; ///< 形状B上の衝突平面の法線.
+};
+
 	bool TestSphereSphere(const Sphere&, const Sphere&);
 	bool TestSphereCapsule(const Sphere& s, const Capsule& c, glm::vec3* p);
 	bool TestShapeShape(const Shape&, const Shape&, glm::vec3* pa, glm::vec3* pb);
 	bool TestSphereOBB(const Sphere& s, const OrientedBoundingBox& obb, glm::vec3* p);
+	Result TestShapeShape(const Shape&, const Shape&);
+
+	glm::vec3 ClosestPointSegment(const Segment& seg, const glm::vec3& p);
 }
 
 #endif // COLLISION_H_INCLUDED

@@ -131,7 +131,7 @@ private:
 	int selectCount2 = 0;	//選択アイコン用.
 	int selectCount3 = 0;	////選択アイコン用.
 	int stageChage = 0;		//どの試練か.
-	int defenceLine = 100;	//０になるとゲームオーバ.
+	float defenceLine = 100.0f;	//０になるとゲームオーバ.
 
 	//敵の情報.
 	int enemySpawn = 100;	//一度に湧く敵の出現数.

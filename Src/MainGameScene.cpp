@@ -416,7 +416,7 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 			{
 				isAttacking = true;
 				defenceFrag = true;
-				defenceLine - 1 - a;
+				defenceLine -= 0.1f + a;
 			}
 		}
 	}

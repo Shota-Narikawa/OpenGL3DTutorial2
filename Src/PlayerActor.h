@@ -21,6 +21,7 @@ public:
 
 	virtual void Update(float) override;
 	virtual void OnHit(const ActorPtr&, const glm::vec3&);
+	virtual void OnHit(const ActorPtr&, const Collision::Result&) override;
 	void Jump();
 	void ProcessInput();
 	void SetBoardingActor(ActorPtr);

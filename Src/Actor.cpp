@@ -326,14 +326,16 @@ void DetectCollision(const ActorPtr& a, const ActorPtr& b, CollisionHandlerType 
 		return;
 
 	}
-	glm::vec3 pa, pb;
-	if (Collision::TestShapeShape(a->colWorld, b->colWorld, &pa, &pb)) {
+	Collision::Result r = Collision::TestShapeShape(a->colWorld, b->colWorld);
+	if (r.isHit) {
 		if (handler) {
-			handler(a, b, pb);
+			handler(a, b, r.pa);
 		}
 		else {
-			a->OnHit(b, pb);
-			b->OnHit(a, pa);
+			a->OnHit(b, r);
+			std::swap(r.pa, r.pb);
+			std::swap(r.na, r.nb);
+			b->OnHit(a, r);
 
 		}
 	}
@@ -355,16 +357,17 @@ void DetectCollision(const ActorPtr& a, ActorList& b, CollisionHandlerType handl
 	for (const ActorPtr& actorB : b) {
 		if (actorB->health <= 0) {
 			continue;
-
 		}
-		glm::vec3 pa, pb;
-		if (Collision::TestShapeShape(a->colWorld, actorB->colWorld, &pa, &pb)) {
+		Collision::Result r = Collision::TestShapeShape(a->colWorld, actorB->colWorld);
+		if (r.isHit) {
 			if (handler) {
-				handler(a, actorB, pb);
+				handler(a, actorB, r.pa);
 			}
 			else {
-				a->OnHit(actorB, pb);
-				actorB->OnHit(a, pa);
+				a->OnHit(actorB, r);
+				std::swap(r.pa, r.pb);
+				std::swap(r.na, r.nb);
+				actorB->OnHit(a, r);
 			}
 			if (a->health <= 0) {
 				break;
@@ -385,21 +388,22 @@ void DetectCollision(ActorList& a, ActorList& b, CollisionHandlerType handler)
 	for (const ActorPtr& actorA : a) {
 		if (actorA->health <= 0) {
 			continue;
-
 		}
 		for (const ActorPtr& actorB : b) {
 			if (actorB->health <= 0) {
 				continue;
-
 			}
-			glm::vec3 pa, pb;
-			if (Collision::TestShapeShape(actorA->colWorld, actorB->colWorld, &pa, &pb)) {
+			Collision::Result r =
+				Collision::TestShapeShape(actorA->colWorld, actorB->colWorld);
+			if (r.isHit) {
 				if (handler) {
-					handler(actorA, actorB, pb);
+					handler(actorA, actorB, r.pa);
 				}
 				else {
-					actorA->OnHit(actorB, pb);
-					actorB->OnHit(actorA, pa);
+					actorA->OnHit(actorB, r);
+					std::swap(r.pa, r.pb);
+					std::swap(r.na, r.nb);
+					actorB->OnHit(actorA, r);
 				}
 				if (actorA->health <= 0) {
 					break;

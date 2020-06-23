@@ -28,6 +28,9 @@ public:
 	virtual void UpdateDrawData(float);
 	virtual void Draw(Mesh::DrawType drawType);
 	virtual void OnHit(const ActorPtr&, const glm::vec3&) {}
+	virtual void OnHit(const ActorPtr& other, const Collision::Result& result) {
+		OnHit(other, result.pb);
+	}
 
 public:
 	std::string name; ///< アクターの名前.

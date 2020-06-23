@@ -66,7 +66,7 @@ PlayerActor::PlayerActor(const Terrain::HeightMap* hm, const Mesh::Buffer& buffe
 	: SkeletalMeshActor(buffer.GetSkeletalMesh("Bikuni"), "Player", 10, pos, rot),
 	heightMap(hm)
 {
-	colLocal = Collision::CreateSphere(glm::vec3(0, 0.7f, 0), 0.7f);
+	colLocal = Collision::CreateCapsule(glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
 	state = State::idle;
 }
 
@@ -93,11 +93,20 @@ void PlayerActor::Update(float deltaTime)
 	else if (position.y > groundHeight) {
 		//乗っている物体から離れたら空中判定にする.
 		if (boardingActor) {
-			Collision::Shape col = colWorld;
-			col.s.r += 0.1f; // 衝突判定を少し大きくする.
-			glm::vec3 pa, pb;
-			if (!Collision::TestShapeShape(col, boardingActor->colWorld, &pa, &pb)) {
+			// 落下判定用の形状は、プレイヤーの衝突判定形状に合わせて調整すること.
+			const Collision::Shape col = Collision::CreateCapsule(
+				position + glm::vec3(0, 0.4f, 0), position + glm::vec3(0, 1, 0), 0.25f);
+			const Collision::Result result =
+				Collision::TestShapeShape(col, boardingActor->colWorld);
+			if (!result.isHit) {
 				boardingActor.reset();
+			}
+			else {
+				//衝突面の法線が真上から30度の範囲になければ落下.
+					const float theta = glm::dot(result.nb, glm::vec3(0, 1, 0));
+				if(theta < glm::cos(glm::radians(30.0f))) {
+					boardingActor.reset();
+				}
 			}
 		}
 		//落下判定.
@@ -398,6 +407,31 @@ void PlayerActor::CheckJump(const GamePad& gamepad)
 		else if (playerID == 3) {
 			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack1.mp3")->Play();
 		}
+	}
+}
+
+/**
+*衝突ハンドラ.
+*
+*@param		b	衝突相手のアクター.
+*@param	result	衝突結果.
+*/
+void PlayerActor::OnHit(const ActorPtr& b, const Collision::Result& result)
+{
+	//貫通しない位置まで衝突面の法線方向に移動させる.
+	const float d = glm::dot(result.nb, result.pb - result.pa);
+	const glm::vec3 v = result.nb * (d + 0.01f);
+	colWorld.obb.center += v;
+	position += v;
+	if (!isInAir && !boardingActor) {
+		const float newY = heightMap->Height(position);
+		colWorld.obb.center.y += newY - position.y;
+		position.y = newY;
+	}
+	//衝突面の法線が真上から30度の範囲にあれば乗ることができる(角度は要調整).
+		const float theta = glm::dot(result.nb, glm::vec3(0, 1, 0));
+	if (theta >= cos(glm::radians(30.0f))) {
+		SetBoardingActor(b);
 	}
 }
 
