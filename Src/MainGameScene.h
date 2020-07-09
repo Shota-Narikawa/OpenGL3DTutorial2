@@ -18,6 +18,7 @@
 #include "FramebufferObject.h"
 #include "Particle.h"
 #include "TextWindow.h"
+#include "Camera.h"
 #include <random>
 #include <vector>
 
@@ -52,7 +53,7 @@ public:
 	static bool StClearedE, StClearedW, StClearedS, StClearedN;	///<ステート移行可能状態.
 
 private:
-	void RenderMesh(Mesh::DrawType);
+	void RenderMesh(const Collision::Frustum*, Mesh::DrawType);
 
 	int jizoId = -1; ///< 現在戦闘中のお地蔵様のID.
 	bool achivements[4] = { false, false, false, false }; ///< 敵討伐状態.
@@ -106,20 +107,22 @@ private:
 	State state = State::play;
 
 	//タイマー系.
-	float nextStageTimer = 0.0f;		//次のステージ、別のステージ移行中のタイマー.
-	float loadTimer = 0.0f;				//シーン移行中のロード画面タイマー.
-	float actionWaitTimer = 0.0f;		//攻撃のタイマー.
-	float timer = 0.0f;					//シーンタイマー.
-	float clearTimer = 0, overTimer = 0.0f;	//ゲームクリア、ゲームオーバのタイマー.
+	float nextStageTimer = 0.0f;								//次のステージ、別のステージ移行中のタイマー.
+	float loadTimer = 0.0f;										//シーン移行中のロード画面タイマー.
+	float actionWaitTimer = 0.0f;								//攻撃のタイマー.
+	float timer = 0.0f;											//シーンタイマー.
+	float clearTimer = 0, overTimer = 0.0f;						//ゲームクリア、ゲームオーバのタイマー.
 	float playerBulletTimerA = 0, playerBulletTimerB = 0,
-		playerBulletTimerC = 0, playerBulletTimerD = 0.0f;			//弾のタイマー.
+		playerBulletTimerC = 0, playerBulletTimerD = 0.0f;		//弾のタイマー.
 	float attackingTimer = 3.0f;								//敵の攻撃タイマー.
-	float enemyPopTimerA = 0, enemyPopTimerB = 0, enemyPopTimerC = 0.0f, enemyPopTimerD = 0.0f;//敵の出現時間間隔.
-	float itemTimerA = 0, itemTimerB = 0, itemTimerC = 0.0f;			//アイテム出現タイマー.
-	float eIntTimer = 0, wIntTimer = 0, sIntTimer = 0, nIntTimer = 0.0f;	//各攻撃のインターバル.
+	float enemyPopTimerA = 0, enemyPopTimerB = 0,
+		enemyPopTimerC = 0.0f, enemyPopTimerD = 0.0f;			//敵の出現時間間隔.
+	float itemTimerA = 0, itemTimerB = 0, itemTimerC = 0.0f;	//アイテム出現タイマー.
+	float eIntTimer = 0, wIntTimer = 0, 
+		sIntTimer = 0, nIntTimer = 0.0f;						//各攻撃のインターバル.
 	float allTimer = 0.0f;										//予備用タイマー.
-	float evFragTimer = 0.0f;
-
+	float particleTimerA = 0, particleTimerB = 0;			//パーティクル制御タイマー.
+	float partiIntTimer = 0;
 
 	//ID.
 	int warpID = -1;
@@ -131,14 +134,14 @@ private:
 	int selectCount2 = 0;	//選択アイコン用.
 	int selectCount3 = 0;	////選択アイコン用.
 	int stageChage = 0;		//どの試練か.
-	float defenceLine = 100.0f;	//０になるとゲームオーバ.
+	float defenceLine = 100;	//０になるとゲームオーバ.
 
 	//敵の情報.
 	int enemySpawn = 100;	//一度に湧く敵の出現数.
 	int enemyBlow = 0;		//敵を倒した数.
 	int enemyStock = 1;		//敵の残数.
 	int enemyAttack = 0;	//敵の攻撃力.
-	float baseSpeed = 1.0f;		//敵の移動スピード.
+	float baseSpeed = 1.0f;	//敵の移動スピード.
 	int randTarget = 0;		//ランダムでターゲット取得.
 
 
@@ -168,23 +171,28 @@ private:
 	bool nextStateFlag = false;						///<ステート移行可能状態.
 
 	bool selectIconFlag = false;					///<セレクトアイコン.
-	bool shotTimerFragA = false, shotTimerFragB = false, shotTimerFragC = false;			///<攻撃でタイマーを動かすフラグ.
+	bool shotTimerFragA = false, shotTimerFragB = false, 
+		shotTimerFragC = false;						///<攻撃でタイマーを動かすフラグ.
 	bool chargeShotFlagA, chargeShotFlagB = false;	///<溜め攻撃用フラグ.
 	bool isAttacking = false;						///<敵の攻撃.
 	bool bulletFragA, bulletFragB = false;			///<周囲に出る.
-	bool eInterval = false, wInterval = false, sInterval = false, nInterval = false;		///<各ボタンのインターバル状態のフラグ.
-	bool eCommand = false, wCommand = false, sCommand = false, nCommand = false;			///<どの攻撃ボタンを押しているか.
+	bool eInterval = false, wInterval = false,
+		sInterval = false, nInterval = false;		///<各ボタンのインターバル状態のフラグ.
+	bool eCommand = false, wCommand = false,
+		sCommand = false, nCommand = false;			///<どの攻撃ボタンを押しているか.
 
 	bool iconUpFlag = false, iconDownFlag = false;	//アイコン動作状態.
-	bool mHouseFlag = false;				//モンスターハウス.
-	bool defenceFrag = false;				//防衛ラインが攻撃されているか.
+	bool mHouseFlag = false;						//モンスターハウス.
+	bool defenceFrag = false;						//防衛ラインが攻撃されているか.
 
-	bool eventFrag = false;					//セリフイベント表示フラグ.
+	bool eventFrag = false;							//セリフイベント表示フラグ.
 
-	bool cameraFar = false;	//カメラを離す.
+	bool cameraFar = false;		//カメラを離す.
 	bool cameraNear = false;	//カメラを寄せる.
-	bool gamePadText = false;
-	bool keybordText = false;
+	bool gamePadText = false;	//ゲームパッドイラスト.
+	bool keybordText = false;	//キーボードイラスト.
+	bool particleFlagY = false;	//パーティクル制御フラグ.
+	bool particleFlagB = false;	//パーティクル制御フラグ.
 
 	Actor* target = nullptr;
 	glm::vec3 position = glm::vec3(0);
@@ -201,32 +209,6 @@ private:
 	};
 	MiniMapIcon mapIcon;
 
-	struct Camera {
-		glm::vec3 target = glm::vec3(100, 0, 100);
-		glm::vec3 position = glm::vec3(100, 50, 150);
-		glm::vec3 up = glm::vec3(0, 1, 0);
-		glm::vec3 velocity = glm::vec3(0);
-		glm::vec3 rotation = glm::vec3(0);
-
-		// 画面パラメータ.
-		float width = 1280; ///< 画面の幅(ピクセル数).
-		float height = 720; ///< 画面の高さ(ピクセル数).
-		float near = 1;     ///< 最小Z値(メートル).
-		float far = 500;    ///< 最大Z値(メートル).
-
-							// カメラパラメータ.
-		float fNumber = 1.4f;            ///< エフ・ナンバー = カメラのF値.
-		float fov = glm::radians(40.0f); ///< フィールド・オブ・ビュー = カメラの視野角(ラジアン).
-		float sensorSize = 36.0f;        ///< センサー・サイズ = カメラのセンサーの横幅(ミリ).
-
-										 // Update関数で計算するパラメータ.
-		float focalLength = 50.0f;   ///< フォーカル・レングス = 焦点距離(ミリ).
-		float aperture = 20.0f;      ///< アパーチャ = 開口(ミリ).
-		float focalPlane = 10000.0f; ///< フォーカル・プレーン = ピントの合う距離.
-
-		void Update(const glm::mat4& matView);
-
-	};
 	Camera camera;
 };
 

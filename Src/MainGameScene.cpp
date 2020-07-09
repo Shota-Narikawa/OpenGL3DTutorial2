@@ -38,7 +38,6 @@ bool MainGameScene::StClearedS = false;
 bool MainGameScene::StClearedW = false;
 bool MainGameScene::StClearedN = false;
 
-
 /**
 *衝突を解決する.
 *
@@ -416,7 +415,7 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 			{
 				isAttacking = true;
 				defenceFrag = true;
-				defenceLine -= 0.1f + a;
+				defenceLine -= 0.5f * a;
 			}
 		}
 	}
@@ -429,11 +428,12 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 */
 void MainGameScene::EnemyDetectCollision(int i)
 {
-	//敵と自分の攻撃.
+	//炎攻撃.
 	DetectCollision(bullet[0], enemies[i],
 		[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p)
 	{
 		Audio::Engine::Instance().Prepare("Res/Audio/Enemy.mp3")->Play();
+		Audio::Engine::Instance().Prepare("Res/Audio/magic-flame2.mp3")->Play();
 		b->health = 0;
 		enemyBlow += 1;
 		player->pExPoint -= 20;
@@ -452,11 +452,12 @@ void MainGameScene::EnemyDetectCollision(int i)
 		effects.Add(effect);
 	});
 
-	//敵と自分の攻撃.
+	//氷攻撃.
 	DetectCollision(bullet[1], enemies[i],
 		[this](const ActorPtr& a, const ActorPtr&b, const glm::vec3& p)
 	{
 		Audio::Engine::Instance().Prepare("Res/Audio/Enemy.mp3")->Play();
+		Audio::Engine::Instance().Prepare("Res/Audio/magic-ice2.mp3")->Play();
 		b->health = 0;
 		enemyBlow += 1;
 		player->pExPoint -= 20;
@@ -974,9 +975,27 @@ bool MainGameScene::Initialize()
 			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 				meshDefencePoint, "DefencePoint", 100, position, glm::vec3(0, 0, 0));
 			p->colLocal = Collision::CreateCapsule(
-				glm::vec3(0, 1.5f, 0), glm::vec3(0, 1.5f, 0), 2.0f);
+				glm::vec3(0, 0, 0), glm::vec3(0, 1.5f, 0), 1.5f);
 			p->scale = glm::vec3(1, 2, 1); // 見つけやすいように拡大.
 			defencePoint.Add(p);
+
+			ParticleEmitterParameter ep;
+			ep.imagePath = "Res/DiskParticle.tga";
+			ep.tiles = glm::ivec2(1, 1);
+			ep.position = position;
+			ep.position.y = heightMap.Height(position)+ 1.0f;
+			ep.emissionsPerSecond = 40.0f;
+			ep.duration = 1.0f;
+			ep.dstFactor = GL_ONE; // 加算合成.
+			ep.gravity = 0;
+			ep.angle = glm::radians(60.0f);//
+			ParticleParameter pp;
+			pp.acceleration = glm::vec3(0, 5, 0);//
+			pp.lifetime = 0.8f;
+			pp.velocity = glm::vec3(0, 2, 0);
+			pp.scale = glm::vec2(0.05f,1.0f);
+			pp.color = glm::vec4(0.1f, 0.1f, 0.9f, 1.0f);
+			particleSystem.Add(ep, pp);
 		}
 
 		//試練のステージの石壁を配置.
@@ -989,7 +1008,7 @@ bool MainGameScene::Initialize()
 			//下側の壁.
 			for (size_t i = 0; i < wallCount; ++i)
 			{
-				const int posX = 45 - i * 6.0f;
+				const float posX = 45 - i * 6.0f;
 				glm::vec3 position = startPos + glm::vec3(posX, 2, 35);
 				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
@@ -1001,7 +1020,7 @@ bool MainGameScene::Initialize()
 			//上側の壁.
 			for (size_t i = 0; i < wallCount; ++i)
 			{
-				const int posX = 45 - i * 6.0f;
+				const float posX = 45 - i * 6.0f;
 				glm::vec3 position = startPos + glm::vec3(posX, 2, -35);
 				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
@@ -1013,7 +1032,7 @@ bool MainGameScene::Initialize()
 			//右側の壁.
 			for (size_t i = 0; i < wallCount; ++i)
 			{
-				const int posZ = 45 - i * 6.0f;
+				const float posZ = 45 - i * 6.0f;
 				glm::vec3 position = startPos + glm::vec3(35, 2, posZ);
 				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
@@ -1025,7 +1044,7 @@ bool MainGameScene::Initialize()
 			//左側の壁.
 			for (size_t i = 0; i < wallCount; ++i)
 			{
-				const int posZ = 45 - i * 6.0f;
+				const float posZ = 45 - i * 6.0f;
 				glm::vec3 position = startPos + glm::vec3(-35, 2, posZ);
 				StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 					meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
@@ -1049,7 +1068,7 @@ bool MainGameScene::Initialize()
 		//下側の壁.
 		for (size_t i = 0; i < wallCount; ++i)
 		{
-			const int posX = 25 - i * 6.0f;
+			const float posX = 25 - i * 6.0f;
 			glm::vec3 position = startPos + glm::vec3(posX, 2, 25);
 			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 				meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
@@ -1061,7 +1080,7 @@ bool MainGameScene::Initialize()
 		//上側の壁.
 		for (size_t i = 0; i < wallCount; ++i)
 		{
-			const int posX = 25 - i * 6.0f;
+			const float posX = 25 - i * 6.0f;
 			glm::vec3 position = startPos + glm::vec3(posX, 2, -23);
 			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 				meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
@@ -1073,7 +1092,7 @@ bool MainGameScene::Initialize()
 		//右側の壁.
 		for (size_t i = 0; i < wallCount; ++i)
 		{
-			const int posZ = 25 - i * 6.0f;
+			const float posZ = 25 - i * 6.0f;
 			glm::vec3 position = startPos + glm::vec3(25, 2, posZ);
 			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 				meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
@@ -1085,7 +1104,7 @@ bool MainGameScene::Initialize()
 		//左側の壁.
 		for (size_t i = 0; i < wallCount; ++i)
 		{
-			const int posZ = 25 - i * 6.0f;
+			const float posZ = 25 - i * 6.0f;
 			glm::vec3 position = startPos + glm::vec3(-23, 2, posZ);
 			StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
 				meshStoneWall, "Skeltal", 100, position, glm::vec3(0, 0, 0));
@@ -1196,9 +1215,7 @@ bool MainGameScene::Initialize()
 		if (StClearedE)
 		{
 			{
-				//エミッター1個目.
 				ParticleEmitterParameter ep;
-				//ep.imagePath = "Res/DiskParticle.tga";
 				ep.imagePath = "Res/FireParticle.tga";
 				ep.tiles = glm::ivec2(2, 2);
 				ep.position = player->position + glm::vec3(-15, 0, -15);
@@ -1215,9 +1232,7 @@ bool MainGameScene::Initialize()
 		if (StClearedW)
 		{
 			{
-				//エミッター1個目.
 				ParticleEmitterParameter ep;
-				//ep.imagePath = "Res/DiskParticle.tga";
 				ep.imagePath = "Res/FireParticle.tga";
 				ep.tiles = glm::ivec2(2, 2);
 				ep.position = player->position + glm::vec3(5, 0, -15);
@@ -1234,9 +1249,7 @@ bool MainGameScene::Initialize()
 		if (StClearedS)
 		{
 			{
-				//エミッター1個目.
 				ParticleEmitterParameter ep;
-				//ep.imagePath = "Res/DiskParticle.tga";
 				ep.imagePath = "Res/FireParticle.tga";
 				ep.tiles = glm::ivec2(2, 2);
 				ep.position = player->position + glm::vec3(-5, 0, -15);
@@ -1253,9 +1266,7 @@ bool MainGameScene::Initialize()
 		if (StClearedN)
 		{
 			{
-				//エミッター1個目.
 				ParticleEmitterParameter ep;
-				//ep.imagePath = "Res/DiskParticle.tga";
 				ep.imagePath = "Res/FireParticle.tga";
 				ep.tiles = glm::ivec2(2, 2);
 				ep.position = player->position + glm::vec3(15, 0, -15);
@@ -1270,20 +1281,6 @@ bool MainGameScene::Initialize()
 			}
 		}
 	}
-	//{
-	//	//エミッター2個目.
-	//	ParticleEmitterParameter ep;
-	//	ep.imagePath = "Res/DiskParticle.tga";
-	//	ep.position = glm::vec3(75, 0, 100);
-	//	ep.position.y = heightMap.Height(ep.position);
-	//	ep.angle = glm::radians(30.0f);
-	//	ParticleParameter pp;
-	//	pp.lifetime = 2;
-	//	pp.scale = glm::vec2(0.2f);
-	//	pp.velocity = glm::vec3(0, 3, 0);
-	//	pp.color = glm::vec4(0.1f, 0.3f, 0.8f, 1.0f);
-	//	particleSystem.Add(ep, pp);
-	//	}
 
 	{
 		effects.Reserve(100);
@@ -1320,30 +1317,26 @@ bool MainGameScene::Initialize()
 
 		if (!StClearedE && !StClearedN && !StClearedS && !StClearedW && StageNo == 1 && eventFrag == false)
 		{	
-			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/OpeningScript.txt"));
-			return true;
+			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/OpeningScript.txt"));	
 		}
 		if (StageNo == 2)
 		{
-			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage2.txt"));
-			return true;
+			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage2.txt"));	
 		}
 		else if (StageNo == 3)
 		{
 			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage3.txt"));
-			return true;
 		}
 		else if (StageNo == 4)
 		{
 			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage4.txt"));
-			return true;
 		}
 		else if (StageNo == 5)
 		{
-			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage5.txt"));
-			return true;
+			SceneStack::Instance().Push(std::make_shared<EventScene>("Res/Event/Stage5.txt"));	
 		}
 	}
+	return true;
 }
 
 /**
@@ -1356,7 +1349,7 @@ void MainGameScene::ProcessInput()
 
 	if (state == State::play)
 	{
-		player->ProcessInput();
+		player->ProcessInput(camera);
 	}
 	//デバック用ボタン.
 	//クリア条件.
@@ -1798,7 +1791,7 @@ void MainGameScene::ProcessInput()
 		}
 
 		//スキルセット攻撃用フラグ立て.
-		//初期攻撃用フラグ立て.
+		//A、Hボタン攻撃用フラグ立て.
 		if (window.GetGamePad().buttons & GamePad::A)
 		{
 			sCommand = true;
@@ -1808,25 +1801,55 @@ void MainGameScene::ProcessInput()
 			sCommand = false;
 		}
 
-		//強攻撃用フラグ立て.
+		//X、Jボタン攻撃用フラグ立て.
 		if (wCommand == false && window.GetGamePad().buttons & GamePad::X)
 		{
 			wCommand = true;
 		}
 
-		//溜め攻撃用フラグ立て.
+		//B、Kボタン攻撃用フラグ立て.
 		if (eCommand == false && window.GetGamePad().buttons & GamePad::B)
 		{
-			chargeShotFlagA = true;
+			if (player->playerID == 3 && player->pMP > 0)
+			{
+				particleFlagB = true;
+			}
+			if (player->playerID == 2 && player->pMP > 0)
+			{
+				chargeShotFlagA = true;
+			}
 			eCommand = true;
 		}
 
-		//遠距離攻撃用フラグ立て.
+		//Y、Uボタン攻撃用フラグ立て.
 		if (nCommand == false && window.GetGamePad().buttons & GamePad::Y)
 		{
-			shotTimerFragA = true;
+			if (player->playerID == 3 && player->pMP > 0)
+			{
+				particleFlagY = true;
+			}
+			if (player->playerID == 2 && player->pMP > 0)
+			{
+				shotTimerFragA = true;
+			}
 			nCommand = true;
 		}
+
+		////骸骨の攻撃パーティクル制御フラグ立て.
+		//if(particleFlagY == false && window.GetGamePad().buttons & GamePad::Y)
+		//{
+		//	if (player->playerID == 3 && player->pMP > 0 && player->pAbility >= 3)
+		//	{
+		//		particleFlagY = true;
+		//	}
+		//}
+		//if(particleFlagB == false && window.GetGamePad().buttons & GamePad::B)
+		//{
+		//	if (player->playerID == 3 && player->pMP > 0 && player->pAbility >= 4)
+		//	{
+		//		particleFlagB = true;
+		//	}
+		//}
 	}
 }
 
@@ -1854,7 +1877,7 @@ void MainGameScene::Update(float deltaTime)
 	// カメラの状態を更新.
 	{
 		const glm::vec3 vCameraFront = glm::rotate(
-			glm::mat4(1), camera.rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 5, 25, 1);
+			glm::mat4(1), camera.rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 5, 20, 1);
 		//元になる行列、回転・角度、回転の軸
 
 		if (state != State::select)
@@ -1864,11 +1887,11 @@ void MainGameScene::Update(float deltaTime)
 		}
 		if (cameraFar == true)
 		{
-			camera.rotation.y += glm::radians(90.0f) * deltaTime;
+			camera.rotation.y += glm::radians(70.0f) * deltaTime;
 		}
 		if (cameraNear == true)
 		{
-			camera.rotation.y -= glm::radians(90.0f) * deltaTime;
+			camera.rotation.y -= glm::radians(70.0f) * deltaTime;
 		}
 	}
 
@@ -1896,6 +1919,7 @@ void MainGameScene::Update(float deltaTime)
 		warp[3].Update(deltaTime);
 		bullet[0].Update(deltaTime);
 		bullet[1].Update(deltaTime);
+		bullet[2].Update(deltaTime);
 	}
 
 	DetectCollision(player, trees);
@@ -1903,184 +1927,359 @@ void MainGameScene::Update(float deltaTime)
 	DetectCollision(player, objectives);
 	DetectCollision(player, walls);
 
-	//敵の出現.
-	if (StageNo != 1)
+	if (state == State::play)
 	{
-		DetectCollision(player, enemies[0]);
-		DetectCollision(player, enemies[1]);
-		DetectCollision(player, enemies[2]);
-		DetectCollision(player, enemies[3]);
-		DetectCollision(player, defencePoint);
-		DetectCollision(defencePoint, enemies[0]);
-		DetectCollision(defencePoint, enemies[1]);
-		DetectCollision(defencePoint, enemies[2]);
-		DetectCollision(defencePoint, enemies[3]);
-
-		enemyPopTimerA += deltaTime;
-		enemyPopTimerB += deltaTime;
-		enemyPopTimerC += deltaTime;
-		enemyPopTimerD += deltaTime;
-
-		EnemySpawn();
-		EnemyAI(deltaTime, defencePoint, 0, 0);
-		EnemyAI(deltaTime, defencePoint, 1, 1);
-		EnemyAI(deltaTime, defencePoint, 2, 2);
-		//敵が追いかけてくる.
-		for (auto& e : enemies[3])
+	//敵の出現.
+		if (StageNo != 1)
 		{
-			SkeletalMeshActorPtr enemy = std::static_pointer_cast<SkeletalMeshActor>(e);
-			Mesh::SkeletalMeshPtr mesh = enemy->GetMesh();
+			DetectCollision(player, enemies[0]);
+			DetectCollision(player, enemies[1]);
+			DetectCollision(player, enemies[2]);
+			DetectCollision(player, enemies[3]);
+			DetectCollision(player, defencePoint);
+			DetectCollision(defencePoint, enemies[0]);
+			DetectCollision(defencePoint, enemies[1]);
+			DetectCollision(defencePoint, enemies[2]);
+			DetectCollision(defencePoint, enemies[3]);
 
-			//死亡したら消す.
-			if (mesh->GetAnimation() == "Down")
+			enemyPopTimerA += deltaTime;
+			enemyPopTimerB += deltaTime;
+			enemyPopTimerC += deltaTime;
+			enemyPopTimerD += deltaTime;
+
+			EnemySpawn();
+			EnemyAI(deltaTime, defencePoint, 0, 0);
+			EnemyAI(deltaTime, defencePoint, 1, 1);
+			EnemyAI(deltaTime, defencePoint, 2, 2);
+			//敵が追いかけてくる.
+			for (auto& e : enemies[3])
 			{
-				if (mesh->IsFinished())
+				SkeletalMeshActorPtr enemy = std::static_pointer_cast<SkeletalMeshActor>(e);
+				Mesh::SkeletalMeshPtr mesh = enemy->GetMesh();
+
+				//死亡したら消す.
+				if (mesh->GetAnimation() == "Down")
 				{
-					enemy->health = 0;
-					enemyBlow += 1;
-					player->pExPoint -= 20;
-					player->pExCount -= 100;
-				}
-				continue;
-			}
-
-			const float moveSpeed = baseSpeed * 3.0f;
-			const float rotationSpeed = baseSpeed * glm::radians(60.0f);
-			const float frontRange = glm::radians(15.0f);
-
-			const glm::vec3 v = player->position - e->position;
-			const glm::vec3 vTarget = glm::normalize(v);
-			float radian = std::atan2(-vTarget.z, vTarget.x) - glm::radians(90.0f);
-
-			if (radian <= 0)
-			{
-				radian += glm::radians(360.0f);
-			}
-
-			const glm::vec3 vEnemyFront = glm::rotate(
-				glm::mat4(1), e->rotation.y + glm::radians(180.0f), glm::vec3(0, 1, 0)) * glm::vec4(0, 0, -1, 1);
-			//元になる行列、回転・角度、回転の軸
-
-			//ターゲットが正面にいなかったら、正面にとらえるような左右に旋回.
-			if (std::abs(radian - e->rotation.y) > frontRange)
-			{
-				const glm::vec3 vRotDir = glm::cross(vEnemyFront, vTarget);
-				if (vRotDir.y >= 0)
-				{
-					e->rotation.y += rotationSpeed * deltaTime;
-					if (e->rotation.y >= glm::radians(360.0f))
+					if (mesh->IsFinished())
 					{
-						e->rotation.y -= glm::radians(360.0f);
+						enemy->health = 0;
+						enemyBlow += 1;
+						player->pExPoint -= 20;
+						player->pExCount -= 100;
+					}
+					continue;
+				}
+
+				const float moveSpeed = baseSpeed * 3.0f;
+				const float rotationSpeed = baseSpeed * glm::radians(60.0f);
+				const float frontRange = glm::radians(15.0f);
+
+				const glm::vec3 v = player->position - e->position;
+				const glm::vec3 vTarget = glm::normalize(v);
+				float radian = std::atan2(-vTarget.z, vTarget.x) - glm::radians(90.0f);
+
+				if (radian <= 0)
+				{
+					radian += glm::radians(360.0f);
+				}
+
+				const glm::vec3 vEnemyFront = glm::rotate(
+					glm::mat4(1), e->rotation.y + glm::radians(180.0f), glm::vec3(0, 1, 0)) * glm::vec4(0, 0, -1, 1);
+				//元になる行列、回転・角度、回転の軸
+
+				//ターゲットが正面にいなかったら、正面にとらえるような左右に旋回.
+				if (std::abs(radian - e->rotation.y) > frontRange)
+				{
+					const glm::vec3 vRotDir = glm::cross(vEnemyFront, vTarget);
+					if (vRotDir.y >= 0)
+					{
+						e->rotation.y += rotationSpeed * deltaTime;
+						if (e->rotation.y >= glm::radians(360.0f))
+						{
+							e->rotation.y -= glm::radians(360.0f);
+						}
+					}
+					else
+					{
+						e->rotation.y -= rotationSpeed * deltaTime;
+						if (e->rotation.y < 0)
+						{
+							e->rotation.y += glm::radians(360.0f);
+						}
+					}
+				}
+				if (e->health <= 0)
+				{
+					e->velocity = glm::vec3(0);	//死んでいるのでもう移動しない.
+				}
+				//十分に接近していなければ移動する。接近していれば攻撃する.
+				if (glm::length(v) > 2.5f)
+				{
+					e->velocity = vEnemyFront * moveSpeed;
+					if (mesh->GetAnimation() != "Run")
+					{
+						mesh->Play("Run");
 					}
 				}
 				else
 				{
-					e->rotation.y -= rotationSpeed * deltaTime;
-					if (e->rotation.y < 0)
+					e->velocity = glm::vec3(0);	//接近しているのでもう移動しない.
+					if (mesh->GetAnimation() != "Wait")
 					{
-						e->rotation.y += glm::radians(360.0f);
+						if ((mesh->GetAnimation() != "Attack" && mesh->GetAnimation() != "Hit") ||
+							mesh->IsFinished())
+						{
+							mesh->Play("Wait");
+						}
+					}
+					//定期的に攻撃状態になる.
+					if (isAttacking)
+					{
+						isAttacking = false;
+						attackingTimer = 3.0f;	//次の攻撃は５秒後.
+						mesh->Play("Attack", false);
+					}
+					else
+					{
+						attackingTimer -= deltaTime;
+						if (attackingTimer <= 0)
+						{
+							isAttacking = true;
+							player->pHP -= 10;
+						}
 					}
 				}
 			}
-			if (e->health <= 0)
+			EnemyDetectCollision(0);
+			EnemyDetectCollision(1);
+			EnemyDetectCollision(2);
+			EnemyDetectCollision(3);
+		}
+		
+		//骸骨のY、Uボタン攻撃のパーティクル.
+		const Mesh::FilePtr meshShot = meshBuffer.GetFile("Res/Triangle.gltf");
+
+		if (particleFlagY == true)
+		{
+			if (player->playerID == 3 && player->pAbility >= 3)
 			{
-				e->velocity = glm::vec3(0);	//死んでいるのでもう移動しない.
-			}
-			//十分に接近していなければ移動する。接近していれば攻撃する.
-			if (glm::length(v) > 2.5f)
-			{
-				e->velocity = vEnemyFront * moveSpeed;
-				if (mesh->GetAnimation() != "Run")
+				particleTimerA -= deltaTime;
+
+				if (particleTimerA <= -0.7f)
 				{
-					mesh->Play("Run");
-				}
-			}
-			else
-			{
-				e->velocity = glm::vec3(0);	//接近しているのでもう移動しない.
-				if (mesh->GetAnimation() != "Wait")
-				{
-					if ((mesh->GetAnimation() != "Attack" && mesh->GetAnimation() != "Hit") ||
-						mesh->IsFinished())
+					StaticMeshActorPtr Shot = std::make_shared<StaticMeshActor>(
+						meshShot, "Shot", 100, player->position, glm::vec3(0, 0, 0));
+					Shot->scale = glm::vec3(0);
+					bullet[0].Add(Shot);
+					particleTimerA = 100.0f;
 					{
-						mesh->Play("Wait");
+						const glm::vec3 vPlayerFront = glm::rotate(
+							glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0.5f, 5, 1);
+						//エミッター1個目.
+						ParticleEmitterParameter ep;
+						ep.imagePath = "Res/FireParticle.tga";
+						ep.tiles = glm::ivec2(2, 2);
+						ep.position = player->position + vPlayerFront;
+						ep.position.y += 0.0f;
+						ep.duration = 0.2f;
+						ep.emissionsPerSecond = 200.0f;
+						ep.dstFactor = GL_ONE; // 加算合成.
+						ep.gravity = 0.0f;
+						ep.angle = glm::radians(70.0f);//
+						ep.loop = false;
+						ParticleParameter pp;
+						pp.acceleration = glm::vec3(0);//
+						pp.velocity = glm::vec3(0, 15, 0);
+						pp.lifetime = 0.3f;
+						pp.scale = glm::vec2(1.0f);
+						pp.color = glm::vec4(0.1f, 0.7f, 0.9f, 1.0f);
+						particleSystem.Add(ep, pp);
 					}
+					Audio::Engine::Instance().Prepare("Res/Audio/magic-flame1.mp3")->Play();
 				}
-				//定期的に攻撃状態になる.
-				if (isAttacking)
+				else if (particleTimerA <= 99.0f)
 				{
-					isAttacking = false;
-					attackingTimer = 3.0f;	//次の攻撃は５秒後.
-					mesh->Play("Attack", false);
-				}
-				else
-				{
-					attackingTimer -= deltaTime;
-					if (attackingTimer <= 0)
+					for (ActorPtr& e : bullet[0])
 					{
-						isAttacking = true;
-						player->pHP -= 10;
+						e->health = 0;
+						particleFlagY = false;
+						particleTimerA = 0.0f;
 					}
 				}
 			}
 		}
-		EnemyDetectCollision(0);
-		EnemyDetectCollision(1);
-		EnemyDetectCollision(2);
-		EnemyDetectCollision(3);
-	}
-
-	if (player->playerID == 2 && player->pAbility >= 3)
-	{
-		if (state == State::play)
+		//骸骨のB、Kボタン攻撃のパーティクル.
+		if (particleFlagB == true)
 		{
-			//プレイヤーの前方に発射.
-			const Mesh::FilePtr meshShot = meshBuffer.GetFile("Res/Triangle.gltf");
-
-			if (shotTimerFragA == true)
+			if (player->playerID == 3 && player->pAbility >= 4)
 			{
-				playerBulletTimerA -= deltaTime;
-
-				if (playerBulletTimerA <= -0.01f)
+				particleTimerB -= deltaTime;
+				//if (particleTimerB <= -0.1f)
+				//{
+				//	StaticMeshActorPtr Shot = std::make_shared<StaticMeshActor>(
+				//		meshShot, "Shot", 100, player->position, glm::vec3(0, 0, 0));
+				//	Shot->scale = glm::vec3(0);
+				//	bullet[0].Add(Shot);
+				//	{
+				//		ParticleEmitterParameter ep;
+				//		ep.imagePath = "Res/FireParticle.tga";
+				//		ep.tiles = glm::ivec2(1, 1);
+				//		ep.position = player->position;
+				//		ep.position.y += 0.0f;
+				//		ep.emissionsPerSecond = 50.0f;
+				//		ep.duration = 0.1f;
+				//		ep.dstFactor = GL_ONE; // 加算合成.
+				//		ep.gravity = 0;
+				//		ep.angle = glm::radians(90.0f);//
+				//		ep.loop = false;
+				//		ParticleParameter pp;
+				//		pp.acceleration = glm::vec3(0);//
+				//		pp.lifetime = 0.2f;
+				//		pp.velocity = glm::vec3(0, 3, 0);
+				//		pp.scale = glm::vec2(0.5f);
+				//		pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
+				//		particleSystem.Add(ep, pp);
+				//	}
+				//}
+				if (particleTimerB <= -1.0f)
 				{
 					StaticMeshActorPtr Shot = std::make_shared<StaticMeshActor>(
 						meshShot, "Shot", 100, player->position, glm::vec3(0, 0, 0));
-					const float speed = 10.0f;	//弾の移動速度(m/秒).
-					const int x[] = { 0,10,-10,20,-20 };
-					const glm::mat4 matRotY =
-						glm::rotate(glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0));
+					Shot->scale = glm::vec3(0);
+					bullet[0].Add(Shot);
+					particleTimerB = 100.0f;
+					{
+						ParticleEmitterParameter ep;
+						ep.imagePath = "Res/FireParticle.tga";
+						ep.tiles = glm::ivec2(2, 2);
+						ep.position = player->position;
+						ep.position.y += 0.5f;
+						ep.emissionsPerSecond = 400.0f;
+						ep.duration = 0.1f;
+						ep.dstFactor = GL_ONE; // 加算合成.
+						ep.gravity = 0;
+						ep.angle = glm::radians(90.0f);//
+						ep.loop = false;
+						ParticleParameter pp;
+						pp.acceleration = glm::vec3(0, 0, 0);//
+						pp.lifetime = 0.3f;
+						pp.velocity = glm::vec3(0, 0, 20);
+						pp.scale = glm::vec2(1.0f);
+						pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
+						particleSystem.Add(ep, pp);
+					}
+					Audio::Engine::Instance().Prepare("Res/Audio/katana-slash5.mp3")->Play();
+				}
+				else if (particleTimerB <= 99.0f)
+				{
+					for (ActorPtr& e : bullet[0])
+					{
+						e->health = 0;
+						particleFlagB = false;
+						particleTimerB = 0.0f;
+					}
+				}
+			}
+		}
+		
+		////骸骨のB、Kボタン攻撃のパーティクル.
+		//if (particleFlagB == true)
+		//{
+		//	particleTimerB -= deltaTime;
+		//	if (particleTimerB <= 0.1f)
+		//	{
+		//		{
+		//			ParticleEmitterParameter ep;
+		//			ep.imagePath = "Res/FireParticle.tga";
+		//			ep.tiles = glm::ivec2(1, 1);
+		//			ep.position = player->position;
+		//			ep.position.y += 0.0f;
+		//			ep.emissionsPerSecond = 50.0f;
+		//			ep.duration = 0.1f;
+		//			ep.dstFactor = GL_ONE; // 加算合成.
+		//			ep.gravity = 0;
+		//			ep.angle = glm::radians(90.0f);//
+		//			ep.loop = false;
+		//			ParticleParameter pp;
+		//			pp.acceleration = glm::vec3(0);//
+		//			pp.lifetime = 0.2f;
+		//			pp.velocity = glm::vec3(0, 3, 0);
+		//			pp.scale = glm::vec2(0.5f);
+		//			pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
+		//			particleSystem.Add(ep, pp);
+		//		}
+		//	}
+		//	if (particleTimerB <= -1.0f)
+		//	{
+		//		{
+		//			ParticleEmitterParameter ep;
+		//			ep.imagePath = "Res/FireParticle.tga";
+		//			ep.tiles = glm::ivec2(2, 2);
+		//			ep.position = player->position;
+		//			ep.position.y += 0.5f;
+		//			ep.emissionsPerSecond = 400.0f;
+		//			ep.duration = 0.1f;
+		//			ep.dstFactor = GL_ONE; // 加算合成.
+		//			ep.gravity = 0;
+		//			ep.angle = glm::radians(90.0f);//
+		//			ep.loop = false;
+		//			ParticleParameter pp;
+		//			pp.acceleration = glm::vec3(0, 0, 0);//
+		//			pp.lifetime = 0.3f;
+		//			pp.velocity = glm::vec3(0, 0, 20);
+		//			pp.scale = glm::vec2(1.0f);
+		//			pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
+		//			particleSystem.Add(ep, pp);
+		//		}
+		//		Audio::Engine::Instance().Prepare("Res/Audio/katana-slash5.mp3")->Play();
+		//	}
+		//}
+
+		//プレイヤーの前方に発射.
+		if (shotTimerFragA == true)
+		{
+			if (player->playerID == 2 && player->pAbility >= 3)
+			{
+				playerBulletTimerA -= deltaTime;
+
+				if (playerBulletTimerA <= -0.3f)
+				{
+					StaticMeshActorPtr Shot = std::make_shared<StaticMeshActor>(
+						meshShot, "Shot", 100, player->position, glm::vec3(0, 0, 0));
+					const float speed = 5.0f;	//弾の移動速度(m/秒).
+					const glm::mat4 matRotY = glm::rotate(
+						glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0));
+					const glm::vec3 matRotZ = glm::rotate(
+						glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0, 3, 1);
 					glm::vec3 rot = player->rotation;
 					rot.y += std::uniform_real_distribution<float>(0, glm::radians(360.0f))(rand);
 					Shot->rotation += rot.y;
-					Shot->scale = glm::vec3(1, 1, 1);
+					Shot->scale = glm::vec3(0);
 					Shot->colLocal = Collision::CreateSphere(
-						glm::vec3(0, 0.5f, 0), 0.5f);
+						glm::vec3(0, 0.5f, 0), 1.5f);
 					Shot->velocity = matRotY * glm::vec4(0, 0, speed, 1);
 					bullet[0].Add(Shot);
 					playerBulletTimerA = 100.0f;
-
-					//{
-					//	//エミッター1個目.
-					//	ParticleEmitterParameter ep;
-					//	/*ep.imagePath = "Res/DiskParticle.tga";*/
-					//	ep.imagePath = "Res/FireParticle.tga";
-					//	ep.tiles = glm::ivec2(2, 2);
-					//	ep.position = player->position;
-					//	ep.position.y += 1.0f;
-					//	ep.emissionsPerSecond = 20.0f;
-					//	ep.dstFactor = GL_ONE; // 加算合成.
-					//	ep.gravity = 9.8f;
-					//	ep.angle = glm::radians(90.0f);//
-					//	ep.loop = false;
-					//	ParticleParameter pp;
-					//	pp.acceleration = glm::vec3(2);//
-					//	pp.scale = glm::vec2(0.5f);
-					//	pp.color = glm::vec4(0.9f, 0.3f, 0.1f, 1.0f);
-					//	ParticleEmitterPtr p = particleSystem.Add(ep, pp);
-					//	p->Position(Shot->position);
-					//}
+					{
+						ParticleEmitterParameter ep;
+						ep.imagePath = "Res/FireParticle.tga";
+						ep.tiles = glm::ivec2(1, 1);
+						ep.position = player->position + matRotZ;
+						ep.position.y += 1.0f;
+						ep.emissionsPerSecond = 50.0f;
+						ep.dstFactor = GL_ONE; // 加算合成.
+						ep.gravity = 5.0f;
+						ep.angle = glm::radians(90.0f);//
+						ep.loop = false;
+						ParticleParameter pp;
+						pp.acceleration = matRotY * glm::vec4(0, 1, speed, 1);
+						pp.scale = glm::vec2(0.5f);
+						pp.color = glm::vec4(0.9f, 0.3f, 0.1f, 1.0f);
+						particleSystem.Add(ep, pp);
+					}
+					Audio::Engine::Instance().Prepare("Res/Audio/magic-flame2.mp3")->Play();
 				}
-				else if (playerBulletTimerA <= 98.0f)
+				else if (playerBulletTimerA <= 99.0f)
 				{
 					for (ActorPtr& e : bullet[0])
 					{
@@ -2090,40 +2289,66 @@ void MainGameScene::Update(float deltaTime)
 					}
 				}
 			}
+		}
 
-			//溜め攻撃.
+		//溜め攻撃.
+		if (chargeShotFlagA == true)
+		{
 			if (player->playerID == 2 && player->pAbility >= 4)
 			{
-				if (chargeShotFlagA == true)
-				{
-					playerBulletTimerB -= deltaTime;
-					const Mesh::FilePtr meshMeteo = meshBuffer.GetFile("Res/Triangle.gltf");
-					const float speed = 8.0f;	//弾の移動速度(m/秒).
-					const glm::mat4 matRotY =
-						glm::rotate(glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0));
-					/*Audio::Engine::Instance().Prepare("Res/Audio/PlayerShot.xwm")->Play();*/
+				playerBulletTimerB -= deltaTime;
+				const Mesh::FilePtr meshMeteo = meshBuffer.GetFile("Res/Skeltal.gltf");
+				const float speed = 10.0f;	//弾の移動速度(m/秒).
+				const glm::vec3 matRotY = glm::rotate(
+					glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 7, 3, 1);
 
-					if (playerBulletTimerB <= -2.0f)
+				if (playerBulletTimerB <= -0.5f)
+				{
+					for (size_t i = 0; i < 10; ++i)
 					{
-						glm::vec3 setPosition = player->position + glm::vec3(0, 5, 0);
+						const glm::vec3 matRotZ = glm::rotate(
+							glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, i, i, 1);
+						glm::vec3 setPosition = player->position + matRotY + matRotZ ;
 						StaticMeshActorPtr Meteo = std::make_shared<StaticMeshActor>(
 							meshMeteo, "Shot", 100, setPosition, glm::vec3(0, 0, 0));
-						Meteo->scale = glm::vec3(3);
-						Meteo->velocity = matRotY * glm::vec4(0, -speed, speed, 1);
+						Meteo->scale = glm::vec3(0);
+						Meteo->velocity = glm::vec3(0, -speed, 0);
 						Meteo->colLocal = Collision::CreateSphere(
-							glm::vec3(0, 0.2f, 0), 5.0f);
+							glm::vec3(0, 0.2f, 0), 2.0f);
 						bullet[1].Add(Meteo);
 						playerBulletTimerB = 100.0f;
-
-					}
-					else if (playerBulletTimerB <= 98.0f)
-					{
-						for (ActorPtr& e : bullet[1])
 						{
-							e->health = 0;
-							chargeShotFlagA = false;
-							playerBulletTimerB = 0.0f;
+							const glm::vec3 matRotZ = glm::rotate(
+								glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, i, i, 1);
+							ParticleEmitterParameter ep;
+							ep.imagePath = "Res/DiskParticle.tga";
+							ep.tiles = glm::ivec2(2, 2);
+							ep.position = player->position + matRotY + matRotZ;;
+							ep.position.y += 0.0f;
+							ep.duration = 0.2f;
+							ep.emissionsPerSecond = 40.0f;
+							ep.dstFactor = GL_ONE; // 加算合成.
+							ep.gravity = 0.0f;
+							ParticleParameter pp;
+							pp.acceleration = glm::vec3(0);//
+							ep.angle = glm::radians(0.0f);//
+							ep.loop = false;
+							pp.velocity = glm::vec3(0, -15, 0);
+							pp.lifetime = 1.5f;
+							pp.scale = glm::vec2(0.1f, 1.0f);
+							pp.color = glm::vec4(0.1f, 0.3f, 1.0f, 1.0f);
+							particleSystem.Add(ep, pp);
 						}
+					}
+					Audio::Engine::Instance().Prepare("Res/Audio/magic-ice2.mp3")->Play();
+				}
+				else if (playerBulletTimerB <= 98.0f)
+				{
+					for (ActorPtr& e : bullet[1])
+					{
+						e->health = 0;
+						chargeShotFlagA = false;
+						playerBulletTimerB = 0.0f;
 					}
 				}
 			}
@@ -2288,6 +2513,26 @@ void MainGameScene::Update(float deltaTime)
 		player->maxMP += 10;
 		player->pHP = player->maxHP;
 		player->pMP = player->maxMP;
+		
+		//レベルアップ時のパーティクル.
+		ParticleEmitterParameter ep;
+		ep.imagePath = "Res/DiskParticle.tga";
+		ep.tiles = glm::ivec2(2, 2);
+		ep.position = player->position;
+		ep.position.y += 0.0f;
+		ep.duration = 0.2f;
+		ep.emissionsPerSecond = 80.0f;
+		ep.dstFactor = GL_ONE; // 加算合成.
+		ep.gravity = 0.0f;
+		ParticleParameter pp;
+		pp.acceleration = glm::vec3(0);//
+		ep.angle = glm::radians(0.0f);//
+		ep.loop = false;
+		pp.velocity = glm::vec3(0, 15, 0);
+		pp.lifetime = 0.2f;
+		pp.scale = glm::vec2(0.1f, 1.0f);
+		pp.color = glm::vec4(1.0f, 1.0f, 0.9f, 1.0f);
+		particleSystem.Add(ep, pp);
 	}
 
 	//HPが０か防衛ラインのHPが０になったらゲームオーバーフラグが立つ.
@@ -2328,6 +2573,7 @@ void MainGameScene::Update(float deltaTime)
 	warp[3].UpdateDrawData(deltaTime);
 	bullet[0].UpdateDrawData(deltaTime);
 	bullet[1].UpdateDrawData(deltaTime);
+	bullet[2].UpdateDrawData(deltaTime);
 
 	fontRenderer.BeginUpdate();
 
@@ -2893,7 +3139,7 @@ void MainGameScene::Render()
 
 		//ビュー・プロジェクション行列を設定してメッシュを描画.
 		meshBuffer.SetShadowViewProjectionMatrix(matProj * matView);
-		RenderMesh(Mesh::DrawType::shadow);
+		RenderMesh(nullptr, Mesh::DrawType::shadow);
 	}
 
 	// FBOに描画.
@@ -2911,13 +3157,14 @@ void MainGameScene::Render()
 	const float aspectRatio =
 		static_cast<float>(window.Width()) / static_cast<float>(window.Height());
 	const glm::mat4 matProj =
-		glm::perspective(camera.fov * 0.5f, aspectRatio, camera.near, camera.far);
+		glm::perspective(camera.fov, aspectRatio, camera.near, camera.far);
 	meshBuffer.SetViewProjectionMatrix(matProj * matView);
 	meshBuffer.SetCameraPosition(camera.position);
 	meshBuffer.SetTime(window.Time());
 	meshBuffer.BindShadowTexture(fboShadow->GetDepthTexture());
 
-	RenderMesh(Mesh::DrawType::color);
+	const Collision::Frustum viewFrustum = Collision::CreateFrustum(camera);
+	RenderMesh(&viewFrustum, Mesh::DrawType::color);
 	particleSystem.Draw(matProj, matView);
 
 	meshBuffer.UnbindShadowTexture();
@@ -3220,8 +3467,8 @@ void MainGameScene::Render()
 				fontRenderer.AddString(glm::vec2(-100, 0), L"H：スキル２");
 				fontRenderer.AddString(glm::vec2(-100, -50), L"K：スキル３");
 				fontRenderer.AddString(glm::vec2(-100, -100), L"J：スキル４");
-				fontRenderer.AddString(glm::vec2(170, 150), L"Q：カメラ左回転");
-				fontRenderer.AddString(glm::vec2(170, 100), L"E：カメラ右回転");
+				fontRenderer.AddString(glm::vec2(170, 150), L"A：カメラ左回転");
+				fontRenderer.AddString(glm::vec2(170, 100), L"D：カメラ右回転");
 				fontRenderer.AddString(glm::vec2(170, 50), L"SPACE:メニュー画面");
 				fontRenderer.AddString(glm::vec2(170, 0), L"ENTER:決定キー");
 				fontRenderer.AddString(glm::vec2(-100, -200), L"Yボタン　または　Uボタンで");
@@ -3266,7 +3513,7 @@ void MainGameScene::Render()
 			}
 			if (player->playerID == 1)
 			{
-				fontRenderer.AddString(glm::vec2(-110, 200), L"ゴブリン");
+				fontRenderer.AddString(glm::vec2(-105, 200), L"ゴブリン");
 				int n = player->pAbility;
 				//スキルの説明.
 				if (skComCount == 1)
@@ -3290,27 +3537,27 @@ void MainGameScene::Render()
 					fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
 				}
 
-				fontRenderer.AddString(glm::vec2(-105, 150), L"通常攻撃");
+				fontRenderer.AddString(glm::vec2(-95, 150), L"通常攻撃");
 				//使えないスキルは半透明.
 				fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
-				fontRenderer.AddString(glm::vec2(-105, 100), L"早歩き");
-				fontRenderer.AddString(glm::vec2(-105, 50), L"ダッシュ");
-				fontRenderer.AddString(glm::vec2(-105, 0), L"高速移動");
+				fontRenderer.AddString(glm::vec2(-85, 100), L"早歩き");
+				fontRenderer.AddString(glm::vec2(-95, 50), L"ダッシュ");
+				fontRenderer.AddString(glm::vec2(-95, 0), L"高速移動");
 
 				if (n >= 4)
 				{
 					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-105, 0), L"高速移動");
+					fontRenderer.AddString(glm::vec2(-95, 0), L"高速移動");
 				}
 				if (n >= 3)
 				{
 					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-105, 50), L"ダッシュ");
+					fontRenderer.AddString(glm::vec2(-95, 50), L"ダッシュ");
 				}
 				if (n >= 2)
 				{
 					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-105, 100), L"早歩き");
+					fontRenderer.AddString(glm::vec2(-85, 100), L"早歩き");
 				}
 			}
 			if (player->playerID == 2)
@@ -3330,36 +3577,36 @@ void MainGameScene::Render()
 				}
 				else if (skComCount == 3)
 				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"直線上に魔法を飛ばす遠距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"スピードと貫通能力がある");
+					fontRenderer.AddString(glm::vec2(-125, -150), L"前方に炎魔法を飛ばす中距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"スピードは遅いが範囲は広い");
 				}
 				else if (skComCount == 4)
 				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"空から魔法を落とす遠距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"広範囲で敵を一掃する");
+					fontRenderer.AddString(glm::vec2(-125, -150), L"空から氷魔法を落とす遠距離攻撃");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"直線上につららを落とし敵を一掃する");
 				}
 
-				fontRenderer.AddString(glm::vec2(-105, 150), L"通常攻撃");
+				fontRenderer.AddString(glm::vec2(-95, 150), L"通常攻撃");
 				//使えないスキルは半透明.
 				fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
-				fontRenderer.AddString(glm::vec2(-105, 100), L"かぶと割り");
-				fontRenderer.AddString(glm::vec2(-105, 50), L"ファイア");
-				fontRenderer.AddString(glm::vec2(-105, 0), L"メテオ");
+				fontRenderer.AddString(glm::vec2(-100, 100), L"かぶと割り");
+				fontRenderer.AddString(glm::vec2(-95, 50), L"ファイア");
+				fontRenderer.AddString(glm::vec2(-95, 0), L"ブリザド");
 
 				if (n >= 4)
 				{
 					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-105, 0), L"メテオ");
+					fontRenderer.AddString(glm::vec2(-95, 0), L"ブリザド");
 				}
 				if (n >= 3)
 				{
 					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-105, 50), L"ファイア");
+					fontRenderer.AddString(glm::vec2(-95, 50), L"ファイア");
 				}
 				if (n >= 2)
 				{
 					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-105, 100), L"かぶと割り");
+					fontRenderer.AddString(glm::vec2(-100, 100), L"かぶと割り");
 				}
 			}
 			if (player->playerID == 3)
@@ -3380,35 +3627,35 @@ void MainGameScene::Render()
 				else if (skComCount == 3)
 				{
 					fontRenderer.AddString(glm::vec2(-125, -150), L"勢いよく剣を振り下ろす中距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"直線上にいる敵を全て薙ぎ払う");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"離れた敵を剣風で薙ぎ払う");
 				}
 				else if (skComCount == 4)
 				{
 					fontRenderer.AddString(glm::vec2(-125, -150), L"洗練された究極の中距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"全方位の強力な斬撃で敵を一掃する");
+					fontRenderer.AddString(glm::vec2(-125, -200), L"全方位の強力な一撃で敵を一掃する");
 				}
 
-				fontRenderer.AddString(glm::vec2(-105, 150), L"通常攻撃");
+				fontRenderer.AddString(glm::vec2(-95, 150), L"通常攻撃");
 				//使えないスキルは半透明.
 				fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
-				fontRenderer.AddString(glm::vec2(-105, 100), L"水平斬り");
-				fontRenderer.AddString(glm::vec2(-105, 50), L"かぶと割り");
-				fontRenderer.AddString(glm::vec2(-105, 0), L"燕返し");
+				fontRenderer.AddString(glm::vec2(-95, 100), L"二段斬り");
+				fontRenderer.AddString(glm::vec2(-80, 50), L"爆裂斬");
+				fontRenderer.AddString(glm::vec2(-125, 0), L"全方位燕返し");
 
 				if (n >= 4)
 				{
 					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-105, 0), L"燕返し");
+					fontRenderer.AddString(glm::vec2(-125, 0), L"全方位燕返し");
 				}
 				if (n >= 3)
 				{
 					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-105, 50), L"かぶと割り");
+					fontRenderer.AddString(glm::vec2(-80, 50), L"爆裂斬");
 				}
 				if (n >= 2)
 				{
 					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-105, 100), L"水平斬り");
+					fontRenderer.AddString(glm::vec2(-95, 100), L"二段斬り");
 				}
 			}
 		}
@@ -3754,51 +4001,66 @@ bool MainGameScene::HandleCoinEffects(int id, const glm::vec3& pos)
 }
 
 /**
-* カメラのパラメータを更新する.
-*
-* @param matView 更新に使用するビュー行列.
-*/
-void MainGameScene::Camera::Update(const glm::mat4& matView)
-{
-	const glm::vec4 pos = matView * glm::vec4(target, 1);
-	focalPlane = pos.z * -1000.0f;
-
-	const float imageDistance = sensorSize * 0.5f / glm::tan(fov * 0.5f);
-	focalLength = 1.0f / ((1.0f / focalPlane) + (1.0f / imageDistance));
-
-	aperture = focalLength / fNumber;
-}
-
-/**
 *メッシュを描画する.
 *
 *@param drawType	描画するデータの種類.
 */
-void MainGameScene::RenderMesh(Mesh::DrawType drawType)
+void MainGameScene::RenderMesh(const Collision::Frustum* pFrustum, Mesh::DrawType drawType)
 {
 	Mesh::Draw(meshBuffer.GetFile("Terrain"), glm::mat4(1));
 
-	player->Draw(drawType);
-	enemies[0].Draw(drawType);
-	enemies[1].Draw(drawType);
-	enemies[2].Draw(drawType);
-	enemies[3].Draw(drawType);
-	trees.Draw(drawType);
-	objects.Draw(drawType);
-	defencePoint.Draw(drawType);
-	walls.Draw(drawType);
-	objectives.Draw(drawType);
-	effects.Draw(drawType);
-	items[0].Draw(drawType);
-	items[1].Draw(drawType);
-	items[2].Draw(drawType);
-	items[3].Draw(drawType);
-	warp[0].Draw(drawType);
-	warp[1].Draw(drawType);
-	warp[2].Draw(drawType);
-	warp[3].Draw(drawType);
-	bullet[0].Draw(drawType);
-	bullet[1].Draw(drawType);
+	if(pFrustum)
+	{
+		if (Collision::Test(*pFrustum, player->position))
+		{
+			player->Draw(drawType);
+		}
+		enemies[0].Draw(*pFrustum, drawType);
+		enemies[1].Draw(*pFrustum, drawType);
+		enemies[2].Draw(*pFrustum, drawType);
+		enemies[3].Draw(*pFrustum, drawType);
+		trees.Draw(*pFrustum, drawType);
+		objects.Draw(*pFrustum, drawType);
+		defencePoint.Draw(*pFrustum, drawType);
+		walls.Draw(*pFrustum, drawType);
+		effects.Draw(*pFrustum, drawType);
+		items[0].Draw(*pFrustum, drawType);
+		items[1].Draw(*pFrustum, drawType);
+		items[2].Draw(*pFrustum, drawType);
+		items[3].Draw(*pFrustum, drawType);
+		warp[0].Draw(*pFrustum, drawType);
+		warp[1].Draw(*pFrustum, drawType);
+		warp[2].Draw(*pFrustum, drawType);
+		warp[3].Draw(*pFrustum, drawType);
+		bullet[0].Draw(*pFrustum, drawType);
+		bullet[1].Draw(*pFrustum, drawType);
+		bullet[2].Draw(*pFrustum, drawType);
+	}
+	else
+	{
+		player->Draw(drawType);
+		enemies[0].Draw(drawType);
+		enemies[1].Draw(drawType);
+		enemies[2].Draw(drawType);
+		enemies[3].Draw(drawType);
+		trees.Draw(drawType);
+		objects.Draw(drawType);
+		defencePoint.Draw(drawType);
+		walls.Draw(drawType);
+		objectives.Draw(drawType);
+		effects.Draw(drawType);
+		items[0].Draw(drawType);
+		items[1].Draw(drawType);
+		items[2].Draw(drawType);
+		items[3].Draw(drawType);
+		warp[0].Draw(drawType);
+		warp[1].Draw(drawType);
+		warp[2].Draw(drawType);
+		warp[3].Draw(drawType);
+		bullet[0].Draw(drawType);
+		bullet[1].Draw(drawType);
+		bullet[2].Draw(drawType);
+	}
 
 	/*if (drawType == Mesh::DrawType::color) {
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);

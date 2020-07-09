@@ -47,12 +47,22 @@ void Actor::Update(float deltaTime)
 	case Collision::Shape::Type::sphere:
 		colWorld.s.center = matModel * glm::vec4(colLocal.s.center, 1);
 		colWorld.s.r = colLocal.s.r;
+
+		//視錐台用衝突判定を更新.
+		bounds = colWorld.s;
+		bounds.r *= 1.1f;
 		break;
 
 	case Collision::Shape::Type::capsule:
 		colWorld.c.seg.a = matModel * glm::vec4(colLocal.c.seg.a, 1);
 		colWorld.c.seg.b = matModel * glm::vec4(colLocal.c.seg.b, 1);
 		colWorld.c.r = colLocal.c.r;
+
+		//視錐台用衝突判定を更新.
+		bounds.center = (colWorld.c.seg.a + colWorld.c.seg.b) * 0.5f;
+		bounds.r = colWorld.c.r +
+		glm::length(colWorld.c.seg.b - colWorld.c.seg.a) * 0.5f;
+		bounds.r *= 1.1f;
 		break;
 
 	case Collision::Shape::Type::obb:
@@ -61,6 +71,13 @@ void Actor::Update(float deltaTime)
 			colWorld.obb.axis[i] = matR_XZY * glm::vec4(colLocal.obb.axis[i], 1);
 		}
 		colWorld.obb.e = colLocal.obb.e;
+		//視錐台用衝突判定を更新.
+		bounds.center = colWorld.obb.center;
+		bounds.r = glm::length(colWorld.obb.e);
+		bounds.r *= 1.1f;
+		break;
+	default:
+		bounds.center = position;
 		break;
 	}
 }
@@ -190,7 +207,6 @@ bool ActorList::Remove(const ActorPtr& actor)
 		if (*itr == actor) {
 			actors.erase(itr);
 			return true;
-
 		}
 	}
 	return false;
@@ -271,6 +287,23 @@ void ActorList::Draw(Mesh::DrawType drawType)
 	for (const ActorPtr& e : actors) {
 		if (e && e->health > 0) {
 			e->Draw(drawType);
+		}
+	}
+}
+
+/**
+*Actorを描画する.
+*
+*@param	frustum		視錐台.
+*@param	drawType	描画するデータの種類.
+*/
+void ActorList::Draw(const Collision::Frustum& frustum, Mesh::DrawType drawType)
+{
+	for (const ActorPtr& e : actors) {
+		if (e && e->health > 0) {
+			if (Collision::Test(frustum, e->bounds)) {
+				e->Draw(drawType);
+			}
 		}
 	}
 }
@@ -388,10 +421,12 @@ void DetectCollision(ActorList& a, ActorList& b, CollisionHandlerType handler)
 	for (const ActorPtr& actorA : a) {
 		if (actorA->health <= 0) {
 			continue;
+
 		}
 		for (const ActorPtr& actorB : b) {
 			if (actorB->health <= 0) {
 				continue;
+
 			}
 			Collision::Result r =
 				Collision::TestShapeShape(actorA->colWorld, actorB->colWorld);
@@ -407,7 +442,6 @@ void DetectCollision(ActorList& a, ActorList& b, CollisionHandlerType handler)
 				}
 				if (actorA->health <= 0) {
 					break;
-
 				}
 			}
 		}

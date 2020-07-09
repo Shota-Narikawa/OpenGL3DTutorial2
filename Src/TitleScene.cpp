@@ -317,14 +317,14 @@ void TitleScene::Update(float deltaTime) {
 		else
 		{
 			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-			fontRenderer.AddString(glm::vec2(-460, 210), L"WSAD:移動");
-			fontRenderer.AddString(glm::vec2(-460, 170), L"L：ジャンプ");
-			fontRenderer.AddString(glm::vec2(-460, 130), L"U：スキル１");
-			fontRenderer.AddString(glm::vec2(-460, 90), L"H：スキル２");
-			fontRenderer.AddString(glm::vec2(-460, 50), L"K：スキル３");
-			fontRenderer.AddString(glm::vec2(-460, 10), L"J：スキル４");
-			fontRenderer.AddString(glm::vec2(-460, -30), L"Q：カメラ左回転");
-			fontRenderer.AddString(glm::vec2(-460, -70), L"E：カメラ右回転");
+			fontRenderer.AddString(glm::vec2(-460, 210), L"WS:移動");
+			fontRenderer.AddString(glm::vec2(-460, 170), L"A：カメラ左回転");
+			fontRenderer.AddString(glm::vec2(-460, 130), L"D：カメラ右回転");
+			fontRenderer.AddString(glm::vec2(-460, 90), L"L：ジャンプ");
+			fontRenderer.AddString(glm::vec2(-460, 50), L"U：スキル１");
+			fontRenderer.AddString(glm::vec2(-460, 10), L"H：スキル２");
+			fontRenderer.AddString(glm::vec2(-460, -30), L"K：スキル３");
+			fontRenderer.AddString(glm::vec2(-460, -70), L"J：スキル４");
 			fontRenderer.AddString(glm::vec2(-460, -110), L"SPACE:メニュー");
 			fontRenderer.AddString(glm::vec2(-460, -150), L"ENTER:決定");
 		}

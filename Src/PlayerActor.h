@@ -6,6 +6,7 @@
 #include "GLFWEW.h"
 #include "SkeletalMeshActor.h"
 #include "Terrain.h"
+#include "Camera.h"
 #include "Audio\Audio.h"
 #include <memory>
 
@@ -23,7 +24,7 @@ public:
 	virtual void OnHit(const ActorPtr&, const glm::vec3&);
 	virtual void OnHit(const ActorPtr&, const Collision::Result&) override;
 	void Jump();
-	void ProcessInput();
+	void ProcessInput(const Camera&);
 	void SetBoardingActor(ActorPtr);
 	const ActorPtr& GetAttackCollision() const { return attackCollision; }
 	const ActorPtr& GetPlayerStatusUp() const { return playerStatusUp; }
@@ -41,7 +42,7 @@ public:
 
 private:
 
-	void CheckRun(const GamePad& gamepad);
+	void CheckRun(const GamePad& gamepad, const Camera& camera);
 	void CheckJump(const GamePad& gamepad);
 	void CheckAttack(const GamePad& gamepad);
 	void CheckShot(const GamePad& gamepad);
@@ -86,6 +87,7 @@ private:
 
 	const Terrain::HeightMap* heightMap = nullptr;
 };
+
 using PlayerActorPtr = std::shared_ptr<PlayerActor>;
 
 #endif // PLAYERACTOR_H_INCLUDED

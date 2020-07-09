@@ -93,7 +93,7 @@ namespace Mesh {
 		bool Stop();
 		bool Pause();
 		bool Resume();
-		void SetAnimationSpeed(float speed);
+		void SetAnimationSpeed(float speed);//animationSpeed.
 		float GetAnimationSpeed() const;
 		void SetPosition(float);
 		float GetPosition() const;

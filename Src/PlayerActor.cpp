@@ -95,16 +95,16 @@ void PlayerActor::Update(float deltaTime)
 		if (boardingActor) {
 			// 落下判定用の形状は、プレイヤーの衝突判定形状に合わせて調整すること.
 			const Collision::Shape col = Collision::CreateCapsule(
-				position + glm::vec3(0, 0.4f, 0), position + glm::vec3(0, 1, 0), 0.25f);
+			position + glm::vec3(0, 0.4f, 0), position + glm::vec3(0, 1, 0), 0.25f);
 			const Collision::Result result =
 				Collision::TestShapeShape(col, boardingActor->colWorld);
 			if (!result.isHit) {
 				boardingActor.reset();
 			}
-			else {
+			else{
 				//衝突面の法線が真上から30度の範囲になければ落下.
 					const float theta = glm::dot(result.nb, glm::vec3(0, 1, 0));
-				if(theta < glm::cos(glm::radians(30.0f))) {
+				if (theta < glm::cos(glm::radians(30.0f))) {
 					boardingActor.reset();
 				}
 			}
@@ -267,7 +267,7 @@ void PlayerActor::Update(float deltaTime)
 				}
 			}
 			//周囲の範囲攻撃（骸骨専用）.
-			else if (attackTimerC > 0.7f && attackTimerC < 0.9f) {
+			else if (attackTimerC > 1.0f && attackTimerC < 1.2f) {
 				if (!attackCollision) {
 					static const float radian = 1.0f;
 					const glm::vec3 front = glm::rotate(glm::mat4(1), rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0, 0, 1);
@@ -302,10 +302,10 @@ void PlayerActor::Update(float deltaTime)
 /**
 *入力を処理する.
 */
-void PlayerActor::ProcessInput()
+void PlayerActor::ProcessInput(const Camera& camera)
 {
 	const GamePad gamepad = GLFWEW::Window::Instance().GetGamePad();
-	CheckRun(gamepad);
+	CheckRun(gamepad, camera);
 	CheckJump(gamepad);
 	CheckAttack(gamepad);
 	CheckShot(gamepad);
@@ -316,47 +316,35 @@ void PlayerActor::ProcessInput()
 *
 *@param gamepad	ゲームパッド入力.
 */
-void PlayerActor::CheckRun(const GamePad& gamepad)
+void PlayerActor::CheckRun(const GamePad& gamepad, const Camera& camera)
 {
 	//空中にいるときは移動できない.
 	if (isInAir) {
 		return;
 	}
-	//方向キーから移動方向を計算.
-	const glm::vec3 front(0, 0, -2);
+	////方向キーから移動方向を計算.
+	/*const glm::vec3 front(0, 0, -2);*/
 	const glm::vec3 left(-2, 0, 0);
-
 	glm::vec3 move(0);
+	glm::vec3 front = glm::normalize(camera.target - camera.position);
+	front.y = 0;
 
-	//// カメラの正面方向frontを計算. カメラデータをPlayerActorに渡す方法は自分で考えるように.
-	//glm::vec3 front = glm::normalize(camera.target - camera.position);
-	//front.y = 0;
-
-	//// 前後方向に移動
-	//if (gamepad.buttons & GamePad::DPAD_UP) {
-	//	move = front;
-	//}
-	//else if (gamepad.buttons & GamePad::DPAD_DOWN) {
-	//	move = -front;
-	//}
-
+	// 前後方向に移動
 	if (!isAttack) {
 		if (gamepad.buttons & GamePad::DPAD_UP) {
-			move += front;
-
+			move = front;
 		}
 		else if (gamepad.buttons & GamePad::DPAD_DOWN) {
-			move -= front;
-
+			move = -front;
 		}
 		if (gamepad.buttons & GamePad::DPAD_LEFT) {
 			move += left;
-
 		}
 		else if (gamepad.buttons & GamePad::DPAD_RIGHT) {
 			move -= left;
 		}
 	}
+
 	//移動が行われていたら、移動方向に応じて向きと速度を更新.
 	if (glm::dot(move, move)) {
 		//向きを更新.
@@ -413,19 +401,21 @@ void PlayerActor::CheckJump(const GamePad& gamepad)
 /**
 *衝突ハンドラ.
 *
-*@param		b	衝突相手のアクター.
-*@param	result	衝突結果.
+*@param		b		衝突相手のアクター.
+*@param		result	衝突結果.
 */
 void PlayerActor::OnHit(const ActorPtr& b, const Collision::Result& result)
 {
 	//貫通しない位置まで衝突面の法線方向に移動させる.
 	const float d = glm::dot(result.nb, result.pb - result.pa);
 	const glm::vec3 v = result.nb * (d + 0.01f);
-	colWorld.obb.center += v;
+	colWorld.c.seg.a += v;
+	colWorld.c.seg.b += v;
 	position += v;
 	if (!isInAir && !boardingActor) {
 		const float newY = heightMap->Height(position);
-		colWorld.obb.center.y += newY - position.y;
+		colWorld.c.seg.a.y += newY - position.y;
+		colWorld.c.seg.b.y += newY - position.y;
 		position.y = newY;
 	}
 	//衝突面の法線が真上から30度の範囲にあれば乗ることができる(角度は要調整).
@@ -434,7 +424,6 @@ void PlayerActor::OnHit(const ActorPtr& b, const Collision::Result& result)
 		SetBoardingActor(b);
 	}
 }
-
 
 /**
 *ジャンプさせる.
@@ -475,8 +464,8 @@ void PlayerActor::CheckAttack(const GamePad& gamepad)
 {
 	if (isInAir) {
 		return;
-
 	}
+	//ゴブリン.
 	if (playerID == 1) {
 		if (gamepad.buttonDown & GamePad::A) {
 			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
@@ -486,6 +475,7 @@ void PlayerActor::CheckAttack(const GamePad& gamepad)
 			state = State::attack;
 		}
 	}
+	//ウィザード.
 	else if (playerID == 2) {
 		if (pAbility >= 1 && gamepad.buttonDown & GamePad::A) {
 
@@ -508,7 +498,7 @@ void PlayerActor::CheckAttack(const GamePad& gamepad)
 		if (skillN == false && pAbility >= 3 && pMP > 0 && gamepad.buttonDown & GamePad::Y) {
 
 			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+			Audio::Engine::Instance().Prepare("Res/Audio/_game_wizard-special1.mp3")->Play();
 			GetMesh()->Play("Attack.Heavy", false);
 			skillN = true;
 			state = State::attack;
@@ -517,26 +507,27 @@ void PlayerActor::CheckAttack(const GamePad& gamepad)
 		if (skillW == false && pAbility >= 4 && pMP > 0 && gamepad.buttonDown & GamePad::B) {
 
 			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+			Audio::Engine::Instance().Prepare("Res/Audio/_game_wizard-special2.mp3")->Play();
 			GetMesh()->Play("Attack.Jump", false);
 			skillW = true;
 			state = State::attack;
 			pMP -= 10;
 		}
 	}
+	//骸骨.
 	else if (playerID == 3) {
 		if (pAbility >= 1 && gamepad.buttonDown & GamePad::A) {
 
-			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack2.mp3")->Play();
+			Audio::Engine::Instance().Prepare("Res/Audio/sword-gesture1.mp3")->Play();
+			Audio::Engine::Instance().Prepare("Res/Audio/_game_swordman-attack1.mp3")->Play();
 			GetMesh()->Play("Attack", false);
 			attackTimerA = 0;
 			state = State::attack;
 		}
 		if (skillE == false && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X) {
 
-			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+			Audio::Engine::Instance().Prepare("Res/Audio/sword-gesture1.mp3")->Play();
+			Audio::Engine::Instance().Prepare("Res/Audio/_game_swordman-special1.mp3")->Play();
 			GetMesh()->Play("Attack", false);
 			attackTimerA = 0;
 			skillE = true;
@@ -544,16 +535,13 @@ void PlayerActor::CheckAttack(const GamePad& gamepad)
 			pMP -= 5;
 		}
 		if (skillE == true && skillTimerE <= -1.9f /*&& skillTimerE >= -1.1f && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X*/) {
-			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+			Audio::Engine::Instance().Prepare("Res/Audio/sword-gesture1.mp3")->Play();
 			GetMesh()->Play("Wakigamae.Attack", false);
 			attackTimerA = 0;
 			state = State::attack;
 		}
 		if (skillN == false && pAbility >= 3 && pMP > 0 && gamepad.buttonDown & GamePad::Y) {
-
-			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+			Audio::Engine::Instance().Prepare("Res/Audio/_game_swordman-attack3.mp3")->Play();
 			GetMesh()->Play("Attack.Virtical", false);
 			attackTimerB = 0;
 			skillN = true;
@@ -561,9 +549,7 @@ void PlayerActor::CheckAttack(const GamePad& gamepad)
 			pMP -= 10;
 		}
 		if (skillW == false && pAbility >= 4 && pMP > 0 && gamepad.buttonDown & GamePad::B) {
-
-			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
+			Audio::Engine::Instance().Prepare("Res/Audio/_game_swordman-special3.mp3")->Play();
 			GetMesh()->Play("Attack.Horizontal", false);
 			attackTimerC = 0;
 			skillW = true;
@@ -583,25 +569,6 @@ void PlayerActor::CheckShot(const GamePad& gamepad)
 	if (isInAir) {
 		return;
 	}
-	//const Mesh::FilePtr meshWarpGate = meshBuffer.GetFile("Res/Gate.gltf");
-	//PlayerActorPtr player;
-	//if (playerBulletTimer <= 0) {
-	//	if (gamepad.buttonDown & GamePad::H) {
-	//		StaticMeshActorPtr GateE = std::make_shared<StaticMeshActor>(
-	//			meshWarpGate, "GateE", 100, player->position, glm::vec3(0, 0, 0));
-	//		const float speed = 10.0f;	//弾の移動速度(m/秒).
-	//		const int x[] = { 0,10,-10,20,-20 };
-	//		const glm::mat4 matRotY =
-	//			glm::rotate(glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0));
-	//		GateE->scale = glm::vec3(1, 1, 1);
-	//		GateE->colLocal = Collision::CreateCapsule(
-	//			glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.3f);
-	//		GateE->velocity = matRotY * glm::vec4(0, 0, -speed, 1);
-
-	//		Audio::Engine::Instance().Prepare("Res/Audio/PlayerShot.xwm")->Play();
-
-	//	}
-	//}
 }
 
 /**

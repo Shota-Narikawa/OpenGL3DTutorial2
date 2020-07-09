@@ -42,6 +42,9 @@ public:
 	int health = 0; ///< 体力.
 	Collision::Shape colLocal;
 	Collision::Shape colWorld;
+
+	// 視錐台判定用の衝突形状.
+	Collision::Sphere bounds = Collision::Sphere{ glm::vec3(0), 3 };
 };
 
 using ActorPtr = std::shared_ptr<Actor>;
@@ -93,6 +96,7 @@ public:
 	void Update(float);
 	void UpdateDrawData(float);
 	void Draw(Mesh::DrawType drawType);
+	void Draw(const Collision::Frustum& frustum, Mesh::DrawType = Mesh::DrawType::color);
 	bool Empty() const { return actors.empty(); }
 
 	//イテレーターを取得する関数.
