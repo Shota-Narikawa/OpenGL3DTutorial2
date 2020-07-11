@@ -155,10 +155,10 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\Project\Src\Camera.h" />
     <ClInclude Include="Src\Actor.h" />
     <ClInclude Include="Src\Audio\Audio.h" />
     <ClInclude Include="Src\BufferObject.h" />
+    <ClInclude Include="Src\Camera.h" />
     <ClInclude Include="Src\EnemyActor.h" />
     <ClInclude Include="Src\EventScene.h" />
     <ClInclude Include="Src\EventScript.h" />
@@ -194,11 +194,11 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\Project\Src\Camera.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="Src\Actor.cpp" />
     <ClCompile Include="Src\Audio\Audio.cpp" />
     <ClCompile Include="Src\BufferObject.cpp" />
+    <ClCompile Include="Src\Camera.cpp" />
     <ClCompile Include="Src\EnemyActor.cpp" />
     <ClCompile Include="Src\EventScene.cpp" />
     <ClCompile Include="Src\EventScript.cpp" />

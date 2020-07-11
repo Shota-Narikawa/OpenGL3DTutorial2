@@ -215,8 +215,8 @@ void MainGameScene::EnemySpawn()
 			{
 				for (size_t i = 0; i < oniCountA; i++)
 				{
-					position.x += std::uniform_real_distribution<float>(60, 100)(rand);
-					position.z += std::uniform_real_distribution<float>(80, 120)(rand);
+					position.x = std::uniform_real_distribution<float>(60, 100)(rand);
+					position.z = std::uniform_real_distribution<float>(80, 120)(rand);
 					glm::vec3 rotation(0);
 					rotation.y = std::uniform_real_distribution<float>(0, 3.14f * 2.0f)(rand);
 					position.y = heightMap.Height(position);
@@ -240,8 +240,8 @@ void MainGameScene::EnemySpawn()
 			{
 				for (size_t i = 0; i < oniCountB; i++)
 				{
-					position.x += std::uniform_real_distribution<float>(60, 100)(rand);
-					position.z += std::uniform_real_distribution<float>(80, 120)(rand);
+					position.x = std::uniform_real_distribution<float>(60, 100)(rand);
+					position.z = std::uniform_real_distribution<float>(80, 120)(rand);
 					glm::vec3 rotation(0);
 					rotation.y = std::uniform_real_distribution<float>(0, 3.14f * 2.0f)(rand);
 					position.y = heightMap.Height(position);
@@ -265,8 +265,8 @@ void MainGameScene::EnemySpawn()
 			{
 				for (size_t i = 0; i < oniCountC; i++)
 				{
-					position.x += std::uniform_real_distribution<float>(60, 100)(rand);
-					position.z += std::uniform_real_distribution<float>(80, 120)(rand);
+					position.x = std::uniform_real_distribution<float>(60, 100)(rand);
+					position.z = std::uniform_real_distribution<float>(80, 120)(rand);
 					glm::vec3 rotation(0);
 					rotation.y = std::uniform_real_distribution<float>(0, 3.14f * 2.0f)(rand);
 					position.y = heightMap.Height(position);
@@ -377,7 +377,7 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 			}
 		}
 		//十分に接近していなければ移動する。接近していれば攻撃する.
-		if (glm::length(v) > 2.5f)
+		if (glm::length(v) > 3.0f)
 		{
 			e->velocity = vEnemyFront * moveSpeed;
 			if (mesh->GetAnimation() != "Run")
@@ -391,7 +391,7 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 		}
 		else
 		{
-			e->velocity = glm::vec3(0);	//接近しているのでもう移動しない.
+			e->velocity = glm::vec3(0);
 			if (mesh->GetAnimation() != "Wait")
 			{
 				if ((mesh->GetAnimation() != "Attack" && mesh->GetAnimation() != "Hit") ||
@@ -415,7 +415,7 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 			{
 				isAttacking = true;
 				defenceFrag = true;
-				defenceLine -= 0.5f * a;
+				defenceLine -= 0.2f * a;
 			}
 		}
 	}
@@ -1768,14 +1768,14 @@ void MainGameScene::ProcessInput()
 	//視点切り替え.
 	if (state == State::play)
 	{
-		if (window.GetGamePad().buttons & GamePad::Q)
+		if (window.GetGamePad().buttons & GamePad::DPAD_LEFT)
 		{
 			cameraFar = true;
 		}
 		else {
 			cameraFar = false;
 		}
-		if (window.GetGamePad().buttons & GamePad::E)
+		if (window.GetGamePad().buttons & GamePad::DPAD_RIGHT)
 		{
 			cameraNear = true;
 		}
@@ -1834,22 +1834,6 @@ void MainGameScene::ProcessInput()
 			}
 			nCommand = true;
 		}
-
-		////骸骨の攻撃パーティクル制御フラグ立て.
-		//if(particleFlagY == false && window.GetGamePad().buttons & GamePad::Y)
-		//{
-		//	if (player->playerID == 3 && player->pMP > 0 && player->pAbility >= 3)
-		//	{
-		//		particleFlagY = true;
-		//	}
-		//}
-		//if(particleFlagB == false && window.GetGamePad().buttons & GamePad::B)
-		//{
-		//	if (player->playerID == 3 && player->pMP > 0 && player->pAbility >= 4)
-		//	{
-		//		particleFlagB = true;
-		//	}
-		//}
 	}
 }
 
@@ -1876,6 +1860,7 @@ void MainGameScene::Update(float deltaTime)
 
 	// カメラの状態を更新.
 	{
+		//カメラ機能追加項目.
 		const glm::vec3 vCameraFront = glm::rotate(
 			glm::mat4(1), camera.rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 5, 20, 1);
 		//元になる行列、回転・角度、回転の軸
@@ -2114,34 +2099,7 @@ void MainGameScene::Update(float deltaTime)
 			if (player->playerID == 3 && player->pAbility >= 4)
 			{
 				particleTimerB -= deltaTime;
-				//if (particleTimerB <= -0.1f)
-				//{
-				//	StaticMeshActorPtr Shot = std::make_shared<StaticMeshActor>(
-				//		meshShot, "Shot", 100, player->position, glm::vec3(0, 0, 0));
-				//	Shot->scale = glm::vec3(0);
-				//	bullet[0].Add(Shot);
-				//	{
-				//		ParticleEmitterParameter ep;
-				//		ep.imagePath = "Res/FireParticle.tga";
-				//		ep.tiles = glm::ivec2(1, 1);
-				//		ep.position = player->position;
-				//		ep.position.y += 0.0f;
-				//		ep.emissionsPerSecond = 50.0f;
-				//		ep.duration = 0.1f;
-				//		ep.dstFactor = GL_ONE; // 加算合成.
-				//		ep.gravity = 0;
-				//		ep.angle = glm::radians(90.0f);//
-				//		ep.loop = false;
-				//		ParticleParameter pp;
-				//		pp.acceleration = glm::vec3(0);//
-				//		pp.lifetime = 0.2f;
-				//		pp.velocity = glm::vec3(0, 3, 0);
-				//		pp.scale = glm::vec2(0.5f);
-				//		pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
-				//		particleSystem.Add(ep, pp);
-				//	}
-				//}
-				if (particleTimerB <= -1.0f)
+				if (particleTimerB <= -2.0f)
 				{
 					StaticMeshActorPtr Shot = std::make_shared<StaticMeshActor>(
 						meshShot, "Shot", 100, player->position, glm::vec3(0, 0, 0));
@@ -2183,57 +2141,33 @@ void MainGameScene::Update(float deltaTime)
 		}
 		
 		////骸骨のB、Kボタン攻撃のパーティクル.
-		//if (particleFlagB == true)
-		//{
-		//	particleTimerB -= deltaTime;
-		//	if (particleTimerB <= 0.1f)
-		//	{
-		//		{
-		//			ParticleEmitterParameter ep;
-		//			ep.imagePath = "Res/FireParticle.tga";
-		//			ep.tiles = glm::ivec2(1, 1);
-		//			ep.position = player->position;
-		//			ep.position.y += 0.0f;
-		//			ep.emissionsPerSecond = 50.0f;
-		//			ep.duration = 0.1f;
-		//			ep.dstFactor = GL_ONE; // 加算合成.
-		//			ep.gravity = 0;
-		//			ep.angle = glm::radians(90.0f);//
-		//			ep.loop = false;
-		//			ParticleParameter pp;
-		//			pp.acceleration = glm::vec3(0);//
-		//			pp.lifetime = 0.2f;
-		//			pp.velocity = glm::vec3(0, 3, 0);
-		//			pp.scale = glm::vec2(0.5f);
-		//			pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
-		//			particleSystem.Add(ep, pp);
-		//		}
-		//	}
-		//	if (particleTimerB <= -1.0f)
-		//	{
-		//		{
-		//			ParticleEmitterParameter ep;
-		//			ep.imagePath = "Res/FireParticle.tga";
-		//			ep.tiles = glm::ivec2(2, 2);
-		//			ep.position = player->position;
-		//			ep.position.y += 0.5f;
-		//			ep.emissionsPerSecond = 400.0f;
-		//			ep.duration = 0.1f;
-		//			ep.dstFactor = GL_ONE; // 加算合成.
-		//			ep.gravity = 0;
-		//			ep.angle = glm::radians(90.0f);//
-		//			ep.loop = false;
-		//			ParticleParameter pp;
-		//			pp.acceleration = glm::vec3(0, 0, 0);//
-		//			pp.lifetime = 0.3f;
-		//			pp.velocity = glm::vec3(0, 0, 20);
-		//			pp.scale = glm::vec2(1.0f);
-		//			pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
-		//			particleSystem.Add(ep, pp);
-		//		}
-		//		Audio::Engine::Instance().Prepare("Res/Audio/katana-slash5.mp3")->Play();
-		//	}
-		//}
+		if (particleFlagB == true)
+		{
+			particleTimerB -= deltaTime;
+			if (particleTimerB <= 0.1f)
+			{
+				{
+					ParticleEmitterParameter ep;
+					ep.imagePath = "Res/FireParticle.tga";
+					ep.tiles = glm::ivec2(1, 1);
+					ep.position = player->position;
+					ep.position.y += 0.0f;
+					ep.emissionsPerSecond = 50.0f;
+					ep.duration = 0.1f;
+					ep.dstFactor = GL_ONE; // 加算合成.
+					ep.gravity = 0;
+					ep.angle = glm::radians(90.0f);//
+					ep.loop = false;
+					ParticleParameter pp;
+					pp.acceleration = glm::vec3(0);//
+					pp.lifetime = 0.2f;
+					pp.velocity = glm::vec3(0, 3, 0);
+					pp.scale = glm::vec2(0.5f);
+					pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
+					particleSystem.Add(ep, pp);
+				}
+			}
+		}
 
 		//プレイヤーの前方に発射.
 		if (shotTimerFragA == true)

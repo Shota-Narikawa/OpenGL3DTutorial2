@@ -120,9 +120,6 @@ void PlayerActor::Update(float deltaTime)
 		}
 	}
 
-	/*const float rotationSpeed = glm::radians(60.0f);
-	rotation.y += rotationSpeed * deltaTime;*/
-
 	//スキルインターバル管理.
 	if (skillE == true) {
 		skillTimerE -= deltaTime;
@@ -323,8 +320,6 @@ void PlayerActor::CheckRun(const GamePad& gamepad, const Camera& camera)
 		return;
 	}
 	////方向キーから移動方向を計算.
-	/*const glm::vec3 front(0, 0, -2);*/
-	const glm::vec3 left(-2, 0, 0);
 	glm::vec3 move(0);
 	glm::vec3 front = glm::normalize(camera.target - camera.position);
 	front.y = 0;
@@ -336,12 +331,6 @@ void PlayerActor::CheckRun(const GamePad& gamepad, const Camera& camera)
 		}
 		else if (gamepad.buttons & GamePad::DPAD_DOWN) {
 			move = -front;
-		}
-		if (gamepad.buttons & GamePad::DPAD_LEFT) {
-			move += left;
-		}
-		else if (gamepad.buttons & GamePad::DPAD_RIGHT) {
-			move -= left;
 		}
 	}
 
