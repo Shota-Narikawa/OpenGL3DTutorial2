@@ -3,9 +3,9 @@
         {
             "bufferView" : 0,
             "componentType" : 5123,
-            "count" : 1440,
+            "count" : 972,
             "max" : [
-                316
+                261
             ],
             "min" : [
                 0
@@ -15,23 +15,23 @@
         {
             "bufferView" : 1,
             "componentType" : 5126,
-            "count" : 317,
+            "count" : 262,
             "max" : [
-                0.35000020265579224,
-                1.3499999046325684,
-                0.3500002324581146
+                0.9999995827674866,
+                2.299999952316284,
+                0.9999991655349731
             ],
             "min" : [
-                -0.34999996423721313,
-                0.6499999761581421,
-                -0.34999987483024597
+                -0.999999463558197,
+                0.0,
+                -1.0
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 2,
             "componentType" : 5126,
-            "count" : 317,
+            "count" : 262,
             "max" : [
                 0.999969482421875,
                 1.0,
@@ -40,39 +40,21 @@
             "min" : [
                 -0.999969482421875,
                 -1.0,
-                -0.999969482421875
+                -1.0
             ],
             "type" : "VEC3"
         },
         {
             "bufferView" : 3,
             "componentType" : 5126,
-            "count" : 317,
+            "count" : 262,
             "max" : [
-                0.9240870475769043,
                 1.0,
-                0.9995724558830261,
-                1.0
-            ],
-            "min" : [
-                -0.6517062187194824,
-                -0.9997900724411011,
-                -0.6479054689407349,
-                1.0
-            ],
-            "type" : "VEC4"
-        },
-        {
-            "bufferView" : 4,
-            "componentType" : 5126,
-            "count" : 317,
-            "max" : [
-                1.0000001192092896,
                 1.0
             ],
             "min" : [
                 0.0,
-                0.0
+                5.960464477539063e-08
             ],
             "type" : "VEC2"
         }
@@ -84,55 +66,43 @@
     "bufferViews" : [
         {
             "buffer" : 0,
-            "byteLength" : 2880,
+            "byteLength" : 1944,
             "byteOffset" : 0,
             "target" : 34963
         },
         {
             "buffer" : 0,
-            "byteLength" : 3804,
-            "byteOffset" : 2880,
+            "byteLength" : 3144,
+            "byteOffset" : 1944,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 3804,
-            "byteOffset" : 6684,
+            "byteLength" : 3144,
+            "byteOffset" : 5088,
             "target" : 34962
         },
         {
             "buffer" : 0,
-            "byteLength" : 5072,
-            "byteOffset" : 10488,
-            "target" : 34962
-        },
-        {
-            "buffer" : 0,
-            "byteLength" : 2536,
-            "byteOffset" : 15560,
+            "byteLength" : 2096,
+            "byteOffset" : 8232,
             "target" : 34962
         }
     ],
     "buffers" : [
         {
-            "byteLength" : 18096,
-            "uri" : "Blackshadow.bin"
+            "byteLength" : 10328,
+            "uri" : "Bomb.bin"
         }
-    ],
-    "extensionsUsed" : [
-        "KHR_materials_unlit"
     ],
     "images" : [
         {
-            "name" : "Gate",
-            "uri" : "Gate.jpg"
+            "name" : "Black",
+            "uri" : "Black.jpg"
         }
     ],
     "materials" : [
         {
-            "extensions" : {
-                "KHR_materials_unlit" : {}
-            },
             "name" : "Material.001",
             "pbrMetallicRoughness" : {
                 "baseColorFactor" : [
@@ -144,8 +114,7 @@
                 "baseColorTexture" : {
                     "index" : 0
                 },
-                "metallicFactor" : 0.0,
-                "roughnessFactor" : 0.9
+                "metallicFactor" : 0.0
             }
         }
     ],
@@ -157,8 +126,7 @@
                     "attributes" : {
                         "NORMAL" : 2,
                         "POSITION" : 1,
-                        "TANGENT" : 3,
-                        "TEXCOORD_0" : 4
+                        "TEXCOORD_0" : 3
                     },
                     "indices" : 0,
                     "material" : 0

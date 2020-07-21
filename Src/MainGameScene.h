@@ -121,8 +121,9 @@ private:
 	float eIntTimer = 0, wIntTimer = 0, 
 		sIntTimer = 0, nIntTimer = 0.0f;						//各攻撃のインターバル.
 	float allTimer = 0.0f;										//予備用タイマー.
-	float particleTimerA = 0, particleTimerB = 0;			//パーティクル制御タイマー.
-	float partiIntTimer = 0;
+	float particleTimerA = 0, particleTimerB = 0;				//攻撃パーティクル制御タイマー.
+	float walkParticleTimer = 0;								//砂埃パーティクル制御タイマー.
+	float bombTimer = 0;										//爆弾のタイマ―.
 
 	//ID.
 	int warpID = -1;
@@ -171,8 +172,8 @@ private:
 	bool nextStateFlag = false;						///<ステート移行可能状態.
 
 	bool selectIconFlag = false;					///<セレクトアイコン.
-	bool shotTimerFragA = false, shotTimerFragB = false, 
-		shotTimerFragC = false;						///<攻撃でタイマーを動かすフラグ.
+	bool shotTimerFlagA = false, shotTimerFlagB = false, 
+		shotTimerFlagC = false;						///<攻撃でタイマーを動かすフラグ.
 	bool chargeShotFlagA, chargeShotFlagB = false;	///<溜め攻撃用フラグ.
 	bool isAttacking = false;						///<敵の攻撃.
 	bool bulletFragA, bulletFragB = false;			///<周囲に出る.
@@ -183,16 +184,18 @@ private:
 
 	bool iconUpFlag = false, iconDownFlag = false;	//アイコン動作状態.
 	bool mHouseFlag = false;						//モンスターハウス.
-	bool defenceFrag = false;						//防衛ラインが攻撃されているか.
+	bool defenceFlag = false;						//防衛ラインが攻撃されているか.
 
 	bool eventFrag = false;							//セリフイベント表示フラグ.
 
-	bool cameraFar = false;		//カメラを離す.
-	bool cameraNear = false;	//カメラを寄せる.
-	bool gamePadText = false;	//ゲームパッドイラスト.
-	bool keybordText = false;	//キーボードイラスト.
-	bool particleFlagY = false;	//パーティクル制御フラグ.
-	bool particleFlagB = false;	//パーティクル制御フラグ.
+	bool cameraFar = false;			//カメラを離す.
+	bool cameraNear = false;		//カメラを寄せる.
+	bool gamePadText = false;		//ゲームパッドイラスト.
+	bool keybordText = false;		//キーボードイラスト.
+	bool particleFlagY = false;		//攻撃パーティクル制御フラグ.
+	bool particleFlagB = false;		//攻撃パーティクル制御フラグ.
+	bool walkParticleFlag = false;	//砂埃のパーティクル制御フラグ.
+	bool bombFlag = false;			//爆弾のフラグ.
 
 	Actor* target = nullptr;
 	glm::vec3 position = glm::vec3(0);

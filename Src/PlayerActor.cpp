@@ -150,6 +150,11 @@ void PlayerActor::Update(float deltaTime)
 		skillTimerW = 0.0f;
 	}
 
+	if (pep)
+	{
+		pep->Position(position);
+	}
+
 	//アニメーションの更新.
 	if (playerID == 1 || playerID == 2 || playerID == 3) {
 		switch (state) {

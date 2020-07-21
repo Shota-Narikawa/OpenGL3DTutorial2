@@ -7,6 +7,7 @@
 #include "SkeletalMeshActor.h"
 #include "Terrain.h"
 #include "Camera.h"
+#include "Particle.h"
 #include "Audio\Audio.h"
 #include <memory>
 
@@ -39,6 +40,8 @@ public:
 	static int maxHP;		//最大HP.
 	static int maxMP;		//最大MP.
 	static int playerID;	//プレイヤーのメッシュ.
+
+	ParticleEmitterPtr pep;
 
 private:
 
