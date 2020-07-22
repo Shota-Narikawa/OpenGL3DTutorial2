@@ -67,7 +67,7 @@ private:
 	float moveSpeed = 7.0f;		///< 移動速度.
 	ActorPtr attackCollision;	///< 攻撃判定.
 	ActorPtr playerStatusUp;
-	float attackTimerA = -1, attackTimerB = -1, attackTimerC = -1;		///< 攻撃時間.;		///< 攻撃時間.
+	float attackTimerA = -1, attackTimerB = -1, attackTimerC = -1;		///< 攻撃時間.
 	float intervalTimer = 0;		///< 攻撃時間.
 	int health = 10;
 
@@ -79,9 +79,7 @@ private:
 
 	ActorPtr BulletCollision;
 	float playerBulletTimer = 0;
-	bool playerNoDamege = false;	//無敵状態.
-	float noDamegeTimer = 0.0f;		//無敵時間.
-	bool dashFrag = false;	//ゴブリンのダッシュフラグ.
+	bool dashFrag = false;			//ゴブリンのダッシュフラグ.
 
 	float skillTimerW = 0.0f, skillTimerE = 0.0f, skillTimerN = 0.0f;	//スキルインターバル.
 	bool skillW = false, skillE = false, skillN = false;	//スキルインターバル.

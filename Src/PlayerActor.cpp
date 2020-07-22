@@ -125,6 +125,7 @@ void PlayerActor::Update(float deltaTime)
 		skillTimerE -= deltaTime;
 		if (skillTimerE <= -2.0f) {
 			skillE = false;
+			dashFrag = false;
 		}
 	}
 	else {
@@ -324,6 +325,7 @@ void PlayerActor::CheckRun(const GamePad& gamepad, const Camera& camera)
 	if (isInAir) {
 		return;
 	}
+
 	////方向キーから移動方向を計算.
 	glm::vec3 move(0);
 	glm::vec3 front = glm::normalize(camera.target - camera.position);
@@ -332,7 +334,7 @@ void PlayerActor::CheckRun(const GamePad& gamepad, const Camera& camera)
 	// 前後方向に移動
 	if (!isAttack) {
 		if (gamepad.buttons & GamePad::DPAD_UP) {
-			move = front;
+				move = front;
 		}
 		else if (gamepad.buttons & GamePad::DPAD_DOWN) {
 			move = -front;
@@ -467,6 +469,11 @@ void PlayerActor::CheckAttack(const GamePad& gamepad)
 			GetMesh()->Play("Attack", false);
 			attackTimerA = 0;
 			state = State::attack;
+		}
+		if (skillE == false && pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X) {
+
+			skillE = true;
+			pMP -= 5;
 		}
 	}
 	//ウィザード.

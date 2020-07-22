@@ -124,6 +124,7 @@ private:
 	float particleTimerA = 0, particleTimerB = 0;				//攻撃パーティクル制御タイマー.
 	float walkParticleTimer = 0;								//砂埃パーティクル制御タイマー.
 	float bombTimer = 0;										//爆弾のタイマ―.
+	float comboTimer = 0.0f;									//コンボタイマー.
 
 	//ID.
 	int warpID = -1;
@@ -136,6 +137,7 @@ private:
 	int selectCount3 = 0;	////選択アイコン用.
 	int stageChage = 0;		//どの試練か.
 	float defenceLine = 100;	//０になるとゲームオーバ.
+	float combo = 0.0f;				//コンボ数.
 
 	//敵の情報.
 	int enemySpawn = 100;	//一度に湧く敵の出現数.
@@ -196,6 +198,7 @@ private:
 	bool particleFlagB = false;		//攻撃パーティクル制御フラグ.
 	bool walkParticleFlag = false;	//砂埃のパーティクル制御フラグ.
 	bool bombFlag = false;			//爆弾のフラグ.
+	bool comTimerFlag = false;		//コンボタイマーのフラグ.
 
 	Actor* target = nullptr;
 	glm::vec3 position = glm::vec3(0);

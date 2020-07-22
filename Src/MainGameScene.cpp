@@ -335,6 +335,9 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 				player->pExCount -= 50;
 
 				enemySpawn += 1;
+				combo += 1;
+				comboTimer = 0.0f;
+				comTimerFlag = true;
 			}
 			continue;
 		}
@@ -415,6 +418,7 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 			{
 				isAttacking = true;
 				defenceFlag = true;
+				float comboBuf = combo / 10.0f;	//コンボに対応する耐久力.
 				defenceLine -= 0.2f * a;
 			}
 		}
@@ -439,6 +443,9 @@ void MainGameScene::EnemyDetectCollision(int i)
 		player->pExPoint -= 20;
 		player->pExCount -= 100;
 		enemySpawn += 1;
+		combo += 1;
+		comboTimer = 0.0f;
+		comTimerFlag = true;
 
 		auto mesh = meshBuffer.GetSkeletalMesh("Effect.Hit");
 		mesh->Play(mesh->GetAnimationList()[0].name, false);
@@ -463,6 +470,9 @@ void MainGameScene::EnemyDetectCollision(int i)
 		player->pExPoint -= 20;
 		player->pExCount -= 100;
 		enemySpawn += 1;
+		combo += 1;
+		comboTimer = 0.0f;
+		comTimerFlag = true;
 
 		auto mesh = meshBuffer.GetSkeletalMesh("Effect.Hit");
 		mesh->Play(mesh->GetAnimationList()[0].name, false);
@@ -980,21 +990,23 @@ bool MainGameScene::Initialize()
 			p->scale = glm::vec3(1, 2, 1); // 見つけやすいように拡大.
 			defencePoint.Add(p);
 
+			ParticleEmitterPtr p = particleSystem.Find(1000);
 			ParticleEmitterParameter ep;
 			ep.imagePath = "Res/DiskParticle.tga";
 			ep.tiles = glm::ivec2(1, 1);
 			ep.position = position;
-			ep.position.y = heightMap.Height(position)+ 1.0f;
+			ep.position.y = heightMap.Height(position) + 1.0f;
 			ep.emissionsPerSecond = 40.0f;
 			ep.duration = 1.0f;
 			ep.dstFactor = GL_ONE; // 加算合成.
 			ep.gravity = 0;
 			ep.angle = glm::radians(60.0f);//
+			ep.id = 1000;
 			ParticleParameter pp;
 			pp.acceleration = glm::vec3(0, 5, 0);//
 			pp.lifetime = 0.8f;
 			pp.velocity = glm::vec3(0, 2, 0);
-			pp.scale = glm::vec2(0.05f,1.0f);
+			pp.scale = glm::vec2(0.05f, 1.0f);
 			pp.color = glm::vec4(0.1f, 0.1f, 0.9f, 1.0f);
 			particleSystem.Add(ep, pp);
 		}
@@ -1833,19 +1845,25 @@ void MainGameScene::ProcessInput()
 			{
 				shotTimerFlagA = true;
 			}
+			if (player->playerID == 1)
+			{
+				bombFlag = true;
+			}
 			nCommand = true;
 		}
 
 		//砂埃のパーティクル制御.
-		if(player->playerID != 0)
-		if(window.GetGamePad().buttons & GamePad::DPAD_UP ||
-			window.GetGamePad().buttons & GamePad::DPAD_DOWN)
+		if (player->playerID != 0)
 		{
-			walkParticleFlag = true;
-		}
-		else
-		{
-			walkParticleFlag = false;
+			if (window.GetGamePad().buttons & GamePad::DPAD_UP ||
+				window.GetGamePad().buttons & GamePad::DPAD_DOWN)
+			{
+				walkParticleFlag = true;
+			}
+			else
+			{
+				walkParticleFlag = false;
+			}
 		}
 	}
 }
@@ -2657,6 +2675,7 @@ void MainGameScene::Update(float deltaTime)
 			sprites[40].Scale(glm::vec2(1));
 			sprites[41].Scale(glm::vec2(1));
 			sprites[42].Scale(glm::vec2(1));
+			
 			const glm::vec3 x = (*(defencePoint.begin() + 0))->position;
 			const glm::vec3 y = (*(defencePoint.begin() + 1))->position;
 			const glm::vec3 z = (*(defencePoint.begin() + 2))->position;
@@ -2913,6 +2932,18 @@ void MainGameScene::Update(float deltaTime)
 		{
 			nCommand = false;
 			nIntTimer = 0.0f;
+		}
+	}
+
+	//コンボタイマー管理.
+	if(comTimerFlag == true)
+	{
+		comboTimer += deltaTime;
+		if (comboTimer >= 10.0f)
+		{
+			comTimerFlag = false;
+			combo = 0;
+			comboTimer = 0.0f;
 		}
 	}
 
@@ -3851,6 +3882,26 @@ void MainGameScene::Render()
 						}
 					}
 					fontRenderer.AddString(glm::vec2(330, 340), str);
+				}
+
+				if (comboTimer > 0.0f)
+				{
+					//コンボ数.
+					{
+						wchar_t str[] = L"   ";
+						int n = combo;
+						for (int i = 0; i < 3; ++i)
+						{
+							str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
+							n /= 10;
+							if (n <= 0)
+							{
+								break;
+							}
+						}
+						fontRenderer.AddString(glm::vec2(330, 290), L"combo");
+						fontRenderer.AddString(glm::vec2(290, 290), str);
+					}
 				}
 			}
 		}

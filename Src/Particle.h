@@ -96,6 +96,8 @@ public:
 	void Position(const glm::vec3& p) { ep.position = p; }
 	const glm::vec3& Position() const { return ep.position; }
 
+	void Color(const glm::vec4& c) { pp.color = c; }
+
 	void Id(int n) { ep.id = n; }
 	int Id() const { return ep.id; }
 
