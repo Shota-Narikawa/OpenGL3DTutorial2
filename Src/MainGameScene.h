@@ -153,20 +153,8 @@ private:
 	glm::vec3 comammdSetPos[4] =					//好きな場所にアイコンをセットする為の配列.(上から時計回り)
 	{ glm::vec3(500, -150, 0),glm::vec3(580, -230, 0),glm::vec3(500, -310, 0),glm::vec3(420, -230, 0) };
 	int eCommandA = 0, wCommandA = 0, sCommandA = 0, nCommandA = 0;	//表側のスキル.
-	int eCommandB = 0, wCommandB = 0, sCommandB = 0, nCommandB = 0;	//裏側のスキル.
 	int skComAttack = 0;							//数字に応じて攻撃するスキルが異なる.
 	int skComCount = 0;								//スキル表の時のカウント.
-
-	struct ItemCount {
-		int itemHP = 0;			//HPアップ.
-		int itemMP = 0;			//MPアップ.
-		int itemAll = 0;		//両方回復.
-		int attackUP = 0;		//攻撃アップ.
-		int blockUP = 0;		//防御アップ.
-		int muteki = 0;			//無敵状態.
-	};
-
-	ItemCount itemC;
 
 	//フラグ系.
 	bool gameOverFlag = false;						///<ゲームオーバー状態.

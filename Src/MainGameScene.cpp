@@ -990,7 +990,6 @@ bool MainGameScene::Initialize()
 			p->scale = glm::vec3(1, 2, 1); // 見つけやすいように拡大.
 			defencePoint.Add(p);
 
-			ParticleEmitterPtr p = particleSystem.Find(1000);
 			ParticleEmitterParameter ep;
 			ep.imagePath = "Res/DiskParticle.tga";
 			ep.tiles = glm::ivec2(1, 1);
@@ -1001,7 +1000,6 @@ bool MainGameScene::Initialize()
 			ep.dstFactor = GL_ONE; // 加算合成.
 			ep.gravity = 0;
 			ep.angle = glm::radians(60.0f);//
-			ep.id = 1000;
 			ParticleParameter pp;
 			pp.acceleration = glm::vec3(0, 5, 0);//
 			pp.lifetime = 0.8f;
@@ -1967,7 +1965,7 @@ void MainGameScene::Update(float deltaTime)
 			EnemyAI(deltaTime, defencePoint, 0, 0);
 			EnemyAI(deltaTime, defencePoint, 1, 1);
 			EnemyAI(deltaTime, defencePoint, 2, 2);
-			//敵が追いかけてくる.
+			//敵がプレイヤーに向かって追いかけてくる.
 			for (auto& e : enemies[3])
 			{
 				SkeletalMeshActorPtr enemy = std::static_pointer_cast<SkeletalMeshActor>(e);
@@ -2072,7 +2070,7 @@ void MainGameScene::Update(float deltaTime)
 			EnemyDetectCollision(3);
 		}
 
-		////砂埃のパーティクル制御.
+		////砂埃のパーティクル.
 		if (walkParticleFlag == true)
 		{
 			walkParticleTimer -= deltaTime;
@@ -2290,7 +2288,7 @@ void MainGameScene::Update(float deltaTime)
 			}
 		}
 
-		//プレイヤーの前方に発射.
+		//ウィザードのY、Uボタンの炎攻撃.
 		if (shotTimerFlagA == true)
 		{
 			if (player->playerID == 2 && player->pAbility >= 3)
@@ -2346,7 +2344,7 @@ void MainGameScene::Update(float deltaTime)
 			}
 		}
 
-		//溜め攻撃.
+		//ウィザードのB、Kボタン攻撃の氷攻撃.
 		if (chargeShotFlagA == true)
 		{
 			if (player->playerID == 2 && player->pAbility >= 4)
