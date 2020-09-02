@@ -162,6 +162,7 @@
     <ClInclude Include="Src\EnemyActor.h" />
     <ClInclude Include="Src\EventScene.h" />
     <ClInclude Include="Src\EventScript.h" />
+    <ClInclude Include="Src\GameSceneUI.h" />
     <ClInclude Include="Src\Goal.h" />
     <ClInclude Include="Src\Collision.h" />
     <ClInclude Include="Src\Font.h" />
@@ -202,6 +203,7 @@
     <ClCompile Include="Src\EnemyActor.cpp" />
     <ClCompile Include="Src\EventScene.cpp" />
     <ClCompile Include="Src\EventScript.cpp" />
+    <ClCompile Include="Src\GameSceneUI.cpp" />
     <ClCompile Include="Src\Goal.cpp" />
     <ClCompile Include="Src\Collision.cpp" />
     <ClCompile Include="Src\Font.cpp" />
@@ -239,6 +241,8 @@
     <None Include="Res\BrightPassFilter.frag" />
     <None Include="Res\DepthOfField.frag" />
     <None Include="Res\DepthOfField.vert" />
+    <None Include="Res\Grass.frag" />
+    <None Include="Res\Grass.vert" />
     <None Include="Res\NonTexturedShadow.frag" />
     <None Include="Res\NormalBlur.frag" />
     <None Include="Res\Particle.vert" />

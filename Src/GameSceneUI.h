@@ -1,0 +1,7 @@
+/**
+* @file GameSceneUI.h
+*/
+#ifndef GAMESCENEUI_H_INCLUDED
+#define GAMESCENEUI_H_INCLUDED
+
+#endif // GAMESCENEUI_H_INCLUDED

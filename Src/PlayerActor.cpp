@@ -380,7 +380,7 @@ void PlayerActor::CheckJump(const GamePad& gamepad)
 		return;
 
 	}
-	if (gamepad.buttonDown & GamePad::R || gamepad.buttons & GamePad::R2 || gamepad.buttons & GamePad::L2) {
+	/*if (gamepad.buttonDown & GamePad::R || gamepad.buttons & GamePad::R2 || gamepad.buttons & GamePad::L2) {
 		Jump();
 		if (playerID == 1) {
 			Audio::Engine::Instance().Prepare("Res/Audio/Enemy.mp3")->Play();
@@ -391,7 +391,7 @@ void PlayerActor::CheckJump(const GamePad& gamepad)
 		else if (playerID == 3) {
 			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack1.mp3")->Play();
 		}
-	}
+	}*/
 }
 
 /**

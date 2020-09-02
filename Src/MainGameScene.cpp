@@ -132,8 +132,8 @@ void PlayerCollisionHandler(const ActorPtr& a, const ActorPtr& b, const glm::vec
 *@param d		countがd以下なら下に.
 *@param e		countがeと同じなら.
 *@param f		countがfなら一番上に移動.
-
-*/void MainGameScene::skSelectUI(int a, int b, int c, int d, int e, int f)
+*/
+void MainGameScene::skSelectUI(int a, int b, int c, int d, int e, int f)
 {
 	GLFWEW::Window& window = GLFWEW::Window::Instance();
 	const GamePad gamepad = GLFWEW::Window::Instance().GetGamePad();
@@ -201,6 +201,7 @@ void MainGameScene::EnemySpawn()
 	const int b = std::uniform_int_distribution<>(0, 2)(rand);
 	const int c = std::uniform_int_distribution<>(0, 2)(rand);
 	const int d = std::uniform_int_distribution<>(0, 2)(rand);
+
 	if (state == State::play)
 	{
 		const size_t oniCountA = 3;
@@ -333,7 +334,6 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 				enemyBlow += 1;
 				player->pExPoint -= 20;
 				player->pExCount -= 50;
-
 				enemySpawn += 1;
 				combo += 1;
 				comboTimer = 0.0f;
@@ -418,8 +418,8 @@ void MainGameScene::EnemyAI(float deltaTime, ActorList& x, int a, int b)
 			{
 				isAttacking = true;
 				defenceFlag = true;
-				float comboBuf = combo / 10.0f;	//コンボに対応する耐久力.
-				defenceLine -= 0.2f * a;
+				
+				defenceLine -= 0.4f / comboBuf * a;
 			}
 		}
 	}
@@ -547,6 +547,7 @@ bool MainGameScene::Initialize()
 	lightBuffer.BindToShader(meshBuffer.GetStaticMeshShader());
 	lightBuffer.BindToShader(meshBuffer.GetTerrainShader());
 	/*lightBuffer.BindToShader(meshBuffer.GetWaterShader());*/
+	lightBuffer.BindToShader(meshBuffer.GetGrassShader());
 	meshBuffer.LoadMesh("Res/red_pine_tree.gltf");
 	meshBuffer.LoadMesh("Res/jizo_statue.gltf");
 	meshBuffer.LoadSkeletalMesh("Res/bikuni.gltf");
@@ -560,6 +561,7 @@ bool MainGameScene::Initialize()
 	meshBuffer.LoadMesh("Res/GateBlock.gltf");
 	meshBuffer.LoadMesh("Res/MP.gltf");
 	meshBuffer.LoadMesh("Res/Bomb.gltf");
+	meshBuffer.LoadMesh("Res/grass.gltf");
 	meshBuffer.LoadSkeletalMesh("Res/effect_hit_normal.gltf");
 	meshBuffer.LoadSkeletalMesh("Res/effect_curse.gltf");
 
@@ -704,25 +706,25 @@ bool MainGameScene::Initialize()
 	selectIcon24.Scale(glm::vec2(0));
 	sprites.push_back(selectIcon24);
 
-	//防衛ラインのHP(攻撃を受けている時).
-	Sprite defenceHP25(Texture::Image2D::Create("Res/Red.tga"));
+	//防衛ラインのHPバー.
+	Sprite defenceHP25(Texture::Image2D::Create("Res/Green.tga"));
 	defenceHP25.Scale(glm::vec2(0));
 	sprites.push_back(defenceHP25);
 
 	//防衛ラインのアイコン.
 	Sprite defenceIcon26(Texture::Image2D::Create("Res/Crystal.tga"));
-	defenceIcon26.Position(glm::vec3(-250, 350, 0));
+	defenceIcon26.Position(glm::vec3(-440, 345, 0));
 	defenceIcon26.Scale(glm::vec2(0));
 	sprites.push_back(defenceIcon26);
 
 	//敵の残数アイコン.
 	Sprite enemyIcon27(Texture::Image2D::Create("Res/Gobrin.tga"));
-	enemyIcon27.Position(glm::vec3(260, 350, 0));
+	enemyIcon27.Position(glm::vec3(300, 350, 0));
 	enemyIcon27.Scale(glm::vec2(0));
 	sprites.push_back(enemyIcon27);
 
-	//防衛ラインのHP（攻撃を受けてない時）.
-	Sprite defenceHP28(Texture::Image2D::Create("Res/SkyBlue.tga"));
+	//防衛ラインのHP背景.
+	Sprite defenceHP28(Texture::Image2D::Create("Res/HPBar.tga"));
 	defenceHP28.Scale(glm::vec2(0));
 	sprites.push_back(defenceHP28);
 
@@ -798,9 +800,37 @@ bool MainGameScene::Initialize()
 	DMiniIcon42.Scale(glm::vec2(0));
 	sprites.push_back(DMiniIcon42);
 
+	//シールドアイコン.
+	Sprite Shield43(Texture::Image2D::Create("Res/Shield.tga"));
+	Shield43.Position(glm::vec3(-500, 345, 0));
+	Shield43.Scale(glm::vec2(0));
+	sprites.push_back(Shield43);
+
+	Sprite ShieldUP44(Texture::Image2D::Create("Res/ShieldUP.tga"));
+	ShieldUP44.Position(glm::vec3(-480, 340, 0));
+	ShieldUP44.Scale(glm::vec2(0));
+	sprites.push_back(ShieldUP44);
+
+	//コンボ発生時.
+	Sprite Combo45(Texture::Image2D::Create("Res/Combo.tga"));
+	Combo45.Scale(glm::vec2(0));
+	sprites.push_back(Combo45);
+
+	Sprite ComboMes46(Texture::Image2D::Create("Res/ComboMesseage.tga"));
+	ComboMes46.Position(glm::vec3(0, -70, 0));
+	ComboMes46.Scale(glm::vec2(0));
+	sprites.push_back(ComboMes46);
+
+	Sprite ComboMax47(Texture::Image2D::Create("Res/Max.tga"));
+	ComboMax47.Position(glm::vec3(560, 305, 0));
+	ComboMax47.Scale(glm::vec2(0));
+	sprites.push_back(ComboMax47);
+
 	progLighting.Reset(Shader::BuildFromFile("Res/FragmentLighting.vert", "Res/FragmentLighting.frag"));
 	fontRenderer.Init(1000);
 	fontRenderer.LoadFromFile("Res/font.fnt");
+
+	heightMap.SetupGrassShader(meshBuffer, "Res/grass.gltf");
 
 	//パーティクル・システムを初期化する.
 	particleSystem.Init(1000);
@@ -905,37 +935,36 @@ bool MainGameScene::Initialize()
 	//	return false;
 	//}
 
-	if (StageNo == 1)
+	if (StageNo >= 1)
 	{
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_4_field03.mp3");
-		bgm->Play(Audio::Flag_Loop);
-	}
-	else if (StageNo == 2)
-	{
-		enemyStock = 20;
-		enemySpawn = 5;
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock01.mp3");
-		bgm->Play(Audio::Flag_Loop);
-	}
-	else if (StageNo == 3)
-	{
-		enemyStock = 30;
-		enemySpawn = 10;
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock11.mp3");
-		bgm->Play(Audio::Flag_Loop);
-	}
-	else if (StageNo == 4)
-	{
-		enemyStock = 40;
-		enemySpawn = 20;
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock20.mp3");
-		bgm->Play(Audio::Flag_Loop);
-	}
-	else if (StageNo == 5)
-	{
-		enemyStock = 100;
-		enemySpawn = 100;
-		bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock30.mp3");
+		if (StageNo == 1)
+		{
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_4_field03.mp3");
+		}
+		else if (StageNo == 2)
+		{
+			enemyStock = 20;
+			enemySpawn = 5;
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock01.mp3");
+		}
+		else if (StageNo == 3)
+		{
+			enemyStock = 30;
+			enemySpawn = 10;
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock11.mp3");
+		}
+		else if (StageNo == 4)
+		{
+			enemyStock = 40;
+			enemySpawn = 20;
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock20.mp3");
+		}
+		else if (StageNo == 5)
+		{
+			enemyStock = 100;
+			enemySpawn = 100;
+			bgm = Audio::Engine::Instance().Prepare("Res/Audio/game_maoudamashii_7_rock30.mp3");
+		}
 		bgm->Play(Audio::Flag_Loop);
 	}
 
@@ -990,23 +1019,23 @@ bool MainGameScene::Initialize()
 			p->scale = glm::vec3(1, 2, 1); // 見つけやすいように拡大.
 			defencePoint.Add(p);
 
-			ParticleEmitterParameter ep;
-			ep.imagePath = "Res/DiskParticle.tga";
-			ep.tiles = glm::ivec2(1, 1);
-			ep.position = position;
-			ep.position.y = heightMap.Height(position) + 1.0f;
-			ep.emissionsPerSecond = 40.0f;
-			ep.duration = 1.0f;
-			ep.dstFactor = GL_ONE; // 加算合成.
-			ep.gravity = 0;
-			ep.angle = glm::radians(60.0f);//
-			ParticleParameter pp;
-			pp.acceleration = glm::vec3(0, 5, 0);//
-			pp.lifetime = 0.8f;
-			pp.velocity = glm::vec3(0, 2, 0);
-			pp.scale = glm::vec2(0.05f, 1.0f);
-			pp.color = glm::vec4(0.1f, 0.1f, 0.9f, 1.0f);
-			particleSystem.Add(ep, pp);
+			//ParticleEmitterParameter ep;
+			//ep.imagePath = "Res/DiskParticle.tga";
+			//ep.tiles = glm::ivec2(1, 1);
+			//ep.position = position;
+			//ep.position.y = heightMap.Height(position) + 1.0f;
+			//ep.emissionsPerSecond = 40.0f;
+			//ep.duration = 1.0f;
+			//ep.dstFactor = GL_ONE; // 加算合成.
+			//ep.gravity = 0;
+			//ep.angle = glm::radians(60.0f);//
+			//ParticleParameter pp;
+			//pp.acceleration = glm::vec3(0, 5, 0);//
+			//pp.lifetime = 0.8f;
+			//pp.velocity = glm::vec3(0, 2, 0);
+			//pp.scale = glm::vec2(0.05f, 1.0f);
+			//pp.color = glm::vec4(0.1f, 0.1f, 0.9f, 1.0f);
+			//particleSystem.Add(ep, pp);
 		}
 
 		//試練のステージの石壁を配置.
@@ -1391,7 +1420,7 @@ void MainGameScene::ProcessInput()
 	}
 	if (window.GetGamePad().buttonDown & GamePad::N)
 	{
-
+		combo += 1;
 	}
 
 	if (window.GetGamePad().buttonDown & GamePad::M)
@@ -1459,6 +1488,11 @@ void MainGameScene::ProcessInput()
 		sprites[40].Scale(glm::vec2(0));
 		sprites[41].Scale(glm::vec2(0));
 		sprites[42].Scale(glm::vec2(0));
+		sprites[43].Scale(glm::vec2(0));
+		sprites[44].Scale(glm::vec2(0));
+		sprites[45].Scale(glm::vec2(0));
+		sprites[46].Scale(glm::vec2(0));
+		sprites[47].Scale(glm::vec2(0));
 	}
 	//スペースボタンでも閉じれる.
 	else if (window.GetGamePad().buttonDown & GamePad::SPACE)
@@ -1776,17 +1810,27 @@ void MainGameScene::ProcessInput()
 		}
 	}
 
+	//ミニマップ表示.
+	if(window.GetGamePad().buttons & GamePad::M || window.GetGamePad().buttons & GamePad::YY)
+	{
+		miniMapFlag = true;
+	}
+	else
+	{
+		miniMapFlag = false;
+	}
+
 	//視点切り替え.
 	if (state == State::play)
 	{
-		if (window.GetGamePad().buttons & GamePad::DPAD_LEFT)
+		if (window.GetGamePad().buttons & GamePad::DPAD_LEFT || window.GetGamePad().buttons & GamePad::L2)
 		{
 			cameraFar = true;
 		}
 		else {
 			cameraFar = false;
 		}
-		if (window.GetGamePad().buttons & GamePad::DPAD_RIGHT)
+		if (window.GetGamePad().buttons & GamePad::DPAD_RIGHT || window.GetGamePad().buttons & GamePad::R2)
 		{
 			cameraNear = true;
 		}
@@ -1965,6 +2009,7 @@ void MainGameScene::Update(float deltaTime)
 			EnemyAI(deltaTime, defencePoint, 0, 0);
 			EnemyAI(deltaTime, defencePoint, 1, 1);
 			EnemyAI(deltaTime, defencePoint, 2, 2);
+
 			//敵がプレイヤーに向かって追いかけてくる.
 			for (auto& e : enemies[3])
 			{
@@ -1979,7 +2024,11 @@ void MainGameScene::Update(float deltaTime)
 						enemy->health = 0;
 						enemyBlow += 1;
 						player->pExPoint -= 20;
-						player->pExCount -= 100;
+						player->pExCount -= 50;
+						enemySpawn += 1;
+						combo += 1;
+						comboTimer = 0.0f;
+						comTimerFlag = true;
 					}
 					continue;
 				}
@@ -2059,7 +2108,7 @@ void MainGameScene::Update(float deltaTime)
 						if (attackingTimer <= 0)
 						{
 							isAttacking = true;
-							player->pHP -= 100;
+							player->pHP -= 20;
 						}
 					}
 				}
@@ -2590,7 +2639,7 @@ void MainGameScene::Update(float deltaTime)
 		}
 		player->pep = nullptr;
 	}
-
+	
 	//HPが０か防衛ラインのHPが０になったらゲームオーバーフラグが立つ.
 	if (player->pHP <= 0 || defenceLine <= 0)
 	{
@@ -2662,101 +2711,110 @@ void MainGameScene::Update(float deltaTime)
 	{
 		if (state == State::play)
 		{
-			//プレイヤーのミニマップアイコン.
-			sprites[38].Scale(glm::vec2(1));
-			sprites[39].Scale(glm::vec2(0.02f));
-			const glm::vec3 startPos(79, 0, 100);
-			mapIcon.position = glm::vec3(player->position.x - startPos.x, -(player->position.z - startPos.z), 0) * 2.8f;
-			sprites[39].Position(mapIcon.position + glm::vec3(530, 270, 0));
-
-			//クリスタルのミニマップアイコン.
-			sprites[40].Scale(glm::vec2(1));
-			sprites[41].Scale(glm::vec2(1));
-			sprites[42].Scale(glm::vec2(1));
-			
-			const glm::vec3 x = (*(defencePoint.begin() + 0))->position;
-			const glm::vec3 y = (*(defencePoint.begin() + 1))->position;
-			const glm::vec3 z = (*(defencePoint.begin() + 2))->position;
-			const glm::vec3 X = glm::vec3(x.x - startPos.x,
-				-(x.z - startPos.z), 0) * 2.8f;
-			const glm::vec3 Y = glm::vec3(y.x - startPos.x,
-				-(y.z - startPos.z), 0) * 2.8f;
-			const glm::vec3 Z = glm::vec3(z.x - startPos.x,
-				-(z.z - startPos.z), 0) * 2.8f;
-			sprites[40].Position(X + glm::vec3(530, 270, 0));
-			sprites[41].Position(Y + glm::vec3(530, 270, 0));
-			sprites[42].Position(Z + glm::vec3(530, 270, 0));
-		}
-
-		sprites[26].Scale(glm::vec2(2));
-		sprites[27].Scale(glm::vec2(1));
-		//防衛ラインのHPバーの表示.
-		//攻撃を受けている時.
-		if (defenceFlag == true)
-		{
-			sprites[28].Scale(glm::vec2(0));
-			if (defenceLine >= 0)
+			if (miniMapFlag)
 			{
-				if (state == State::play)
-				{
-					sprites[25].Scale(glm::vec2(10.0f * defenceLine / 100, 0.4f));
-					sprites[25].Position(glm::vec3((160 * 2.5f * defenceLine / 100) / 2 - 220, 350, 0));
-				}
-				else
-				{
-					sprites[25].Scale(glm::vec2(0));
-					sprites[26].Scale(glm::vec2(0));
-					sprites[27].Scale(glm::vec2(0));
-				}
+				//プレイヤーのミニマップアイコン.
+				sprites[38].Scale(glm::vec2(1));
+				sprites[39].Scale(glm::vec2(0.02f));
+				const glm::vec3 startPos(79, 0, 100);
+				mapIcon.position = glm::vec3(player->position.x - startPos.x, -(player->position.z - startPos.z), 0) * 2.8f;
+				sprites[39].Position(mapIcon.position + glm::vec3(530, 270, 0));
+
+				//クリスタルのミニマップアイコン.
+				sprites[40].Scale(glm::vec2(1));
+				sprites[41].Scale(glm::vec2(1));
+				sprites[42].Scale(glm::vec2(1));
+
+				const glm::vec3 x = (*(defencePoint.begin() + 0))->position;
+				const glm::vec3 y = (*(defencePoint.begin() + 1))->position;
+				const glm::vec3 z = (*(defencePoint.begin() + 2))->position;
+				const glm::vec3 X = glm::vec3(x.x - startPos.x,
+					-(x.z - startPos.z), 0) * 2.8f;
+				const glm::vec3 Y = glm::vec3(y.x - startPos.x,
+					-(y.z - startPos.z), 0) * 2.8f;
+				const glm::vec3 Z = glm::vec3(z.x - startPos.x,
+					-(z.z - startPos.z), 0) * 2.8f;
+				sprites[40].Position(X + glm::vec3(530, 270, 0));
+				sprites[41].Position(Y + glm::vec3(530, 270, 0));
+				sprites[42].Position(Z + glm::vec3(530, 270, 0));
+			}
+			else
+			{
+				sprites[38].Scale(glm::vec2(0));
+				sprites[39].Scale(glm::vec2(0));
+				sprites[40].Scale(glm::vec2(0));
+				sprites[41].Scale(glm::vec2(0));
+				sprites[42].Scale(glm::vec2(0));
+			}
+
+			sprites[26].Scale(glm::vec2(2));
+			sprites[27].Scale(glm::vec2(1));
+
+			//防衛ラインのHPバーの表示.
+			//攻撃を受けている時.
+			if (defenceLine >= 0)
+			{		
+				sprites[25].Scale(glm::vec2(13.0f * defenceLine / 100, 0.8f));
+				sprites[25].Position(glm::vec3((520 * defenceLine / 100) / 2 - 365, 345, 0));
+
+				sprites[28].Scale(glm::vec2(0.4f, 0.3f));
+				sprites[28].Position(glm::vec3(-80, 350, 0));
+			}
+			if (defenceLine <= 10)
+			{
+				sprites[25].Texture(Texture::Image2D::Create("Res/Red.tga"));
+			}
+			else if (defenceLine <= 40)
+			{
+				sprites[25].Texture(Texture::Image2D::Create("Res/yellow.tga"));
+			}
+			if (combo > 0)
+			{
+				sprites[43].Scale(glm::vec2(1));
+				sprites[44].Scale(glm::vec2(0.5f));
 			}
 		}
-		//攻撃を受けていない時.
-		else if (defenceFlag == false)
+		else
 		{
 			sprites[25].Scale(glm::vec2(0));
-			if (defenceLine >= 0)
-			{
-				if (state == State::play)
-				{
-					sprites[28].Scale(glm::vec2(10.0f * defenceLine / 100, 0.4f));
-					sprites[28].Position(glm::vec3((160 * 2.5f * defenceLine / 100) / 2 - 220, 350, 0));
-				}
-				else
-				{
-					sprites[26].Scale(glm::vec2(0));
-					sprites[27].Scale(glm::vec2(0));
-					sprites[28].Scale(glm::vec2(0));
-				}
-			}
+			sprites[26].Scale(glm::vec2(0));
+			sprites[27].Scale(glm::vec2(0));
+			sprites[43].Scale(glm::vec2(0));
+			sprites[44].Scale(glm::vec2(0));
+		}
+		//コンボ発生時に出す.
+		if (comboTimer >= 2.0f)
+		{
+			sprites[45].Scale(glm::vec2(0));
+			sprites[46].Scale(glm::vec2(0));
+		}
+		else if (comboTimer > 0.0f && combo <= 1)
+		{
+			sprites[45].Scale(glm::vec2(1.0f));
+			sprites[46].Scale(glm::vec2(1.0f));
+		}
+		if (combo < 10)
+		{
+			sprites[47].Scale(glm::vec2(0));
+		}
+		else if (combo >= 10)
+		{
+			sprites[47].Scale(glm::vec2(1.0f));
+		}
+		for (int i = 0; i < combo; ++i)
+		{
+			comboBuf = (i / combo) + 1.0f;
 		}
 	}
 
-	//HPバーの表示.
-	if (player->pHP >= 0)
+	//HP,MPバーの表示.
+	if (player->pHP >= 0 || player->pMP >= 0)
 	{
-		if (state == State::play)
-		{
-			sprites[1].Position(glm::vec3(-495, 295, 0));
-			sprites[1].Scale(glm::vec2(0.38f, 1.0f));
-			sprites[16].Scale(glm::vec2(5.0f * player->pHP / player->maxHP, 0.4f));
-			sprites[16].Position(glm::vec3((80 * 2.5f * player->pHP / player->maxHP) / 2 - 570, 310, 0));
-		}
-		else if (state == State::menu)
+		if (state == State::menu)
 		{
 			sprites[16].Scale(glm::vec2(5.0f * player->pHP / player->maxHP, 0.4f));
 			sprites[16].Position(glm::vec3((80 * 2.5f * player->pHP / player->maxHP) / 2 + 150, 110, 0));
-		}
-	}
-	//MPバーの表示.
-	if (player->pMP >= 0)
-	{
-		if (state == State::play)
-		{
-			sprites[17].Scale(glm::vec2(2.5f * player->pMP / player->maxMP, 0.4f));
-			sprites[17].Position(glm::vec3((40 * 2.5f * player->pMP / player->maxMP) / 2 - 570, 260, 0));
-		}
-		else if (state == State::menu)
-		{
+
 			sprites[17].Scale(glm::vec2(2.5f * player->pMP / player->maxMP, 0.4f));
 			sprites[17].Position(glm::vec3((40 * 2.5f * player->pMP / player->maxMP) / 2 + 150, 60, 0));
 		}
@@ -3082,6 +3140,11 @@ void MainGameScene::Update(float deltaTime)
 				sprites[40].Scale(glm::vec2(0));
 				sprites[41].Scale(glm::vec2(0));
 				sprites[42].Scale(glm::vec2(0));
+				sprites[43].Scale(glm::vec2(0));
+				sprites[44].Scale(glm::vec2(0));
+				sprites[45].Scale(glm::vec2(0));
+				sprites[46].Scale(glm::vec2(0));
+				sprites[47].Scale(glm::vec2(0));
 
 				state = State::result;
 				sprites[1].Scale(glm::vec2(1, 3.5f));
@@ -3231,6 +3294,7 @@ void MainGameScene::Render()
 	meshBuffer.BindShadowTexture(fboShadow->GetDepthTexture());
 
 	const Collision::Frustum viewFrustum = Collision::CreateFrustum(camera);
+	heightMap.UpdateGrassInstanceData(viewFrustum);
 	RenderMesh(&viewFrustum, Mesh::DrawType::color);
 	particleSystem.Draw(matProj, matView);
 
@@ -3529,7 +3593,7 @@ void MainGameScene::Render()
 			{
 				fontRenderer.AddString(glm::vec2(0, 210), L"キーボードコマンド表");
 				fontRenderer.AddString(glm::vec2(-100, 150), L"WSAD:移動");
-				fontRenderer.AddString(glm::vec2(-100, 100), L"L：ジャンプ");
+				fontRenderer.AddString(glm::vec2(-100, 100), L"M：マップ表示");
 				fontRenderer.AddString(glm::vec2(-100, 50), L"U：スキル１");
 				fontRenderer.AddString(glm::vec2(-100, 0), L"H：スキル２");
 				fontRenderer.AddString(glm::vec2(-100, -50), L"K：スキル３");
@@ -3545,13 +3609,13 @@ void MainGameScene::Render()
 			{
 				fontRenderer.AddString(glm::vec2(0, 210), L"ゲームパッドコマンド表");
 				fontRenderer.AddString(glm::vec2(-100, 150), L"十字キー:移動");
-				fontRenderer.AddString(glm::vec2(-100, 100), L"RT：ジャンプ");
+				fontRenderer.AddString(glm::vec2(-100, 100), L"R：マップ表示");
 				fontRenderer.AddString(glm::vec2(-100, 50), L"Y：スキル１");
 				fontRenderer.AddString(glm::vec2(-100, 0), L"X：スキル２");
 				fontRenderer.AddString(glm::vec2(-100, -50), L"B：スキル３");
 				fontRenderer.AddString(glm::vec2(-100, -100), L"A：スキル４");
-				fontRenderer.AddString(glm::vec2(170, 150), L"LB：カメラ左回転");
-				fontRenderer.AddString(glm::vec2(170, 100), L"RB：カメラ右回転");
+				fontRenderer.AddString(glm::vec2(170, 150), L"L2：カメラ左回転");
+				fontRenderer.AddString(glm::vec2(170, 100), L"R2：カメラ右回転");
 				fontRenderer.AddString(glm::vec2(170, 50), L"BACK:メニュー画面");
 				fontRenderer.AddString(glm::vec2(170, 0), L"START:決定キー");
 				fontRenderer.AddString(glm::vec2(-100, -200), L"Yボタン　または　Uボタンで");
@@ -3744,101 +3808,6 @@ void MainGameScene::Render()
 			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 0.1f, 5));
 			fontRenderer.Scale(glm::vec2(1));
 
-			//体力表示.
-			{
-				wchar_t str[] = L"    ";
-				int n = player->pHP;
-				for (int i = 0; i < 4; ++i)
-				{
-					str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
-					n /= 10;
-					if (n <= 0)
-					{
-						break;
-					}
-				}
-				fontRenderer.AddString(glm::vec2(-620, 300), L"HP:");
-				fontRenderer.AddString(glm::vec2(-570, 275), str);
-			}
-
-			//最大体力表示.
-			{
-				wchar_t str[] = L"/    ";
-				int n = player->maxHP;
-				for (int i = 0; i < 4; ++i)
-				{
-					str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
-					n /= 10;
-					if (n <= 0)
-					{
-						break;
-					}
-				}
-				if (player->maxHP < 1000)
-				{
-					fontRenderer.AddString(glm::vec2(-520, 275), str);
-				}
-				else if (player->maxHP >= 1000)
-				{
-					fontRenderer.AddString(glm::vec2(-500, 275), str);
-				}
-			}
-
-			//ＭＰ表示.
-			{
-				wchar_t str[] = L"   ";
-				int n = player->pMP;
-				for (int i = 0; i < 3; ++i)
-				{
-					str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
-					n /= 10;
-					if (n <= 0)
-					{
-						break;
-					}
-				}
-				fontRenderer.AddString(glm::vec2(-620, 250), L"MP:");
-				fontRenderer.AddString(glm::vec2(-570, 225), str);
-			}
-			//最大ＭＰ表示.
-			{
-				wchar_t str[] = L"/   ";
-				int n = player->maxMP;
-				for (int i = 0; i < 3; ++i)
-				{
-					str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
-					n /= 10;
-					if (n <= 0)
-					{
-						break;
-					}
-				}
-				if (player->maxMP < 100)
-				{
-					fontRenderer.AddString(glm::vec2(-540, 225), str);
-				}
-				else if (player->maxMP >= 100)
-				{
-					fontRenderer.AddString(glm::vec2(-520, 225), str);
-				}
-			}
-
-			//レベル表示.
-			{
-				wchar_t str[] = L"Lv.   ";
-				int n = player->pLevel;
-				for (int i = 0; i < 3; ++i)
-				{
-					str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
-					n /= 10;
-					if (n <= 0)
-					{
-						break;
-					}
-				}
-				fontRenderer.AddString(glm::vec2(-620, 350), str);
-			}
-
 			if (StageNo != 1) {
 				//敵を倒した数..
 				{
@@ -3855,15 +3824,15 @@ void MainGameScene::Render()
 					}
 					if (enemyBlow >= 100)
 					{
-						fontRenderer.AddString(glm::vec2(280, 340), str);
+						fontRenderer.AddString(glm::vec2(320, 340), str);
 					}
 					else if (enemyBlow >= 10)
 					{
-						fontRenderer.AddString(glm::vec2(290, 340), str);
+						fontRenderer.AddString(glm::vec2(330, 340), str);
 					}
 					else
 					{
-						fontRenderer.AddString(glm::vec2(300, 340), str);
+						fontRenderer.AddString(glm::vec2(340, 340), str);
 					}
 				}
 				//敵の残数..
@@ -3879,7 +3848,7 @@ void MainGameScene::Render()
 							break;
 						}
 					}
-					fontRenderer.AddString(glm::vec2(330, 340), str);
+					fontRenderer.AddString(glm::vec2(370, 340), str);
 				}
 
 				if (comboTimer > 0.0f)
@@ -3897,8 +3866,32 @@ void MainGameScene::Render()
 								break;
 							}
 						}
-						fontRenderer.AddString(glm::vec2(330, 290), L"combo");
-						fontRenderer.AddString(glm::vec2(290, 290), str);
+						fontRenderer.AddString(glm::vec2(340, 290), L"combo");
+						fontRenderer.AddString(glm::vec2(300, 290), str);
+					}
+					//コンボバフ数.
+					if (combo < 10)
+					{
+						{
+							wchar_t str[] = L"  ";
+							int n = combo;
+							for (int i = 0; i < 2; ++i)
+							{
+								str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
+								n /= 10;
+								if (n <= 0)
+								{
+									break;
+								}
+							}
+							fontRenderer.AddString(glm::vec2(430, 290), L"×1.");
+							fontRenderer.AddString(glm::vec2(490, 290), str);
+						}
+					}
+					else if (combo >= 10 && comboTimer > 0.0f)
+					{
+						fontRenderer.AddString(glm::vec2(340, 290), L"combo");
+						fontRenderer.AddString(glm::vec2(430, 290), L"×2.0");
 					}
 				}
 			}
@@ -3972,7 +3965,6 @@ void MainGameScene::Render()
 				eventFrag = false;
 			}
 		}
-
 
 		fontRenderer.EndUpdate();
 		textWindow.Draw();
@@ -4094,6 +4086,10 @@ bool MainGameScene::HandleCoinEffects(int id, const glm::vec3& pos)
 */
 void MainGameScene::RenderMesh(const Collision::Frustum* pFrustum, Mesh::DrawType drawType)
 {
+
+	glEnable(GL_CULL_FACE);
+	glCullFace(GL_BACK);
+
 	Mesh::Draw(meshBuffer.GetFile("Terrain"), glm::mat4(1));
 
 	if(pFrustum)
@@ -4148,6 +4144,10 @@ void MainGameScene::RenderMesh(const Collision::Frustum* pFrustum, Mesh::DrawTyp
 		bullet[1].Draw(drawType);
 		bullet[2].Draw(drawType);
 	}
+
+	// 草を描画.
+	Mesh::Draw(meshBuffer.GetFile("Res/grass.gltf"), glm::mat4(1), drawType,
+		heightMap.GetGrassInstanceCount());
 
 	/*if (drawType == Mesh::DrawType::color) {
 		glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);

@@ -19,6 +19,9 @@
 #include "Particle.h"
 #include "TextWindow.h"
 #include "Camera.h"
+
+
+#include "GameSceneUI.h"
 #include <random>
 #include <vector>
 
@@ -132,12 +135,13 @@ private:
 	int enemyID = -1;
 
 	//カウントやタイプ.
-	int selectCount = 0;	//選択アイコン用.
-	int selectCount2 = 0;	//選択アイコン用.
-	int selectCount3 = 0;	////選択アイコン用.
-	int stageChage = 0;		//どの試練か.
-	float defenceLine = 100;	//０になるとゲームオーバ.
+	int selectCount = 0;			//選択アイコン用.
+	int selectCount2 = 0;			//選択アイコン用.
+	int selectCount3 = 0;			////選択アイコン用.
+	int stageChage = 0;				//どの試練か.
+	float defenceLine = 100;		//０になるとゲームオーバ.
 	float combo = 0.0f;				//コンボ数.
+	float comboBuf = 1.0f;			//コンボ数に応じた防御力アップ.
 
 	//敵の情報.
 	int enemySpawn = 100;	//一度に湧く敵の出現数.
@@ -184,6 +188,7 @@ private:
 	bool keybordText = false;		//キーボードイラスト.
 	bool particleFlagY = false;		//攻撃パーティクル制御フラグ.
 	bool particleFlagB = false;		//攻撃パーティクル制御フラグ.
+	bool miniMapFlag = false;		//ミニマップ表示フラグ.
 	bool walkParticleFlag = false;	//砂埃のパーティクル制御フラグ.
 	bool bombFlag = false;			//爆弾のフラグ.
 	bool comTimerFlag = false;		//コンボタイマーのフラグ.

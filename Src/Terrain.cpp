@@ -30,6 +30,22 @@ namespace Terrain {
 			std::cerr << "[エラー]" << __func__ << ":ハイトマップを読み込めませんでした.\n";
 			return false;
 		}
+		texHeightMap = Texture::Image2D::Create(path);
+
+		texGrassHeightMap = Texture::Image2D::Create("Res/Terrain_Ratio.tga");
+		if (texGrassHeightMap->IsNull()) {
+			return false;
+		}
+
+		//草インスタンス用のバッファテクスチャを作成.
+		const GLuint maxGrassCount =
+			(texHeightMap->Width() - 1) * (texHeightMap->Height() - 1);
+		grassInstanceData =
+			Texture::Buffer::Create(GL_RGBA8UI, maxGrassCount * 4, nullptr, GL_STREAM_DRAW);
+		if (grassInstanceData->IsNull()) {
+			return false;
+		}
+
 		name = path;
 
 		//画像の大きさを保存.
@@ -52,8 +68,31 @@ namespace Terrain {
 				return false;
 			}
 		}
+
+		//草が生えていない部分を識別するためのデータ(草丈マップ)を作成.
+		{
+			//草丈マップ画像を読み込む.
+			Texture::ImageData imageData;
+			if (!Texture::LoadImage2D("Res/Terrain_Ratio.tga", &imageData)) {
+				std::cerr << "[エラー]" << __func__ << ": Res/Terrain_Ratio.tgaを読み込めません.\n";
+				return false;
+			}
+			//画像から草丈マップを作成.
+			grassHeightMap.resize(imageData.data.size());
+			for (int y = 0; y < imageData.height; ++y) {
+				const int offsetY = (imageData.height - 1) - y; // 上下反転.
+				for (int x = 0; x < imageData.width; ++x) {
+					const glm::vec4 color = imageData.GetColor(x, y);
+					grassHeightMap[offsetY * imageData.width + x] = GrassInfo{
+					static_cast<uint8_t>(glm::clamp(color.g * 255, 0.0f, 255.0f)),
+					Height(glm::vec3(x + 0.5f, 0, offsetY + 0.5f))
+					};
+				}
+			}
+		}
 		return true;
 	}
+
 /**
 *高さを取得する.
 *
@@ -264,6 +303,72 @@ namespace Terrain {
 		
 			return true;
 		}
+
+/**
+*メッシュに草シェーダを割り当てる.
+*
+*@param meshBuffer	メッシュ取得元のメッシュバッファ.
+*@param meshName	メッシュファイル名.
+*/
+	void HeightMap::SetupGrassShader(const Mesh::Buffer& meshBuffer,
+	const char* meshName) const
+			{
+			//割当先のメッシュを取得.
+				Mesh::FilePtr mesh = meshBuffer.GetFile(meshName);
+			if (!mesh) {
+				return;
+			}
+				//0番目のマテリアルを取得.
+				Mesh::Material& m = mesh->materials[0];
+				//マテリアル0番に草シェーダを割り当てる.
+				m.program = meshBuffer.GetGrassShader();
+			m.progShadow = meshBuffer.GetGrassShadowShader();
+
+			//テクスチャ1に高さマップテクスチャを割り当てる.
+			m.texture[1] = texHeightMap;
+
+			// テクスチャ2に草丈マップテクスチャを割り当てる.
+			m.texture[2] = texGrassHeightMap;
+
+			//テクスチャ3に草インスタンスデータを割り当てる.
+			m.texture[3] = grassInstanceData;
+
+				//テクスチャ4と5にライトインデックスバッファを割り当てる.
+				m.texture[4] = lightIndex[0];
+			m.texture[5] = lightIndex[1];
+			}
+
+/**
+*草インスタンスデータバッファを更新する.
+*
+*@param	frustum	表示範囲を表す視錐台.
+*/
+void HeightMap::UpdateGrassInstanceData(const Collision::Frustum& frustum)
+{
+		std::vector<GrassInstanceData> data;
+		data.reserve(grassInstanceData->Size());
+		for (int z = 0; z < size.y - 1; ++z) {
+			for (int x = 0; x < size.x - 1; ++x) {
+				//草が生えていない(草丈が0)場合は登録しない.
+					const int n = z * (size.y - 1) + x;
+				if(grassHeightMap[n].grassHeight < 1) {
+					continue;
+				}
+				//視錐台と衝突した場合のみ登録する.
+					//草モデルは高さ約1mなので、衝突判定形状は地面から0.5m上に作る.
+					//地形が平面なら半径は1mで足りるが、垂直方向の変形を考慮して1.3mとする.
+					glm::vec3 p(x + 0.5f, 0, z + 0.5f);
+				p.y = grassHeightMap[n].height + 0.5f;
+				if(Collision::Test(frustum, Collision::Sphere{ p, 1.3f })) {
+					data.push_back(GrassInstanceData{
+					static_cast<uint8_t>(x), static_cast<uint8_t>(z), 0, 0 });
+				}
+			}
+		}
+		grassInstanceCount = data.size();
+		grassInstanceData->BufferSubData(
+			0, data.size() * sizeof(GrassInstanceData), data.data());
+}
 
 
 	/**

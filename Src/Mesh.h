@@ -128,6 +128,8 @@ namespace Mesh {
 		const Shader::ProgramPtr& GetShadowShader() const { return progShadow; }
 		const Shader::ProgramPtr& GetNonTexturedShadowShader() const { return progNonTexturedShadow; }
 		const Shader::ProgramPtr& GetSkeletalShadowShader() const { return progSkeletalShadow; }
+		const Shader::ProgramPtr& GetGrassShader() const { return progGrass; }
+		const Shader::ProgramPtr& GetGrassShadowShader() const { return progGrassShadow; }
 
 	private:
 		BufferObject vbo;
@@ -143,6 +145,10 @@ namespace Mesh {
 		Shader::ProgramPtr progShadow;
 		Shader::ProgramPtr progNonTexturedShadow;
 		Shader::ProgramPtr progSkeletalShadow;
+
+		// 草シェーダ
+		Shader::ProgramPtr progGrass;
+		Shader::ProgramPtr progGrassShadow;
 
 		//スケルタル・アニメーションに対応したメッシュを保持するメンバ変数.
 		Shader::ProgramPtr progSkeletalMesh;
@@ -164,7 +170,8 @@ namespace Mesh {
 		color,  // 通常の描画.
 		shadow, // 影の描画.
 	};
-	void Draw(const FilePtr&, const glm::mat4& matM, DrawType drawType = DrawType::color);
+
+	void Draw(const FilePtr&, const glm::mat4& matM, DrawType = DrawType::color,size_t instanceCount = 1);
 
 }// namespace Mesh
 

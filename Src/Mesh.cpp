@@ -196,6 +196,14 @@ namespace Mesh {
 			return false;
 		}
 
+		//草シェーダを読み込む.
+		progGrass = Shader::Program::Create("Res/Grass.vert", "Res/Grass.frag");
+		progGrassShadow = Shader::Program::Create(
+			"Res/Grass.vert", "Res/NonTexturedShadow.frag");
+		if (progGrass->IsNull() || progGrassShadow->IsNull()) {
+			return false;
+		}
+
 		//スケルタルメッシュ用のシェーダーを読み込む.
 		progSkeletalMesh = Shader::Program::Create(
 			"Res/SkeletalMesh.vert", "Res/SkeletalMesh.frag");
@@ -673,6 +681,8 @@ namespace Mesh {
 		progTerrain->SetViewProjectionMatrix(matVP);
 		progWater->Use();
 		progWater->SetViewProjectionMatrix(matVP);
+		progGrass->Use();
+		progGrass->SetViewProjectionMatrix(matVP);
 		glUseProgram(0);
 	}
 
@@ -683,6 +693,7 @@ namespace Mesh {
 	*/
 	void Buffer::SetShadowViewProjectionMatrix(const glm::mat4& matVP) const
 	{
+		//影以外のシェーダには影用VP行列として設定.
 		progStaticMesh->Use();
 		progStaticMesh->SetShadowViewProjectionMatrix(matVP);
 		progSkeletalMesh->Use();
@@ -691,6 +702,8 @@ namespace Mesh {
 		progTerrain->SetShadowViewProjectionMatrix(matVP);
 		progWater->Use();
 		progWater->SetShadowViewProjectionMatrix(matVP);
+		progGrass->Use();
+		progGrass->SetShadowViewProjectionMatrix(matVP);
 
 		//影用シェーダーには通常のビュー・プロジェクション行列を設定する.
 		progShadow->Use();
@@ -699,6 +712,8 @@ namespace Mesh {
 		progNonTexturedShadow->SetViewProjectionMatrix(matVP);
 		progSkeletalShadow->Use();
 		progSkeletalShadow->SetViewProjectionMatrix(matVP);
+		progGrassShadow->Use();
+		progGrassShadow->SetViewProjectionMatrix(matVP);
 
 		glUseProgram(0);
 	}
@@ -718,6 +733,8 @@ namespace Mesh {
 		progTerrain->SetCameraPosition(pos);
 		progWater->Use();
 		progWater->SetCameraPosition(pos);
+		progGrass->Use();
+		progGrass->SetCameraPosition(pos);
 		glUseProgram(0);
 	}
 
@@ -737,6 +754,8 @@ namespace Mesh {
 		progTerrain->SetTime(ftime);
 		progWater->Use();
 		progWater->SetTime(ftime);
+		progGrass->Use();
+		progGrass->SetTime(ftime);
 		glUseProgram(0);
 	}
 
@@ -769,11 +788,12 @@ namespace Mesh {
 	/**
 	*メッシュを描画する.
 	*
-	*@param file	描画するファイル.
-	*@param matM	描画に使用するモデル行列.
-	*@param drawType  描画するデータの種類.
+	*@param file			描画するファイル.
+	*@param matM			描画に使用するモデル行列.
+	*@param drawType		描画するデータの種類.
+	*@param instanceCount	描画するインスタンス数.
 	*/
-	void Draw(const FilePtr& file, const glm::mat4& matM, DrawType drawType) {
+	void Draw(const FilePtr& file, const glm::mat4& matM, DrawType drawType, size_t instanceCount) {
 
 		if (!file || file->meshes.empty() || file->materials.empty()) {
 
@@ -803,7 +823,18 @@ namespace Mesh {
 						glBindTexture(GL_TEXTURE_2D, 0);
 					}
 				}
-				glDrawElementsBaseVertex(p.mode, p.count, p.type, p.indices, p.baseVertex);
+
+				if (const GLenum error = glGetError()) {
+					std::cout << "[エラー]" << std::hex << error << "\n";
+				}
+
+				if (instanceCount > 1) {
+					glDrawElementsInstancedBaseVertex(
+						p.mode, p.count, p.type, p.indices, instanceCount, p.baseVertex);
+				}
+				else {
+					glDrawElementsBaseVertex(p.mode, p.count, p.type, p.indices, p.baseVertex);
+				}
 				p.vao->Unbind();
 			}
 		}

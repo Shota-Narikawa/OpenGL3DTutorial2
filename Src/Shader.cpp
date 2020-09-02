@@ -253,6 +253,23 @@ namespace Shader {
 		if (locTexShadow >= 0) {
 			glUniform1i(locTexShadow, shadowTextureBindingPoint);
 		}
+
+		//草シェーダ用のサンプラをテクスチャイメージユニット1番に割り当てる.
+		const GLint locTexHeightMap = glGetUniformLocation(id, "texHeightMap");
+		if (locTexHeightMap) {
+			glUniform1i(locTexHeightMap, 1);
+		}
+
+		const GLint locTexGrassHeightMap = glGetUniformLocation(id, "texGrassHeightMap");
+		if (locTexGrassHeightMap) {
+			glUniform1i(locTexGrassHeightMap, 2);
+		}
+
+		const GLint locTexGrassInstanceData =
+			glGetUniformLocation(id, "texGrassInstanceData");
+		if(locTexGrassInstanceData) {
+			glUniform1i(locTexGrassInstanceData, 3);
+		}
 		glUseProgram(0);
 	}
 

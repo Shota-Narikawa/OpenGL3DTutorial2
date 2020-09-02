@@ -32,13 +32,32 @@ namespace Terrain {
 			const char* meshName, const char* texName = nullptr) const;
 		bool CreateWaterMesh(Mesh::Buffer& meshBuffer,
 			const char* meshName, float waterLevel) const;
+		void SetupGrassShader(const Mesh::Buffer& meshBuffer, const char* meshName) const;
+		void UpdateGrassInstanceData(const Collision::Frustum&);
+		size_t GetGrassInstanceCount() const { return grassInstanceCount; }
 		void UpdateLightIndex(const ActorList& lights);
 
 	private:
 		std::string name;					///<元になった画像ファイル名.
 		glm::ivec2 size = glm::ivec2(0);	///<ハイトマップの大きさ.
 		std::vector<float> heights;			///<高さデータ.
-		Texture::BufferPtr lightIndex[2];
+		Texture::Image2DPtr texHeightMap;	///<ハイトマップテクスチャ.
+		Texture::BufferPtr lightIndex[2];///< ライトインデックスバッファ.
+		Texture::Image2DPtr texGrassHeightMap; ///< 草丈マップテクスチャ.
+
+		//草インスタンスデータ構造体.
+		struct GrassInstanceData {
+			uint8_t x, y, z, w;
+		};
+		Texture::BufferPtr grassInstanceData; ///< 草インスタンスデータバッファ.
+		size_t grassInstanceCount = 0;        ///< 表示する草インスタンスの数.
+		
+			//草丈データ構造体.
+			struct GrassInfo {
+			uint8_t grassHeight; // 草丈.
+			float height;        // 地面の高さ.
+		};
+		std::vector<GrassInfo> grassHeightMap;  ///< 草丈マップ.
 
 		glm::vec3 CalcNormal(int x, int z) const;
 	};
