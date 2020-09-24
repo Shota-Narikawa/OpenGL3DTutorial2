@@ -124,4 +124,7 @@ void DetectCollision(const ActorPtr& a, const ActorPtr& b, CollisionHandlerType 
 void DetectCollision(const ActorPtr& a, ActorList& b, CollisionHandlerType handler = nullptr);
 void DetectCollision(ActorList& a, ActorList& b, CollisionHandlerType handler = nullptr);
 
+void Wall(ActorList& walls, Mesh::FilePtr meshStoneWall, const size_t wallCou,int pos, float posX, float posZ,
+	glm::vec3 colA, glm::vec3 colB, glm::vec3 colC, glm::vec3 colD);
+
 #endif // ACTOR_H_INCLUDED

@@ -59,5 +59,9 @@ private:
 	};
 	std::vector<CharacterInfo> characterInfoList;	///<•¶Žšî•ñ‚ÌƒŠƒXƒg.
 };
+void GameSceneFont(FontRenderer& fontRenderer, int id);
+void PlayerFont(FontRenderer& fontRenderer, int skCount, int playerAb, int id);
+void StChangeFont(FontRenderer& fontRenderer, std::vector<Sprite>& sprites, int stage,bool flag , int id);
+void NumFont(FontRenderer& fontRenderer ,int name, int numTime, int id);
 
 #endif // !FONT_H_INCLUDED

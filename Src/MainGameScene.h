@@ -19,9 +19,6 @@
 #include "Particle.h"
 #include "TextWindow.h"
 #include "Camera.h"
-
-
-#include "GameSceneUI.h"
 #include <random>
 #include <vector>
 
@@ -40,10 +37,6 @@ public:
 	virtual void Update(float) override;
 	virtual void Render() override;
 	virtual void Finalize() override {}
-
-	bool HandleJizoEffects(int id, const glm::vec3& pos);
-	bool HandleWarpEffects(int id, const glm::vec3& pos);
-	bool HandleCoinEffects(int id, const glm::vec3& pos);
 
 	void selectUI(int a, int b, int c, int d, int e, int f);
 	void skSelectUI(int a, int b, int c, int d, int e, int f);
@@ -136,8 +129,6 @@ private:
 
 	//カウントやタイプ.
 	int selectCount = 0;			//選択アイコン用.
-	int selectCount2 = 0;			//選択アイコン用.
-	int selectCount3 = 0;			////選択アイコン用.
 	int stageChage = 0;				//どの試練か.
 	float defenceLine = 100;		//０になるとゲームオーバ.
 	float combo = 0.0f;				//コンボ数.
@@ -197,16 +188,6 @@ private:
 	glm::vec3 position = glm::vec3(0);
 	glm::vec3 velocity = glm::vec3(0);
 	glm::vec3 rotation = glm::vec3(0);
-
-	struct MiniMapIcon
-	{
-		glm::vec3 position = glm::vec3(530, 280, 0);
-		glm::vec3 velocity = glm::vec3(0);
-
-		float width = 1280 / 5; ///< 画面の幅(ピクセル数).
-		float height = 720 / 5; ///< 画面の高さ(ピクセル数).
-	};
-	MiniMapIcon mapIcon;
 
 	Camera camera;
 };

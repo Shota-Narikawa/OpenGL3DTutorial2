@@ -387,3 +387,288 @@ void ParticleSystem::Draw(const glm::mat4& matProj, const glm::mat4& matView)
 
 	vao.Unbind();
 }
+
+/*
+*砂埃のパーティクル.
+*/
+void ParticleSystem::Dust(glm::vec3 pos)
+{
+	ParticleEmitterParameter ep;
+	ep.imagePath = "Res/DiskParticle.tga";
+	ep.tiles = glm::ivec2(1, 1);
+	ep.position = pos;
+	ep.position.y += 0.0f;
+	ep.emissionsPerSecond = 10.0f;
+	ep.duration = 0.1f;
+	ep.dstFactor = GL_ONE; // 加算合成.
+	ep.gravity = 5.0f;
+	ep.angle = glm::radians(0.0f);//
+	ep.loop = false;
+	ParticleParameter pp;
+	pp.acceleration = glm::vec3(0);//
+	pp.lifetime = 0.2f;
+	pp.velocity = glm::vec3(0, 2, 0);
+	pp.scale = glm::vec2(0.3f);
+	pp.color = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
+	Add(ep, pp);
+}
+
+/*
+*魂のパーティクル.
+*/
+void ParticleSystem::Soul(glm::vec3 pos)
+{
+	ParticleEmitterParameter ep;
+	ep.imagePath = "Res/FireParticle.tga";
+	ep.tiles = glm::ivec2(2, 2);
+	ep.position = pos;
+	ep.position.y += 1.0f;
+	ep.duration = 0.1f;
+	ep.emissionsPerSecond = 15.0f;
+	ep.dstFactor = GL_ONE; // 加算合成.
+	ep.gravity = 0.0f;
+	ep.angle = glm::radians(0.0f);//
+	ep.loop = false;
+	ParticleParameter pp;
+	pp.acceleration = glm::vec3(0);//
+	pp.velocity = glm::vec3(0, 1, 0);
+	pp.lifetime = 0.1f;
+	pp.scale = glm::vec2(1.0f);
+	pp.color = glm::vec4(0.1f, 0.1f, 0.8f, 1.0f);
+	Add(ep, pp);
+}
+
+/*
+*骸骨のY、Uボタン攻撃のパーティクル.
+*/
+void ParticleSystem::BoneAttackY1(glm::vec3 pos, glm::vec3 rot)
+{
+	const glm::vec3 vPlayerFront = glm::rotate(
+		glm::mat4(1), rot.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0.5f, 5, 1);
+	ParticleEmitterParameter ep;
+	ep.imagePath = "Res/FireParticle.tga";
+	ep.tiles = glm::ivec2(2, 2);
+	ep.position = pos + vPlayerFront;
+	ep.position.y += 0.0f;
+	ep.duration = 0.2f;
+	ep.emissionsPerSecond = 200.0f;
+	ep.dstFactor = GL_ONE; // 加算合成.
+	ep.gravity = 0.0f;
+	ep.angle = glm::radians(70.0f);//
+	ep.loop = false;
+	ParticleParameter pp;
+	pp.acceleration = glm::vec3(0);//
+	pp.velocity = glm::vec3(0, 15, 0);
+	pp.lifetime = 0.3f;
+	pp.scale = glm::vec2(1.0f);
+	pp.color = glm::vec4(0.1f, 0.7f, 0.9f, 1.0f);
+	Add(ep, pp);
+}
+
+/*
+*骸骨のY、Uボタン攻撃のパーティクル.
+*/
+void ParticleSystem::BoneAttackY2(glm::vec3 pos)
+{
+	ParticleEmitterParameter ep;
+	ep.imagePath = "Res/DiskParticle.tga";
+	ep.tiles = glm::ivec2(1, 1);
+	ep.position = pos;
+	ep.position.y += 3.0f;
+	ep.emissionsPerSecond = 100.0f;
+	ep.duration = 0.1f;
+	ep.dstFactor = GL_ONE; // 加算合成.
+	ep.gravity = 0;
+	ep.angle = glm::radians(0.0f);//
+	ep.loop = false;
+	ParticleParameter pp;
+	pp.acceleration = glm::vec3(0);//
+	pp.lifetime = 0.05f;
+	pp.velocity = glm::vec3(0, 10, 0);
+	pp.scale = glm::vec2(0.3f, 1.0f);
+	pp.color = glm::vec4(0.1f, 0.7f, 0.9f, 1.0f);
+	Add(ep, pp);
+}
+
+/*
+*骸骨のB、Kボタン攻撃のパーティクル.
+*/
+void ParticleSystem::BoneAttackB(glm::vec3 pos, int id)
+{
+	if (id == 0)
+	{
+		ParticleEmitterParameter ep;
+		ep.imagePath = "Res/FireParticle.tga";
+		ep.tiles = glm::ivec2(2, 2);
+		ep.position = pos;
+		ep.position.y += 0.5f;
+		ep.emissionsPerSecond = 400.0f;
+		ep.duration = 0.1f;
+		ep.dstFactor = GL_ONE; // 加算合成.
+		ep.gravity = 0;
+		ep.angle = glm::radians(90.0f);//
+		ep.loop = false;
+		ParticleParameter pp;
+		pp.acceleration = glm::vec3(0, 0, 0);//
+		pp.lifetime = 0.3f;
+		pp.velocity = glm::vec3(0, 0, 20);
+		pp.scale = glm::vec2(1.0f);
+		pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
+		Add(ep, pp);
+	}
+	else if (id == 1)
+	{
+		ParticleEmitterParameter ep;
+		ep.imagePath = "Res/FireParticle.tga";
+		ep.tiles = glm::ivec2(1, 1);
+		ep.position = pos;
+		ep.position.y += 0.0f;
+		ep.emissionsPerSecond = 50.0f;
+		ep.duration = 0.1f;
+		ep.dstFactor = GL_ONE; // 加算合成.
+		ep.gravity = 0;
+		ep.angle = glm::radians(90.0f);//
+		ep.loop = false;
+		ParticleParameter pp;
+		pp.acceleration = glm::vec3(0);//
+		pp.lifetime = 0.2f;
+		pp.velocity = glm::vec3(0, 3, 0);
+		pp.scale = glm::vec2(0.5f);
+		pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
+		Add(ep, pp);
+	}
+}
+
+/*
+*ウィザードのB、Kボタン攻撃の氷攻撃.
+*/
+void ParticleSystem::WizardAttackB(glm::vec3 pos ,glm::vec3 rot)
+{
+	const glm::vec3 matRotY = glm::rotate(
+		glm::mat4(1), rot.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 7, 3, 1);
+	for (size_t i = 0; i < 10; ++i)
+	{
+		const glm::vec3 matRotZ = glm::rotate(
+			glm::mat4(1), rot.y, glm::vec3(0, 1, 0)) * glm::vec4(0, i, i, 1);
+		ParticleEmitterParameter ep;
+		ep.imagePath = "Res/DiskParticle.tga";
+		ep.tiles = glm::ivec2(1, 1);
+		ep.position = pos + matRotY + matRotZ;;
+		ep.position.y += 0.0f;
+		ep.duration = 0.2f;
+		ep.emissionsPerSecond = 15.0f;
+		ep.dstFactor = GL_ONE; // 加算合成.
+		ep.gravity = 0.0f;
+		ParticleParameter pp;
+		pp.acceleration = glm::vec3(0);//
+		ep.angle = glm::radians(0.0f);//
+		ep.loop = false;
+		pp.velocity = glm::vec3(0, -15, 0);
+		pp.lifetime = 1.5f;
+		pp.scale = glm::vec2(0.1f, 1.5f);
+		pp.color = glm::vec4(0.1f, 0.3f, 1.0f, 1.0f);
+		Add(ep, pp);
+	}
+}
+
+/*
+*ウィザードのB、Kボタン攻撃の氷攻撃.
+*/
+void ParticleSystem::WizardAttackY(glm::vec3 pos, glm::vec3 rot)
+{
+	const glm::mat4 matRotY = glm::rotate(
+		glm::mat4(1), rot.y, glm::vec3(0, 1, 0));
+	const glm::vec3 matRotZ = glm::rotate(
+		glm::mat4(1), rot.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0, 3, 1);
+
+	ParticleEmitterParameter ep;
+	ep.imagePath = "Res/FireParticle.tga";
+	ep.tiles = glm::ivec2(1, 1);
+	ep.position = pos + matRotZ;
+	ep.position.y += 1.0f;
+	ep.emissionsPerSecond = 50.0f;
+	ep.dstFactor = GL_ONE; // 加算合成.
+	ep.gravity = 5.0f;
+	ep.angle = glm::radians(90.0f);//
+	ep.loop = false;
+	ParticleParameter pp;
+	pp.acceleration = matRotY * glm::vec4(0, 1, 5.0f, 1);
+	pp.scale = glm::vec2(0.5f);
+	pp.color = glm::vec4(0.9f, 0.3f, 0.1f, 1.0f);
+	Add(ep, pp);
+}
+
+/*
+*プレイヤーのレベルアップ.
+*/
+void ParticleSystem::LevelUp(glm::vec3 pos)
+{
+	//レベルアップ時のパーティクル.
+	ParticleEmitterParameter ep;
+	ep.imagePath = "Res/DiskParticle.tga";
+	ep.tiles = glm::ivec2(2, 2);
+	ep.position = pos;
+	ep.position.y += 0.0f;
+	ep.duration = 0.2f;
+	ep.emissionsPerSecond = 80.0f;
+	ep.dstFactor = GL_ONE; // 加算合成.
+	ep.gravity = 0.0f;
+	ep.angle = glm::radians(0.0f);//
+	ep.loop = false;
+	ParticleParameter pp;
+	pp.acceleration = glm::vec3(0);//
+	pp.velocity = glm::vec3(0, 15, 0);
+	pp.lifetime = 0.2f;
+	pp.scale = glm::vec2(0.1f, 1.0f);
+	pp.color = glm::vec4(1.0f, 1.0f, 0.9f, 1.0f);
+	Add(ep, pp);
+}
+
+/*
+*クリスタルのパーティクル.
+*/
+void ParticleSystem::Crystal(glm::vec3 pos)
+{
+	ParticleEmitterParameter ep;
+	ep.imagePath = "Res/DiskParticle.tga";
+	ep.tiles = glm::ivec2(1, 1);
+	ep.position = pos;
+	ep.position.y = pos.y + 1.0f;
+	ep.emissionsPerSecond = 40.0f;
+	ep.duration = 1.0f;
+	ep.dstFactor = GL_ONE; // 加算合成.
+	ep.gravity = 0;
+	ep.angle = glm::radians(60.0f);//
+	ParticleParameter pp;
+	pp.acceleration = glm::vec3(0, 5, 0);//
+	pp.lifetime = 0.8f;
+	pp.velocity = glm::vec3(0, 2, 0);
+	pp.scale = glm::vec2(0.05f, 1.0f);
+	pp.color = glm::vec4(0.1f, 0.1f, 0.9f, 1.0f);
+	Add(ep, pp);
+}
+
+/*
+*ゲートのパーティクル.
+*/
+void ParticleSystem::Gate(bool stCleared, glm::vec3 pos,glm::vec3 epPos)
+{
+	//ステージクリアしたゲートの上に火のパーティクルを表示.
+	if (stCleared == true)
+	{
+		{
+			ParticleEmitterParameter ep;
+			ep.imagePath = "Res/FireParticle.tga";
+			ep.tiles = glm::ivec2(2, 2);
+			ep.position = pos + epPos;
+			ep.position.y = 5.0f;
+			ep.emissionsPerSecond = 20.0f;
+			ep.dstFactor = GL_ONE; // 加算合成.
+			ep.gravity = 0;
+			ParticleParameter pp;
+			pp.scale = glm::vec2(0.5f);
+			pp.color = glm::vec4(0.9f, 0.3f, 0.1f, 1.0f);
+			Add(ep, pp);
+		}
+	}
+}

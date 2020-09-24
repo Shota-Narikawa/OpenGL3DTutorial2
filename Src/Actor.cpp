@@ -346,6 +346,26 @@ std::vector<ActorPtr> ActorList::FindNearbyActors(
 	return result;
 }
 
+/*
+*壁のアクター.
+*/
+void Wall(ActorList& walls, Mesh::FilePtr meshStoneWall, const size_t wallCou, int pos, float posX, float posZ,
+			glm::vec3 colA, glm::vec3 colB, glm::vec3 colC, glm::vec3 colD)
+{
+	walls.Reserve(wallCou);
+
+	for (size_t i = 0; i < wallCou; ++i)
+	{
+		posX = pos - i * 6.0f;
+		glm::vec3 position = glm::vec3(79, 0, 100) + glm::vec3(posX, 2, posZ);
+		StaticMeshActorPtr p = std::make_shared<StaticMeshActor>(
+			meshStoneWall , "Skeltal", 100, position, glm::vec3(0, 0, 0));
+		p->colLocal = Collision::CreateOBB(glm::vec3(0, 0, 0),
+			colA, colB, colC, colD);
+		walls.Add(p);
+	}
+}
+
 /**
 *衝突判定を行う.
 *

@@ -275,3 +275,385 @@ float FontRenderer::XAdvance(wchar_t c) const
 	}
 	return characterInfoList[c].xadvance;
 }
+
+/*
+*ゲーム内に表示する情報系のフォントデータをIDで管理する.
+*
+*@param	fontRenderer	表示するフォント.
+*@param	id				表示する場面のID.
+*/
+void GameSceneFont(FontRenderer& fontRenderer ,int id)
+{
+	if(id == 0)
+	{
+		fontRenderer.AddString(glm::vec2(90, 200), L"ソウル");
+		fontRenderer.AddString(glm::vec2(-130, -90), L"本作の主人公。");
+		fontRenderer.AddString(glm::vec2(-130, -130), L"敵軍に実体を奪われ、実体のない魂の存在。");
+		fontRenderer.AddString(glm::vec2(-130, -170), L"彼は再び体を取り戻すべく奮闘する。");
+		fontRenderer.AddString(glm::vec2(-130, -210), L"しかし移動とジャンプしかできない。");
+	}
+	else if (id == 1)
+	{
+		fontRenderer.AddString(glm::vec2(90, 200), L"ゴブリン");
+		fontRenderer.AddString(glm::vec2(-130, -90), L"ゴブリン族の一人。");
+		fontRenderer.AddString(glm::vec2(-130, -130), L"自分の存在をゴブリンと認めたくないと");
+		fontRenderer.AddString(glm::vec2(-130, -170), L"同族のゴブリンを絶滅させることを誓う。");
+		fontRenderer.AddString(glm::vec2(-130, -210), L"彼の夢は人間の女と結婚することである。");
+	}
+	else if (id == 2)
+	{
+		fontRenderer.AddString(glm::vec2(90, 200), L"ウィザード");
+		fontRenderer.AddString(glm::vec2(-130, -90), L"人間の魔道師。");
+		fontRenderer.AddString(glm::vec2(-130, -130), L"魔法の名家で魔道師として育てられた。");
+		fontRenderer.AddString(glm::vec2(-130, -170), L"しかし彼は落ちこぼれを絵にかいたような");
+		fontRenderer.AddString(glm::vec2(-130, -210), L"人間だった。微力な攻撃魔法と");
+		fontRenderer.AddString(glm::vec2(-130, -250), L"主に杖を使った近接戦を得意とする。");
+	}
+	else if (id == 3)
+	{
+		fontRenderer.AddString(glm::vec2(90, 200), L"スケルトン");
+		fontRenderer.AddString(glm::vec2(-130, -90), L"黄泉の国から復活した骸骨騎士。");
+		fontRenderer.AddString(glm::vec2(-130, -130), L"世界一とも名高い元エリート騎士。");
+		fontRenderer.AddString(glm::vec2(-130, -170), L"それと同じく無類の酒と女好きの");
+		fontRenderer.AddString(glm::vec2(-130, -210), L"遊び人だった。彼の死因は泥酔し、王の");
+		fontRenderer.AddString(glm::vec2(-130, -250), L"娘へのセクハラ行為により死刑。");
+	}
+	else if (id == 4)
+	{
+		fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+		fontRenderer.AddString(glm::vec2(-500, -200), L"対応コマンドの");
+		fontRenderer.AddString(glm::vec2(-500, -250), L"確認ができます");
+	}
+	else if (id == 5)
+	{
+		fontRenderer.AddString(glm::vec2(0, 210), L"キーボードコマンド表");
+		fontRenderer.AddString(glm::vec2(-100, 150), L"WSAD:移動");
+		fontRenderer.AddString(glm::vec2(-100, 100), L"M：マップ表示");
+		fontRenderer.AddString(glm::vec2(-100, 50), L"U：スキル１");
+		fontRenderer.AddString(glm::vec2(-100, 0), L"H：スキル２");
+		fontRenderer.AddString(glm::vec2(-100, -50), L"K：スキル３");
+		fontRenderer.AddString(glm::vec2(-100, -100), L"J：スキル４");
+		fontRenderer.AddString(glm::vec2(170, 150), L"A：カメラ左回転");
+		fontRenderer.AddString(glm::vec2(170, 100), L"D：カメラ右回転");
+		fontRenderer.AddString(glm::vec2(170, 50), L"SPACE:メニュー画面");
+		fontRenderer.AddString(glm::vec2(170, 0), L"ENTER:決定キー");
+		fontRenderer.AddString(glm::vec2(-100, -200), L"Yボタン　または　Uボタンで");
+		fontRenderer.AddString(glm::vec2(-100, -250), L"ゲームパッド操作説明に切り替えます");
+	}
+	else if (id == 6)
+	{
+		fontRenderer.AddString(glm::vec2(0, 210), L"ゲームパッドコマンド表");
+		fontRenderer.AddString(glm::vec2(-100, 150), L"十字キー:移動");
+		fontRenderer.AddString(glm::vec2(-100, 100), L"R：マップ表示");
+		fontRenderer.AddString(glm::vec2(-100, 50), L"Y：スキル１");
+		fontRenderer.AddString(glm::vec2(-100, 0), L"X：スキル２");
+		fontRenderer.AddString(glm::vec2(-100, -50), L"B：スキル３");
+		fontRenderer.AddString(glm::vec2(-100, -100), L"A：スキル４");
+		fontRenderer.AddString(glm::vec2(170, 150), L"L2：カメラ左回転");
+		fontRenderer.AddString(glm::vec2(170, 100), L"R2：カメラ右回転");
+		fontRenderer.AddString(glm::vec2(170, 50), L"BACK:メニュー画面");
+		fontRenderer.AddString(glm::vec2(170, 0), L"START:決定キー");
+		fontRenderer.AddString(glm::vec2(-100, -200), L"Yボタン　または　Uボタンで");
+		fontRenderer.AddString(glm::vec2(-100, -250), L"キーボード操作説明に切り替えます");
+	}
+	else if (id == 7)
+	{
+		fontRenderer.AddString(glm::vec2(-510, -190), L"スキルの確認が");
+		fontRenderer.AddString(glm::vec2(-510, -230), L"できます。");
+		fontRenderer.AddString(glm::vec2(-125, -100), L"説明");
+	}
+	else if (id == 8)
+	{
+		fontRenderer.AddString(glm::vec2(-110, 200), L"ソウル");
+		fontRenderer.AddString(glm::vec2(-125, 150), L"何もできない");
+		fontRenderer.AddString(glm::vec2(-125, 100), L"何もできない");
+		fontRenderer.AddString(glm::vec2(-125, 50), L"何もできない");
+		fontRenderer.AddString(glm::vec2(-125, 0), L"何もできない");
+
+		fontRenderer.AddString(glm::vec2(-125, -150), L"今のままでは何もできない");
+		fontRenderer.AddString(glm::vec2(-125, -200), L"他のキャラクターに憑依しよう");
+	}
+	else if (id == 9)
+	{
+		fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+		fontRenderer.AddString(glm::vec2(-460, 200), L"プレイヤー");
+		fontRenderer.AddString(glm::vec2(-450, 150), L"コマンド");
+		fontRenderer.AddString(glm::vec2(-440, 100), L"スキル");
+		fontRenderer.AddString(glm::vec2(-460, 0), L"ゲーム終了");
+		fontRenderer.AddString(glm::vec2(-440, -50), L"閉じる");
+	}
+}
+
+/*
+*分岐を必要としているフォント表示の管理.
+*
+*@param	fontRenderer	表示するフォント.
+*@param	skCount			スキルカウント.
+*@param	playerAb		プレイヤーのアビリティレベル.
+*@param	id				表示する場面のID.
+*/
+void PlayerFont(FontRenderer& fontRenderer, int skCount, int playerAb, int id)
+{
+	if (id == 0)
+	{
+		fontRenderer.AddString(glm::vec2(-105, 200), L"ゴブリン");
+		if (skCount == 1)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"強靭な爪で相手を攻撃");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"その爪は岩でも砕いてしまう");
+		}
+		else if (skCount == 2)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"早歩きができるようになる");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
+		}
+		else if (skCount == 3)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"ダッシュができるようになる");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
+		}
+		else if (skCount == 4)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"高速移動ができるようになる");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
+		}
+		fontRenderer.AddString(glm::vec2(-95, 150), L"通常攻撃");
+		//使えないスキルは半透明.
+		fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
+		fontRenderer.AddString(glm::vec2(-85, 100), L"早歩き");
+		fontRenderer.AddString(glm::vec2(-95, 50), L"ダッシュ");
+		fontRenderer.AddString(glm::vec2(-95, 0), L"高速移動");
+
+		if (playerAb >= 4)
+		{
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+			fontRenderer.AddString(glm::vec2(-95, 0), L"高速移動");
+		}
+		if (playerAb >= 3)
+		{
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+			fontRenderer.AddString(glm::vec2(-95, 50), L"ダッシュ");
+		}
+		if (playerAb >= 2)
+		{
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+			fontRenderer.AddString(glm::vec2(-85, 100), L"早歩き");
+		}
+	}
+	else if (id == 1)
+	{
+		fontRenderer.AddString(glm::vec2(-110, 200), L"ウィザード");
+		//スキルの説明.
+		if (skCount == 1)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"杖で突く近距離攻撃");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"杖は父からもらったものである");
+		}
+		else if (skCount == 2)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"杖を振り下ろす近距離攻撃");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"父からは杖で人を殴るなと教えられた");
+		}
+		else if (skCount == 3)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"前方に炎魔法を飛ばす中距離攻撃");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"スピードは遅いが範囲は広い");
+		}
+		else if (skCount == 4)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"空から氷魔法を落とす遠距離攻撃");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"直線上につららを落とし敵を一掃する");
+		}
+
+		fontRenderer.AddString(glm::vec2(-95, 150), L"通常攻撃");
+		//使えないスキルは半透明.
+		fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
+		fontRenderer.AddString(glm::vec2(-100, 100), L"かぶと割り");
+		fontRenderer.AddString(glm::vec2(-95, 50), L"ファイア");
+		fontRenderer.AddString(glm::vec2(-95, 0), L"ブリザド");
+
+		if (playerAb >= 4)
+		{
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+			fontRenderer.AddString(glm::vec2(-95, 0), L"ブリザド");
+		}
+		if (playerAb >= 3)
+		{
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+			fontRenderer.AddString(glm::vec2(-95, 50), L"ファイア");
+		}
+		if (playerAb >= 2)
+		{
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+			fontRenderer.AddString(glm::vec2(-100, 100), L"かぶと割り");
+		}
+	}
+	else if (id == 2)
+	{
+		fontRenderer.AddString(glm::vec2(-110, 200), L"スケルトン");
+		//スキルの説明.
+		if (skCount == 1)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"剣を振り下ろす近距離攻撃");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"型は自己流である");
+		}
+		else if (skCount == 2)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"縦横の二段階攻撃");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"二段階による攻撃で敵を翻弄する");
+		}
+		else if (skCount == 3)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"勢いよく剣を振り下ろす中距離攻撃");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"離れた敵を剣風で薙ぎ払う");
+		}
+		else if (skCount == 4)
+		{
+			fontRenderer.AddString(glm::vec2(-125, -150), L"洗練された究極の中距離攻撃");
+			fontRenderer.AddString(glm::vec2(-125, -200), L"全方位の強力な一撃で敵を一掃する");
+		}
+
+		fontRenderer.AddString(glm::vec2(-95, 150), L"通常攻撃");
+		//使えないスキルは半透明.
+		fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
+		fontRenderer.AddString(glm::vec2(-95, 100), L"二段斬り");
+		fontRenderer.AddString(glm::vec2(-80, 50), L"爆裂斬");
+		fontRenderer.AddString(glm::vec2(-125, 0), L"全方位燕返し");
+
+		if (playerAb >= 4)
+		{
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+			fontRenderer.AddString(glm::vec2(-125, 0), L"全方位燕返し");
+		}
+		if (playerAb >= 3)
+		{
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+			fontRenderer.AddString(glm::vec2(-80, 50), L"爆裂斬");
+		}
+		if (playerAb >= 2)
+		{
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+			fontRenderer.AddString(glm::vec2(-95, 100), L"二段斬り");
+		}
+	}
+}
+
+/*
+*ステージチェンジ、ロード画面の分岐用のフォント表示の管理.
+*
+*@param	fontRenderer	表示するフォント.
+*@param	stage			いずれかのステージチェンジ.
+*@param	flag			イベントのフラグ..
+*@param	id				表示する場面のID.
+*/
+void StChangeFont(FontRenderer& fontRenderer, std::vector<Sprite>& sprites, int stage, bool flag, int id)
+{
+	if (id == 0)
+	{
+		fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 10));
+		fontRenderer.AddString(glm::vec2(280, -280), L"NowLoading...");
+		//ロード画面中にランダムでゲームに役立つヒントが表示される.
+		if (stage == 1)
+		{
+			sprites[4].Scale(glm::vec2(0.4f));
+			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 10));
+			fontRenderer.AddString(glm::vec2(-300, -100), L"火がついているのは一度クリアしたステージ。");
+			fontRenderer.AddString(glm::vec2(-300, -150), L"だが、何回でも挑戦可能。");
+		}
+		else if (stage == 2)
+		{
+			sprites[5].Scale(glm::vec2(0.4f));
+			fontRenderer.AddString(glm::vec2(-300, -100), L"主人公の肉体の情報が保管されたクリスタル。");
+			fontRenderer.AddString(glm::vec2(-300, -150), L"ステージごとにランダムで配置される。");
+			fontRenderer.AddString(glm::vec2(-300, -200), L"ステージが始まれば真っ先に場所を把握しよう。");
+		}
+		else if (stage == 3)
+		{
+			sprites[6].Scale(glm::vec2(0.4f));
+			fontRenderer.AddString(glm::vec2(-300, -100), L"個性豊かなキャラクターたちを使用できる。");
+			fontRenderer.AddString(glm::vec2(-300, -150), L"スキルやプロフィールはメニュー画面で確認可能。");
+		}
+		else if (stage == 4)
+		{
+			sprites[7].Scale(glm::vec2(0.4f));
+			fontRenderer.AddString(glm::vec2(-300, -100), L"敵は大きさにより性質が異なる。");
+			fontRenderer.AddString(glm::vec2(-300, -150), L"攻撃力が高いもの、移動が速いものなど。");
+			fontRenderer.AddString(glm::vec2(-300, -200), L"倒す順番には優先順位をつけよう。");
+		}
+	}
+	else if (id == 1)
+	{
+		fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
+		fontRenderer.AddString(glm::vec2(-30, -85), L"はい");
+		fontRenderer.AddString(glm::vec2(-45, -125), L"いいえ");
+		fontRenderer.AddString(glm::vec2(-200, -280), L"挑みますか？");
+
+		if (stage == 1)
+		{
+			fontRenderer.AddString(glm::vec2(-270, -240), L"天の声：Aの試練が待っている.");
+			fontRenderer.AddString(glm::vec2(20, -280), L"難易度★☆☆☆☆");
+			flag = false;
+		}
+		else if (stage == 2)
+		{
+			fontRenderer.AddString(glm::vec2(-270, -240), L"天の声：Bの試練が待っている.");
+			fontRenderer.AddString(glm::vec2(20, -280), L"難易度★★☆☆☆");
+			flag = false;
+		}
+		else if (stage == 3)
+		{
+			fontRenderer.AddString(glm::vec2(-270, -240), L"天の声：Cの試練が待っている.");
+			fontRenderer.AddString(glm::vec2(20, -280), L"難易度★★★☆☆");
+			flag = false;
+		}
+		else if (stage == 4)
+		{
+			fontRenderer.AddString(glm::vec2(-270, -240), L"天の声：Dの試練が待っている.");
+			fontRenderer.AddString(glm::vec2(20, -280), L"難易度★★★★★");
+			flag = false;
+		}
+	}
+}
+
+/*
+*数字フォントの表示.
+*
+*@param	name			値の情報.
+*@param	fontRenderer	表示するフォント.
+*@param	id				表示する場面のID.
+*/
+void NumFont(FontRenderer& fontRenderer, int name, int numTime, int id)
+{
+	if (id == 0)
+	{
+		//ステージNo表示.
+		wchar_t str[] = L"STAGE.  ";
+		int n = name;
+		for (int i = 0; i < numTime; ++i)
+		{
+			str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
+			n /= 10;
+			if (n <= 0)
+			{
+				break;
+			}
+		}
+		fontRenderer.AddString(glm::vec2(280, 200), str);
+	}
+	else if(id == 1)
+	{
+		//レベル表示.
+		wchar_t str[] = L"Lv.   ";
+		int n = name;
+		for (int i = 0; i < numTime; ++i)
+		{
+			str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
+			n /= 10;
+			if (n <= 0)
+			{
+				break;
+			}
+		}
+		fontRenderer.AddString(glm::vec2(100, 150), str);
+	}
+}

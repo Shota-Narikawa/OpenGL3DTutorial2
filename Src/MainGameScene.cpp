@@ -11,10 +11,7 @@
 #include "SkeletalMeshActor.h"
 #include "PlayerActor.h"
 #include "EnemyActor.h"
-#include "JizoActor.h"
 #include "Scene.h"
-#include "Warp.h"
-#include "Goal.h"
 #include <random>
 #include <glm/gtc/constants.hpp>
 #include <glm/gtc/matrix_transform.hpp>
@@ -565,266 +562,8 @@ bool MainGameScene::Initialize()
 	meshBuffer.LoadSkeletalMesh("Res/effect_hit_normal.gltf");
 	meshBuffer.LoadSkeletalMesh("Res/effect_curse.gltf");
 
-	//ゲーム内に表示させる画像リスト.
-	//変数の最後にNoを入れてわかりやすくしておく.
-	//ロード画面.
-	Sprite road0(Texture::Image2D::Create("Res/Black.tga"));
-	road0.Scale(glm::vec2(0));
-	sprites.push_back(road0);
-
-	//メイン情報(右).
-	Sprite Menu1(Texture::Image2D::Create("Res/MenuWindow5.tga"));
-	Menu1.Position(glm::vec3(160, 0, 0));
-	Menu1.Scale(glm::vec2(0));
-	sprites.push_back(Menu1);
-
-	//メニュー一覧(左上).
-	Sprite Menu2(Texture::Image2D::Create("Res/MenuWindow5.tga"));
-	Menu2.Position(glm::vec3(-380, 85, 0));
-	Menu2.Scale(glm::vec2(0));
-	sprites.push_back(Menu2);
-
-	//その他(左下).
-	Sprite Menu3(Texture::Image2D::Create("Res/MenuWindow5.tga"));
-	Menu3.Position(glm::vec3(-380, -220, 0));
-	Menu3.Scale(glm::vec2(0));
-	sprites.push_back(Menu3);
-
-	//ロード画面中の画像.
-	Sprite LoadA4(Texture::Image2D::Create("Res/LoadA.tga"));
-	LoadA4.Position(glm::vec3(0, 130, 0));
-	LoadA4.Scale(glm::vec2(0));
-	sprites.push_back(LoadA4);
-
-	Sprite LoadB5(Texture::Image2D::Create("Res/LoadB.tga"));
-	LoadB5.Position(glm::vec3(0, 130, 0));
-	LoadB5.Scale(glm::vec2(0));
-	sprites.push_back(LoadB5);
-
-	Sprite LoadC6(Texture::Image2D::Create("Res/LoadC.tga"));
-	LoadC6.Position(glm::vec3(0, 130, 0));
-	LoadC6.Scale(glm::vec2(0));
-	sprites.push_back(LoadC6);
-
-	Sprite LoadD7(Texture::Image2D::Create("Res/LoadD.tga"));
-	LoadD7.Position(glm::vec3(0, 100, 0));
-	LoadD7.Scale(glm::vec2(0));
-	sprites.push_back(LoadD7);
-
-	//リザルト画面のロゴ.
-	Sprite NextLogo8(Texture::Image2D::Create("Res/Next.tga"));
-	NextLogo8.Position(glm::vec3(100, 120, 0));
-	NextLogo8.Scale(glm::vec2(0));
-	sprites.push_back(NextLogo8);
-
-	Sprite ToTitle9(Texture::Image2D::Create("Res/ToTitle.tga"));
-	ToTitle9.Position(glm::vec3(100, -120, 0));
-	ToTitle9.Scale(glm::vec2(0));
-	sprites.push_back(ToTitle9);
-
-	//ゲームオーバー時.
-	Sprite GameOver10(Texture::Image2D::Create("Res/Over.tga"));
-	GameOver10.Scale(glm::vec2(0));
-	GameOver10.Position(glm::vec3(0, 100, 0));
-	sprites.push_back(GameOver10);
-
-	//ゲームクリア時.
-	Sprite GameClear11(Texture::Image2D::Create("Res/Clear.tga"));
-	GameClear11.Scale(glm::vec2(0));
-	GameClear11.Position(glm::vec3(0, 100, 0));
-	sprites.push_back(GameClear11);
-
-	//メニュー画面のプレイヤーアイコン.
-	Sprite pSoul12(Texture::Image2D::Create("Res/pSoul.tga"));
-	pSoul12.Position(glm::vec3(-50, 110, 0));
-	pSoul12.Scale(glm::vec2(0));
-	sprites.push_back(pSoul12);
-
-	Sprite pGoblin13(Texture::Image2D::Create("Res/pGoblin.tga"));
-	pGoblin13.Position(glm::vec3(-50, 110, 0));
-	pGoblin13.Scale(glm::vec2(0));
-	sprites.push_back(pGoblin13);
-
-	Sprite pWizard14(Texture::Image2D::Create("Res/pWizard.tga"));
-	pWizard14.Position(glm::vec3(-50, 110, 0));
-	pWizard14.Scale(glm::vec2(0));
-	sprites.push_back(pWizard14);
-
-	Sprite pGaikotsu15(Texture::Image2D::Create("Res/pGaikotsu.tga"));
-	pGaikotsu15.Position(glm::vec3(-50, 110, 0));
-	pGaikotsu15.Scale(glm::vec2(0));
-	sprites.push_back(pGaikotsu15);
-
-	//HP.
-	Sprite barHP16(Texture::Image2D::Create("Res/Green.tga"));
-	barHP16.Scale(glm::vec2(0));
-	sprites.push_back(barHP16);
-
-	//MP.
-	Sprite barMP17(Texture::Image2D::Create("Res/Blue.tga"));
-	barMP17.Scale(glm::vec2(0));
-	sprites.push_back(barMP17);
-
-	//ウィザードと骸骨の攻撃コマンド.
-	Sprite AttackNormal18(Texture::Image2D::Create("Res/AttackTest.dds"));
-	AttackNormal18.Position(glm::vec3(500, -310, 0));	//下アイコン初期値.
-	AttackNormal18.Scale(glm::vec2(0));
-	sprites.push_back(AttackNormal18);
-
-	Sprite AttackStrong19(Texture::Image2D::Create("Res/Attack2.tga"));
-	AttackStrong19.Position(glm::vec3(420, -230, 0));	//左アイコン初期値.
-	AttackStrong19.Scale(glm::vec2(0));
-	sprites.push_back(AttackStrong19);
-
-	//ウィザードの攻撃コマンド.
-	Sprite Magic20(Texture::Image2D::Create("Res/Slowing.tga"));
-	Magic20.Position(glm::vec3(500, -150, 0));	//上アイコン初期値.
-	Magic20.Scale(glm::vec2(0));
-	sprites.push_back(Magic20);
-
-	Sprite Meteo21(Texture::Image2D::Create("Res/Meteo.tga"));
-	Meteo21.Position(glm::vec3(580, -230, 0));	//右アイコン初期値.
-	Meteo21.Scale(glm::vec2(0));//Meteo33.Scale(glm::vec2(0.12f));
-	sprites.push_back(Meteo21);
-
-	//選択アイコン.
-	Sprite IconBlue22(Texture::Image2D::Create("Res/select.tga"));
-	IconBlue22.Position(glm::vec3(-380, 210, 0));
-	//IconBlue22.Scale(glm::vec2(0.8f , 0.15f));
-	IconBlue22.Scale(glm::vec2(0));	//IconBlue36.Scale(glm::vec2(0.28f,0.22f));
-	sprites.push_back(IconBlue22);
-
-	//選択アイコン.
-	Sprite selectIcon23(Texture::Image2D::Create("Res/selectA.tga"));
-	selectIcon23.Position(glm::vec3(-490, 210, 0));
-	selectIcon23.Scale(glm::vec2(0));
-	sprites.push_back(selectIcon23);
-
-	//選択アイコン.
-	Sprite selectIcon24(Texture::Image2D::Create("Res/selectA.tga"));
-	selectIcon24.Position(glm::vec3(-490, 210, 0));
-	selectIcon24.Scale(glm::vec2(0));
-	sprites.push_back(selectIcon24);
-
-	//防衛ラインのHPバー.
-	Sprite defenceHP25(Texture::Image2D::Create("Res/Green.tga"));
-	defenceHP25.Scale(glm::vec2(0));
-	sprites.push_back(defenceHP25);
-
-	//防衛ラインのアイコン.
-	Sprite defenceIcon26(Texture::Image2D::Create("Res/Crystal.tga"));
-	defenceIcon26.Position(glm::vec3(-440, 345, 0));
-	defenceIcon26.Scale(glm::vec2(0));
-	sprites.push_back(defenceIcon26);
-
-	//敵の残数アイコン.
-	Sprite enemyIcon27(Texture::Image2D::Create("Res/Gobrin.tga"));
-	enemyIcon27.Position(glm::vec3(300, 350, 0));
-	enemyIcon27.Scale(glm::vec2(0));
-	sprites.push_back(enemyIcon27);
-
-	//防衛ラインのHP背景.
-	Sprite defenceHP28(Texture::Image2D::Create("Res/HPBar.tga"));
-	defenceHP28.Scale(glm::vec2(0));
-	sprites.push_back(defenceHP28);
-
-	//骸骨の攻撃アイコン.
-	Sprite AttackBladeA29(Texture::Image2D::Create("Res/AttackBlade1.tga"));
-	AttackBladeA29.Position(glm::vec3(500, -150, 0));	//上アイコン初期値.
-	AttackBladeA29.Scale(glm::vec2(0));
-	sprites.push_back(AttackBladeA29);
-
-	Sprite AttackBladeB30(Texture::Image2D::Create("Res/AttackBlade2.tga"));
-	AttackBladeB30.Position(glm::vec3(580, -230, 0));	//右アイコン初期値.
-	AttackBladeB30.Scale(glm::vec2(0));
-	sprites.push_back(AttackBladeB30);
-
-	//ゴブリンのアイコン.
-	Sprite GobAttack31(Texture::Image2D::Create("Res/GobAttack.tga"));
-	GobAttack31.Position(glm::vec3(500, -310, 0));	//下アイコン初期値.
-	GobAttack31.Scale(glm::vec2(0));
-	sprites.push_back(GobAttack31);
-
-	Sprite GobDash32(Texture::Image2D::Create("Res/StatusUp.tga"));
-	GobDash32.Position(glm::vec3(420, -230, 0));	//左アイコン初期値.
-	GobDash32.Scale(glm::vec2(0));
-	sprites.push_back(GobDash32);
-
-	//何も使えないアイコン.
-	Sprite NoAttack33(Texture::Image2D::Create("Res/NoAttack.tga"));
-	NoAttack33.Position(glm::vec3(500, -310, 0));	//下アイコン初期値.
-	NoAttack33.Scale(glm::vec2(0));//NoAttack50.Scale(glm::vec2(0.2f));
-	sprites.push_back(NoAttack33);
-
-	//各コマンドのクールタイム.
-	Sprite IconGreen34(Texture::Image2D::Create("Res/IconGreen.tga"));
-	IconGreen34.Position(glm::vec3(0, 0, 0));
-	IconGreen34.Scale(glm::vec2(0));	//IconGreen35.Scale(glm::vec2(1.55f));
-	sprites.push_back(IconGreen34);
-
-	Sprite IconGreen35(Texture::Image2D::Create("Res/IconGreen.tga"));
-	IconGreen35.Position(glm::vec3(0, 0, 0));
-	IconGreen35.Scale(glm::vec2(0));	//IconGreen35.Scale(glm::vec2(1.55f));
-	sprites.push_back(IconGreen35);
-
-	Sprite IconGreen36(Texture::Image2D::Create("Res/IconGreen.tga"));
-	IconGreen36.Position(glm::vec3(0, 0, 0));
-	IconGreen36.Scale(glm::vec2(0));	//IconGreen35.Scale(glm::vec2(1.55f));
-	sprites.push_back(IconGreen36);
-
-	Sprite IconGreen37(Texture::Image2D::Create("Res/IconGreen.tga"));
-	IconGreen37.Position(glm::vec3(0, 0, 0));
-	IconGreen37.Scale(glm::vec2(0));	//IconGreen35.Scale(glm::vec2(1.55f));
-	sprites.push_back(IconGreen37);
-
-	Sprite MiniMap38(Texture::Image2D::Create("Res/MiniMap.tga"));
-	MiniMap38.Position(glm::vec3(530, 270, 0));
-	MiniMap38.Scale(glm::vec2(0));
-	sprites.push_back(MiniMap38);
-
-	Sprite PMiniIcon39(Texture::Image2D::Create("Res/PMiniIcon.tga"));
-	PMiniIcon39.Scale(glm::vec2(0)); //PMiniIcon39.Scale(glm::vec2(0.02f, 0.02f));
-	sprites.push_back(PMiniIcon39);
-
-	//ミニマップ上の防衛ラインのアイコン.
-	Sprite DMiniIcon40(Texture::Image2D::Create("Res/Crystal.tga"));
-	DMiniIcon40.Position(glm::vec3(-250, 350, 0));
-	DMiniIcon40.Scale(glm::vec2(0));
-	sprites.push_back(DMiniIcon40);
-
-	Sprite DMiniIcon41(Texture::Image2D::Create("Res/Crystal.tga"));
-	DMiniIcon41.Scale(glm::vec2(0));
-	sprites.push_back(DMiniIcon41);
-
-	Sprite DMiniIcon42(Texture::Image2D::Create("Res/Crystal.tga"));
-	DMiniIcon42.Scale(glm::vec2(0));
-	sprites.push_back(DMiniIcon42);
-
-	//シールドアイコン.
-	Sprite Shield43(Texture::Image2D::Create("Res/Shield.tga"));
-	Shield43.Position(glm::vec3(-500, 345, 0));
-	Shield43.Scale(glm::vec2(0));
-	sprites.push_back(Shield43);
-
-	Sprite ShieldUP44(Texture::Image2D::Create("Res/ShieldUP.tga"));
-	ShieldUP44.Position(glm::vec3(-480, 340, 0));
-	ShieldUP44.Scale(glm::vec2(0));
-	sprites.push_back(ShieldUP44);
-
-	//コンボ発生時.
-	Sprite Combo45(Texture::Image2D::Create("Res/Combo.tga"));
-	Combo45.Scale(glm::vec2(0));
-	sprites.push_back(Combo45);
-
-	Sprite ComboMes46(Texture::Image2D::Create("Res/ComboMesseage.tga"));
-	ComboMes46.Position(glm::vec3(0, -70, 0));
-	ComboMes46.Scale(glm::vec2(0));
-	sprites.push_back(ComboMes46);
-
-	Sprite ComboMax47(Texture::Image2D::Create("Res/Max.tga"));
-	ComboMax47.Position(glm::vec3(560, 305, 0));
-	ComboMax47.Scale(glm::vec2(0));
-	sprites.push_back(ComboMax47);
+	//ゲーム内に使用している画像データ.
+	spriteRenderer.GameSceneUI(sprites);
 
 	progLighting.Reset(Shader::BuildFromFile("Res/FragmentLighting.vert", "Res/FragmentLighting.frag"));
 	fontRenderer.Init(1000);
@@ -1017,25 +756,8 @@ bool MainGameScene::Initialize()
 			p->colLocal = Collision::CreateCapsule(
 				glm::vec3(0, 0, 0), glm::vec3(0, 1.5f, 0), 1.5f);
 			p->scale = glm::vec3(1, 2, 1); // 見つけやすいように拡大.
+			particleSystem.Crystal(position);
 			defencePoint.Add(p);
-
-			//ParticleEmitterParameter ep;
-			//ep.imagePath = "Res/DiskParticle.tga";
-			//ep.tiles = glm::ivec2(1, 1);
-			//ep.position = position;
-			//ep.position.y = heightMap.Height(position) + 1.0f;
-			//ep.emissionsPerSecond = 40.0f;
-			//ep.duration = 1.0f;
-			//ep.dstFactor = GL_ONE; // 加算合成.
-			//ep.gravity = 0;
-			//ep.angle = glm::radians(60.0f);//
-			//ParticleParameter pp;
-			//pp.acceleration = glm::vec3(0, 5, 0);//
-			//pp.lifetime = 0.8f;
-			//pp.velocity = glm::vec3(0, 2, 0);
-			//pp.scale = glm::vec2(0.05f, 1.0f);
-			//pp.color = glm::vec4(0.1f, 0.1f, 0.9f, 1.0f);
-			//particleSystem.Add(ep, pp);
 		}
 
 		//試練のステージの石壁を配置.
@@ -1436,90 +1158,17 @@ void MainGameScene::ProcessInput()
 		Audio::Engine::Instance().Prepare("Res/Audio/system.mp3")->Play();
 		state = State::menu;
 		selectCount = 1;
-
-		sprites[1].Scale(glm::vec2(1, 3.5f));
-		sprites[1].Position(glm::vec3(160, 0, 0));
-		sprites[2].Scale(glm::vec2(0.4f, 2.5f));
-		sprites[3].Scale(glm::vec2(0.4f, 0.9f));
-		sprites[2].Position(glm::vec3(-380, 85, 0));
-		sprites[3].Position(glm::vec3(-380, -220, 0));
-
-		if (player->playerID == 0)
-		{
-			sprites[12].Scale(glm::vec2(0.25f));
-		}
-		else if (player->playerID == 1)
-		{
-			sprites[13].Scale(glm::vec2(0.3f));
-		}
-		else if (player->playerID == 2)
-		{
-			sprites[14].Scale(glm::vec2(0.3f));
-		}
-		else if (player->playerID == 3)
-		{
-			sprites[15].Scale(glm::vec2(0.3f));
-		}
-
-		sprites[22].Scale(glm::vec2(1.08f, 0.11f));
-		sprites[23].Scale(glm::vec2(0.1f));
-		sprites[24].Scale(glm::vec2(0.1f));
-
-		sprites[16].Scale(glm::vec2(0));
-		sprites[17].Scale(glm::vec2(0));
-		sprites[18].Scale(glm::vec2(0));
-		sprites[19].Scale(glm::vec2(0));
-		sprites[20].Scale(glm::vec2(0));
-		sprites[21].Scale(glm::vec2(0));
-		sprites[26].Scale(glm::vec2(0));
-		sprites[27].Scale(glm::vec2(0));
-		sprites[28].Scale(glm::vec2(0));
-		sprites[31].Scale(glm::vec2(0));
-		sprites[32].Scale(glm::vec2(0));
-		sprites[29].Scale(glm::vec2(0));
-		sprites[30].Scale(glm::vec2(0));
-		sprites[33].Scale(glm::vec2(0));
-		sprites[34].Scale(glm::vec2(0));
-		sprites[35].Scale(glm::vec2(0));
-		sprites[36].Scale(glm::vec2(0));
-		sprites[37].Scale(glm::vec2(0));
-		sprites[38].Scale(glm::vec2(0));
-		sprites[39].Scale(glm::vec2(0));
-		sprites[40].Scale(glm::vec2(0));
-		sprites[41].Scale(glm::vec2(0));
-		sprites[42].Scale(glm::vec2(0));
-		sprites[43].Scale(glm::vec2(0));
-		sprites[44].Scale(glm::vec2(0));
-		sprites[45].Scale(glm::vec2(0));
-		sprites[46].Scale(glm::vec2(0));
-		sprites[47].Scale(glm::vec2(0));
+		spriteRenderer.SpriteChange(sprites,selectCount, skComCount, 0);
+		spriteRenderer.SprRootChange(sprites, player->playerID, 0);
 	}
-	//スペースボタンでも閉じれる.
+	//スペースボタンでpも閉じれる.
 	else if (window.GetGamePad().buttonDown & GamePad::SPACE)
 	{
 		Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-		sprites[1].Scale(glm::vec2(0));
-		sprites[2].Scale(glm::vec2(0));
-		sprites[3].Scale(glm::vec2(0));
-		sprites[12].Scale(glm::vec2(0));
-		sprites[13].Scale(glm::vec2(0));
-		sprites[14].Scale(glm::vec2(0));
-		sprites[15].Scale(glm::vec2(0));
-		sprites[16].Scale(glm::vec2(0));
-		sprites[17].Scale(glm::vec2(0));
-		sprites[22].Scale(glm::vec2(0));
-		sprites[23].Scale(glm::vec2(0));
-		sprites[24].Scale(glm::vec2(0));
-
-		if (StageNo != 1)
-		{
-			sprites[26].Scale(glm::vec2(2));
-			sprites[27].Scale(glm::vec2(1));
-		}
-		sprites[28].Scale(glm::vec2(0));
-
 		state = State::play;
 		selectCount = 0;
+		spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 1);
+		spriteRenderer.SprRootChange(sprites, StageNo, 1);
 	}
 
 	//スキルセット画面時の選択アイコンを動かす.
@@ -1536,81 +1185,17 @@ void MainGameScene::ProcessInput()
 			selectCount = 3;
 			skComCount = 0;
 		}
-
 		skSelectUI(1, 0, 4, 4, 5, 1);
-
 		//スキル表の時.
-		if (skComCount == 1)
-		{
-			//選択アイコン.
-			sprites[22].Position(glm::vec3(-30, 160, 0));
-			sprites[23].Position(glm::vec3(80, 160, 0));
-			sprites[24].Position(glm::vec3(-140, 160, 0));
-		}
-		else if (skComCount == 2)
-		{
-			//選択アイコン.
-			sprites[22].Position(glm::vec3(-30, 110, 0));
-			sprites[23].Position(glm::vec3(80, 110, 0));
-			sprites[24].Position(glm::vec3(-140, 110, 0));
-		}
-		else if (skComCount == 3)
-		{
-			//選択アイコン.
-			sprites[22].Position(glm::vec3(-30, 60, 0));
-			sprites[23].Position(glm::vec3(80, 60, 0));
-			sprites[24].Position(glm::vec3(-140, 60, 0));
-		}
-		else if (skComCount == 4)
-		{
-			//選択アイコン.
-			sprites[22].Position(glm::vec3(-30, 10, 0));
-			sprites[23].Position(glm::vec3(80, 10, 0));
-			sprites[24].Position(glm::vec3(-140, 10, 0));
-		}
+		spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 2);
 	}
 
 	//メニュー画面時の選択アイコンを動かす.
 	if (state == State::menu || state == State::cMenu || state == State::sMenu && selectCount > -1)
 	{
 		selectUI(1, 0, 5, 5, 6, 1);
-
 		//選択ボタンの操作.
-		if (selectCount == 1)
-		{
-			//選択アイコン.
-			sprites[22].Position(glm::vec3(-380, 210, 0));
-			sprites[23].Position(glm::vec3(-270, 210, 0));
-			sprites[24].Position(glm::vec3(-490, 210, 0));
-		}
-		else if (selectCount == 2)
-		{
-			//選択アイコン.
-			sprites[22].Position(glm::vec3(-380, 160, 0));
-			sprites[23].Position(glm::vec3(-270, 160, 0));
-			sprites[24].Position(glm::vec3(-490, 160, 0));
-		}
-		else if (selectCount == 3)
-		{
-			//選択アイコン.
-			sprites[22].Position(glm::vec3(-380, 110, 0));
-			sprites[23].Position(glm::vec3(-270, 110, 0));
-			sprites[24].Position(glm::vec3(-490, 110, 0));
-		}
-		else if (selectCount == 4)
-		{
-			//選択アイコン.
-			sprites[22].Position(glm::vec3(-380, 10, 0));
-			sprites[23].Position(glm::vec3(-270, 10, 0));
-			sprites[24].Position(glm::vec3(-490, 10, 0));
-		}
-		else if (selectCount == 5)
-		{
-			//選択アイコン.
-			sprites[22].Position(glm::vec3(-380, -40, 0));
-			sprites[23].Position(glm::vec3(-270, -40, 0));
-			sprites[24].Position(glm::vec3(-490, -40, 0));
-		}
+		spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 3);
 	}
 
 	//ステージ移行の有無時の選択アイコンを動かす.
@@ -1633,59 +1218,21 @@ void MainGameScene::ProcessInput()
 		else if (selectCount == 1 && window.GetGamePad().buttonDown & GamePad::START)
 		{
 			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-
-			sprites[2].Scale(glm::vec2(0));
-			sprites[3].Scale(glm::vec2(0));
-			sprites[22].Scale(glm::vec2(0));
-			sprites[23].Scale(glm::vec2(0));
-			sprites[24].Scale(glm::vec2(0));
 			state = State::play;
 			player->position = glm::vec3(79, 0, 100);
 			selectCount = 0;
+			spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 4);
 		}
 
 		//ステージ移行の有無の選択ボタンの操作.
-		if (selectCount == 0)
-		{
-			//選択アイコン.
-			sprites[24].Position(glm::vec3(82, -75, 0));
-			sprites[22].Position(glm::vec3(0, -75, 0));
-			sprites[23].Position(glm::vec3(-83, -75, 0));
-		}
-		else if (selectCount == 1)
-		{
-			//選択アイコン.
-			sprites[24].Position(glm::vec3(82, -115, 0));
-			sprites[22].Position(glm::vec3(0, -115, 0));
-			sprites[23].Position(glm::vec3(-83, -115, 0));
-		}
+		spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 5);
 	}
 
 	//リザルト画面時の選択アイコンを動かす.
 	if (state == State::result)
 	{
 		selectUI(0, -1, 1, 1, 2, 0);
-
-		if (selectCount == 0)
-		{
-			//選択アイコン.
-			sprites[22].Scale(glm::vec2(1.61f, 0.22f));
-			sprites[23].Scale(glm::vec2(0.2f));
-			sprites[24].Scale(glm::vec2(0.2f));
-			sprites[24].Position(glm::vec3(260, 120, 0));
-			sprites[22].Position(glm::vec3(100, 120, 0));
-			sprites[23].Position(glm::vec3(-60, 120, 0));
-		}
-		else if (selectCount == 1)
-		{
-			//選択アイコン.
-			sprites[22].Scale(glm::vec2(1.61f, 0.22f));
-			sprites[23].Scale(glm::vec2(0.2f));
-			sprites[24].Scale(glm::vec2(0.2f));
-			sprites[24].Position(glm::vec3(260, -120, 0));
-			sprites[22].Position(glm::vec3(100, -120, 0));
-			sprites[23].Position(glm::vec3(-60, -125, 0));
-		}
+		spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 6);
 
 		//リザルト画面から次のステージ移行.
 		if (selectCount == 0 && window.GetGamePad().buttonDown & GamePad::START)
@@ -1712,51 +1259,23 @@ void MainGameScene::ProcessInput()
 		{
 			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
 			state = State::menu;
-
-			if (player->playerID == 0)
-			{
-				sprites[12].Scale(glm::vec2(0.25f));
-			}
-			else if (player->playerID == 1)
-			{
-				sprites[13].Scale(glm::vec2(0.3f));
-			}
-			else if (player->playerID == 2)
-			{
-				sprites[14].Scale(glm::vec2(0.3f));
-			}
-			else if (player->playerID == 3)
-			{
-				sprites[15].Scale(glm::vec2(0.3f));
-			}
+			spriteRenderer.SprRootChange(sprites, StageNo, 2);
 		}
 
 		//コマンド表.
 		else if (selectCount == 2)
 		{
 			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-			sprites[12].Scale(glm::vec2(0));
-			sprites[13].Scale(glm::vec2(0));
-			sprites[14].Scale(glm::vec2(0));
-			sprites[15].Scale(glm::vec2(0));
-
-			sprites[16].Scale(glm::vec2(0));
-			sprites[17].Scale(glm::vec2(0));
 			gamePadText = true;
 			state = State::cMenu;
+			spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 7);
 		}
 		//スキル表.
 		else if (selectCount == 3)
 		{
 			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-			sprites[12].Scale(glm::vec2(0));
-			sprites[13].Scale(glm::vec2(0));
-			sprites[14].Scale(glm::vec2(0));
-			sprites[15].Scale(glm::vec2(0));
-
-			sprites[16].Scale(glm::vec2(0));
-			sprites[17].Scale(glm::vec2(0));
 			state = State::sMenu;
+			spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 7);
 		}
 		//タイトルに戻る.
 		else if (selectCount == 4)
@@ -1771,18 +1290,7 @@ void MainGameScene::ProcessInput()
 		else if (selectCount == 5)
 		{
 			Audio::Engine::Instance().Prepare("Res/Audio/OK.mp3")->Play();
-			sprites[1].Scale(glm::vec2(0));
-			sprites[2].Scale(glm::vec2(0));
-			sprites[3].Scale(glm::vec2(0));
-			sprites[12].Scale(glm::vec2(0));
-			sprites[13].Scale(glm::vec2(0));
-			sprites[14].Scale(glm::vec2(0));
-			sprites[15].Scale(glm::vec2(0));
-			sprites[16].Scale(glm::vec2(0));
-			sprites[17].Scale(glm::vec2(0));
-			sprites[22].Scale(glm::vec2(0));
-			sprites[23].Scale(glm::vec2(0));
-			sprites[24].Scale(glm::vec2(0));
+			spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 8);
 
 			if (StageNo != 1)
 			{
@@ -1790,7 +1298,6 @@ void MainGameScene::ProcessInput()
 				sprites[27].Scale(glm::vec2(1));
 			}
 			sprites[28].Scale(glm::vec2(0));
-
 			state = State::play;
 			selectCount = 0;
 		}
@@ -2124,24 +1631,7 @@ void MainGameScene::Update(float deltaTime)
 		{
 			walkParticleTimer -= deltaTime;
 			{
-				ParticleEmitterParameter ep;
-				ep.imagePath = "Res/DiskParticle.tga";
-				ep.tiles = glm::ivec2(1, 1);
-				ep.position = player->position;
-				ep.position.y += 0.0f;
-				ep.emissionsPerSecond = 10.0f;
-				ep.duration = 0.1f;
-				ep.dstFactor = GL_ONE; // 加算合成.
-				ep.gravity = 5.0f;
-				ep.angle = glm::radians(0.0f);//
-				ep.loop = false;
-				ParticleParameter pp;
-				pp.acceleration = glm::vec3(0);//
-				pp.lifetime = 0.2f;
-				pp.velocity = glm::vec3(0, 2, 0);
-				pp.scale = glm::vec2(0.3f);
-				pp.color = glm::vec4(0.1f, 0.1f, 0.1f, 1.0f);
-				particleSystem.Add(ep, pp);
+				particleSystem.Dust(player->position);
 			}
 			if (walkParticleTimer <= 0.1f)
 			{
@@ -2161,24 +1651,7 @@ void MainGameScene::Update(float deltaTime)
 		//魂風のパーティクル.
 		if (player->playerID == 0)
 		{
-			ParticleEmitterParameter ep;
-			ep.imagePath = "Res/FireParticle.tga";
-			ep.tiles = glm::ivec2(2, 2);
-			ep.position = player->position;
-			ep.position.y += 1.0f;
-			ep.duration = 0.1f;
-			ep.emissionsPerSecond = 15.0f;
-			ep.dstFactor = GL_ONE; // 加算合成.
-			ep.gravity = 0.0f;
-			ep.angle = glm::radians(0.0f);//
-			ep.loop = false;
-			ParticleParameter pp;
-			pp.acceleration = glm::vec3(0);//
-			pp.velocity = glm::vec3(0, 1, 0);
-			pp.lifetime = 0.1f;
-			pp.scale = glm::vec2(1.0f);
-			pp.color = glm::vec4(0.1f, 0.1f, 0.8f, 1.0f);
-			particleSystem.Add(ep, pp);
+			particleSystem.Soul(player->position);
 		}
 
 		//骸骨のY、Uボタン攻撃のパーティクル.
@@ -2198,26 +1671,7 @@ void MainGameScene::Update(float deltaTime)
 					bullet[0].Add(Shot);
 					particleTimerA = 100.0f;
 					{
-						const glm::vec3 vPlayerFront = glm::rotate(
-							glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, 0.5f, 5, 1);
-						ParticleEmitterParameter ep;
-						ep.imagePath = "Res/FireParticle.tga";
-						ep.tiles = glm::ivec2(2, 2);
-						ep.position = player->position + vPlayerFront;
-						ep.position.y += 0.0f;
-						ep.duration = 0.2f;
-						ep.emissionsPerSecond = 200.0f;
-						ep.dstFactor = GL_ONE; // 加算合成.
-						ep.gravity = 0.0f;
-						ep.angle = glm::radians(70.0f);//
-						ep.loop = false;
-						ParticleParameter pp;
-						pp.acceleration = glm::vec3(0);//
-						pp.velocity = glm::vec3(0, 15, 0);
-						pp.lifetime = 0.3f;
-						pp.scale = glm::vec2(1.0f);
-						pp.color = glm::vec4(0.1f, 0.7f, 0.9f, 1.0f);
-						particleSystem.Add(ep, pp);
+						particleSystem.BoneAttackY1(player->position, player->rotation);
 					}
 					Audio::Engine::Instance().Prepare("Res/Audio/magic-flame1.mp3")->Play();
 				}
@@ -2240,24 +1694,7 @@ void MainGameScene::Update(float deltaTime)
 			if (particleTimerA <= 0.1f)
 			{
 				{
-					ParticleEmitterParameter ep;
-					ep.imagePath = "Res/DiskParticle.tga";
-					ep.tiles = glm::ivec2(1, 1);
-					ep.position = player->position;
-					ep.position.y += 3.0f;
-					ep.emissionsPerSecond = 100.0f;
-					ep.duration = 0.1f;
-					ep.dstFactor = GL_ONE; // 加算合成.
-					ep.gravity = 0;
-					ep.angle = glm::radians(0.0f);//
-					ep.loop = false;
-					ParticleParameter pp;
-					pp.acceleration = glm::vec3(0);//
-					pp.lifetime = 0.05f;
-					pp.velocity = glm::vec3(0, 10, 0);
-					pp.scale = glm::vec2(0.3f,1.0f);
-					pp.color = glm::vec4(0.1f, 0.7f, 0.9f, 1.0f);
-					particleSystem.Add(ep, pp);
+					particleSystem.BoneAttackY2(player->position);
 				}
 			}
 		}
@@ -2275,24 +1712,7 @@ void MainGameScene::Update(float deltaTime)
 					bullet[0].Add(Shot);
 					particleTimerB = 100.0f;
 					{
-						ParticleEmitterParameter ep;
-						ep.imagePath = "Res/FireParticle.tga";
-						ep.tiles = glm::ivec2(2, 2);
-						ep.position = player->position;
-						ep.position.y += 0.5f;
-						ep.emissionsPerSecond = 400.0f;
-						ep.duration = 0.1f;
-						ep.dstFactor = GL_ONE; // 加算合成.
-						ep.gravity = 0;
-						ep.angle = glm::radians(90.0f);//
-						ep.loop = false;
-						ParticleParameter pp;
-						pp.acceleration = glm::vec3(0, 0, 0);//
-						pp.lifetime = 0.3f;
-						pp.velocity = glm::vec3(0, 0, 20);
-						pp.scale = glm::vec2(1.0f);
-						pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
-						particleSystem.Add(ep, pp);
+						particleSystem.BoneAttackB(player->position, 0);
 					}
 					Audio::Engine::Instance().Prepare("Res/Audio/katana-slash5.mp3")->Play();
 				}
@@ -2315,24 +1735,7 @@ void MainGameScene::Update(float deltaTime)
 			if (particleTimerB <= 0.1f)
 			{
 				{
-					ParticleEmitterParameter ep;
-					ep.imagePath = "Res/FireParticle.tga";
-					ep.tiles = glm::ivec2(1, 1);
-					ep.position = player->position;
-					ep.position.y += 0.0f;
-					ep.emissionsPerSecond = 50.0f;
-					ep.duration = 0.1f;
-					ep.dstFactor = GL_ONE; // 加算合成.
-					ep.gravity = 0;
-					ep.angle = glm::radians(90.0f);//
-					ep.loop = false;
-					ParticleParameter pp;
-					pp.acceleration = glm::vec3(0);//
-					pp.lifetime = 0.2f;
-					pp.velocity = glm::vec3(0, 3, 0);
-					pp.scale = glm::vec2(0.5f);
-					pp.color = glm::vec4(0.1f, 0.3f, 0.9f, 1.0f);
-					particleSystem.Add(ep, pp);
+					particleSystem.BoneAttackB(player->position, 1);
 				}
 			}
 		}
@@ -2363,21 +1766,7 @@ void MainGameScene::Update(float deltaTime)
 					bullet[0].Add(Shot);
 					playerBulletTimerA = 100.0f;
 					{
-						ParticleEmitterParameter ep;
-						ep.imagePath = "Res/FireParticle.tga";
-						ep.tiles = glm::ivec2(1, 1);
-						ep.position = player->position + matRotZ;
-						ep.position.y += 1.0f;
-						ep.emissionsPerSecond = 50.0f;
-						ep.dstFactor = GL_ONE; // 加算合成.
-						ep.gravity = 5.0f;
-						ep.angle = glm::radians(90.0f);//
-						ep.loop = false;
-						ParticleParameter pp;
-						pp.acceleration = matRotY * glm::vec4(0, 1, speed, 1);
-						pp.scale = glm::vec2(0.5f);
-						pp.color = glm::vec4(0.9f, 0.3f, 0.1f, 1.0f);
-						particleSystem.Add(ep, pp);
+						particleSystem.WizardAttackY(player->position, player->rotation);
 					}
 					Audio::Engine::Instance().Prepare("Res/Audio/magic-flame2.mp3")->Play();
 				}
@@ -2420,26 +1809,7 @@ void MainGameScene::Update(float deltaTime)
 						bullet[1].Add(Meteo);
 						playerBulletTimerB = 100.0f;
 						{
-							const glm::vec3 matRotZ = glm::rotate(
-								glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0)) * glm::vec4(0, i, i, 1);
-							ParticleEmitterParameter ep;
-							ep.imagePath = "Res/DiskParticle.tga";
-							ep.tiles = glm::ivec2(2, 2);
-							ep.position = player->position + matRotY + matRotZ;;
-							ep.position.y += 0.0f;
-							ep.duration = 0.2f;
-							ep.emissionsPerSecond = 40.0f;
-							ep.dstFactor = GL_ONE; // 加算合成.
-							ep.gravity = 0.0f;
-							ParticleParameter pp;
-							pp.acceleration = glm::vec3(0);//
-							ep.angle = glm::radians(0.0f);//
-							ep.loop = false;
-							pp.velocity = glm::vec3(0, -15, 0);
-							pp.lifetime = 1.5f;
-							pp.scale = glm::vec2(0.1f, 1.0f);
-							pp.color = glm::vec4(0.1f, 0.3f, 1.0f, 1.0f);
-							particleSystem.Add(ep, pp);
+							particleSystem.WizardAttackB(player->position,player->rotation);
 						}
 					}
 					Audio::Engine::Instance().Prepare("Res/Audio/magic-ice2.mp3")->Play();
@@ -2616,28 +1986,7 @@ void MainGameScene::Update(float deltaTime)
 		player->pHP = player->maxHP;
 		player->pMP = player->maxMP;
 		
-		if (!player->pep) {
-			//レベルアップ時のパーティクル.
-			ParticleEmitterParameter ep;
-			ep.imagePath = "Res/DiskParticle.tga";
-			ep.tiles = glm::ivec2(2, 2);
-			ep.position = player->position;
-			ep.position.y += 0.0f;
-			ep.duration = 0.2f;
-			ep.emissionsPerSecond = 80.0f;
-			ep.dstFactor = GL_ONE; // 加算合成.
-			ep.gravity = 0.0f;
-			ep.angle = glm::radians(0.0f);//
-			ep.loop = false;
-			ParticleParameter pp;
-			pp.acceleration = glm::vec3(0);//
-			pp.velocity = glm::vec3(0, 15, 0);
-			pp.lifetime = 0.2f;
-			pp.scale = glm::vec2(0.1f, 1.0f);
-			pp.color = glm::vec4(1.0f, 1.0f, 0.9f, 1.0f);
-			player->pep = particleSystem.Add(ep, pp);
-		}
-		player->pep = nullptr;
+		particleSystem.LevelUp(player->position);
 	}
 	
 	//HPが０か防衛ラインのHPが０になったらゲームオーバーフラグが立つ.
@@ -2711,100 +2060,16 @@ void MainGameScene::Update(float deltaTime)
 	{
 		if (state == State::play)
 		{
-			if (miniMapFlag)
-			{
-				//プレイヤーのミニマップアイコン.
-				sprites[38].Scale(glm::vec2(1));
-				sprites[39].Scale(glm::vec2(0.02f));
-				const glm::vec3 startPos(79, 0, 100);
-				mapIcon.position = glm::vec3(player->position.x - startPos.x, -(player->position.z - startPos.z), 0) * 2.8f;
-				sprites[39].Position(mapIcon.position + glm::vec3(530, 270, 0));
+			spriteRenderer.MiniMap(sprites, defencePoint, miniMapFlag, player->position);
 
-				//クリスタルのミニマップアイコン.
-				sprites[40].Scale(glm::vec2(1));
-				sprites[41].Scale(glm::vec2(1));
-				sprites[42].Scale(glm::vec2(1));
-
-				const glm::vec3 x = (*(defencePoint.begin() + 0))->position;
-				const glm::vec3 y = (*(defencePoint.begin() + 1))->position;
-				const glm::vec3 z = (*(defencePoint.begin() + 2))->position;
-				const glm::vec3 X = glm::vec3(x.x - startPos.x,
-					-(x.z - startPos.z), 0) * 2.8f;
-				const glm::vec3 Y = glm::vec3(y.x - startPos.x,
-					-(y.z - startPos.z), 0) * 2.8f;
-				const glm::vec3 Z = glm::vec3(z.x - startPos.x,
-					-(z.z - startPos.z), 0) * 2.8f;
-				sprites[40].Position(X + glm::vec3(530, 270, 0));
-				sprites[41].Position(Y + glm::vec3(530, 270, 0));
-				sprites[42].Position(Z + glm::vec3(530, 270, 0));
-			}
-			else
-			{
-				sprites[38].Scale(glm::vec2(0));
-				sprites[39].Scale(glm::vec2(0));
-				sprites[40].Scale(glm::vec2(0));
-				sprites[41].Scale(glm::vec2(0));
-				sprites[42].Scale(glm::vec2(0));
-			}
-
-			sprites[26].Scale(glm::vec2(2));
-			sprites[27].Scale(glm::vec2(1));
-
-			//防衛ラインのHPバーの表示.
-			//攻撃を受けている時.
-			if (defenceLine >= 0)
-			{		
-				sprites[25].Scale(glm::vec2(13.0f * defenceLine / 100, 0.8f));
-				sprites[25].Position(glm::vec3((520 * defenceLine / 100) / 2 - 365, 345, 0));
-
-				sprites[28].Scale(glm::vec2(0.4f, 0.3f));
-				sprites[28].Position(glm::vec3(-80, 350, 0));
-			}
-			if (defenceLine <= 10)
-			{
-				sprites[25].Texture(Texture::Image2D::Create("Res/Red.tga"));
-			}
-			else if (defenceLine <= 40)
-			{
-				sprites[25].Texture(Texture::Image2D::Create("Res/yellow.tga"));
-			}
-			if (combo > 0)
-			{
-				sprites[43].Scale(glm::vec2(1));
-				sprites[44].Scale(glm::vec2(0.5f));
-			}
+			spriteRenderer.DefenceUI(defenceLine,sprites);
 		}
 		else
 		{
-			sprites[25].Scale(glm::vec2(0));
-			sprites[26].Scale(glm::vec2(0));
-			sprites[27].Scale(glm::vec2(0));
-			sprites[43].Scale(glm::vec2(0));
-			sprites[44].Scale(glm::vec2(0));
+			spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 9);
 		}
-		//コンボ発生時に出す.
-		if (comboTimer >= 2.0f)
-		{
-			sprites[45].Scale(glm::vec2(0));
-			sprites[46].Scale(glm::vec2(0));
-		}
-		else if (comboTimer > 0.0f && combo <= 1)
-		{
-			sprites[45].Scale(glm::vec2(1.0f));
-			sprites[46].Scale(glm::vec2(1.0f));
-		}
-		if (combo < 10)
-		{
-			sprites[47].Scale(glm::vec2(0));
-		}
-		else if (combo >= 10)
-		{
-			sprites[47].Scale(glm::vec2(1.0f));
-		}
-		for (int i = 0; i < combo; ++i)
-		{
-			comboBuf = (i / combo) + 1.0f;
-		}
+
+		spriteRenderer.comboUI(combo, comboTimer, comboBuf, sprites);
 	}
 
 	//HP,MPバーの表示.
@@ -2823,172 +2088,15 @@ void MainGameScene::Update(float deltaTime)
 	//各キャラのスキルコマンドのアイコン.
 	if (state == State::play)
 	{
-		//魂のスキルコマンドパネル.
-		if (player->playerID == 0)
-		{
-			sprites[33].Scale(glm::vec2(0.2f));
-
-			sprites[18].Scale(glm::vec2(0));
-			sprites[19].Scale(glm::vec2(0));
-			sprites[20].Scale(glm::vec2(0));
-			sprites[21].Scale(glm::vec2(0));
-			sprites[31].Scale(glm::vec2(0));
-			sprites[32].Scale(glm::vec2(0));
-			sprites[29].Scale(glm::vec2(0));
-			sprites[30].Scale(glm::vec2(0));
-		}
-		//ゴブリンのスキルコマンドパネル.
-		else if (player->playerID == 1)
-		{
-			sprites[31].Scale(glm::vec2(0.2f));
-			/*sprites[32].Scale(glm::vec2(0.2f));*/
-
-			sprites[18].Scale(glm::vec2(0));
-			sprites[19].Scale(glm::vec2(0));
-			sprites[20].Scale(glm::vec2(0));
-			sprites[21].Scale(glm::vec2(0));
-			sprites[29].Scale(glm::vec2(0));
-			sprites[30].Scale(glm::vec2(0));
-			sprites[33].Scale(glm::vec2(0));
-		}
-		//ウィザードのスキルコマンドパネル.
-		else if (player->playerID == 2)
-		{
-			sprites[18].Scale(glm::vec2(0.2f));
-
-			if (player->pAbility >= 4)
-			{
-				sprites[21].Scale(glm::vec2(0.12f));
-			}
-			if (player->pAbility >= 3)
-			{
-				sprites[20].Scale(glm::vec2(0.2f));
-			}
-			if (player->pAbility >= 2)
-			{
-				sprites[19].Scale(glm::vec2(0.2f));
-			}
-
-			sprites[31].Scale(glm::vec2(0));
-			sprites[32].Scale(glm::vec2(0));
-			sprites[29].Scale(glm::vec2(0));
-			sprites[30].Scale(glm::vec2(0));
-			sprites[33].Scale(glm::vec2(0));
-		}
-		//骸骨のスキルコマンドパネル.
-		else if (player->playerID == 3)
-		{
-			sprites[18].Scale(glm::vec2(0.2f));
-
-			if (player->pAbility >= 4)
-			{
-				sprites[30].Scale(glm::vec2(0.2f));
-			}
-			if (player->pAbility >= 3)
-			{
-				sprites[29].Scale(glm::vec2(0.2f));
-			}
-			if (player->pAbility >= 2)
-			{
-				sprites[19].Scale(glm::vec2(0.2f));
-			}
-			sprites[20].Scale(glm::vec2(0));
-			sprites[21].Scale(glm::vec2(0));
-			sprites[31].Scale(glm::vec2(0));
-			sprites[32].Scale(glm::vec2(0));
-			sprites[33].Scale(glm::vec2(0));
-		}
+		spriteRenderer.pCommandUI(player->playerID, player->pAbility, sprites);
 	}
 
 	//アイコンの使用可、不可.
 	//攻撃のインターバル画像を重ねる.
 	if (state == State::play)
 	{
-		//初期攻撃したかどうか.
-		if (sCommand == true)
-		{
-			//下.
-			sprites[36].Scale(glm::vec2(0));
-		}
-		else if (sCommand == false)
-		{
-			sprites[36].Scale(glm::vec2(1.55f, 1.55f));
-			sprites[36].Position(glm::vec3(500, -310, 0));
-		}
-		//右.
-		if (player->pAbility >= 4)
-		{
-			if (eCommand == true)
-			{
-				eIntTimer += deltaTime;
-				sprites[34].Scale(glm::vec2(1.55f, 1.55f * eIntTimer / 4.0f));
-				sprites[34].Position(glm::vec3(580, 24.8f * 2.5f * eIntTimer / 4.0f / 2 - 261, 0));
-			}
-			else if (eCommand == false)
-			{
-				sprites[34].Scale(glm::vec2(1.55f, 1.55f));
-				sprites[34].Position(glm::vec3(580, -230, 0));
-			}
-		}
-		//上.
-		if (player->pAbility >= 3)
-		{
-			if (nCommand == true)
-			{
-				nIntTimer += deltaTime;
-				sprites[37].Scale(glm::vec2(1.55f, 1.55f * nIntTimer / 3.0f));
-				sprites[37].Position(glm::vec3(500, 24.8f * 2.5f * nIntTimer / 3.0f / 2 - 181, 0));
-			}
-			else if (nCommand == false)
-			{
-				sprites[37].Scale(glm::vec2(1.55f, 1.55f));
-				sprites[37].Position(glm::vec3(500, -150, 0));
-			}
-		}
-		//左.
-		if (player->pAbility >= 2 && player->playerID != 1)
-		{
-			if (wCommand == true)
-			{
-				wIntTimer += deltaTime;
-				sprites[35].Scale(glm::vec2(1.55f, 1.55f * wIntTimer / 2.0f));
-				sprites[35].Position(glm::vec3(420, 24.8f * 2.5f * wIntTimer / 2.0f / 2 - 261, 0));
-			}
-			else if (wCommand == false)
-			{
-				sprites[35].Scale(glm::vec2(1.55f, 1.55f));
-				sprites[35].Position(glm::vec3(420, -230, 0));
-			}
-		}
-
-		if (player->playerID == 1)
-		{
-			sprites[34].Scale(glm::vec2(0));
-			sprites[35].Scale(glm::vec2(0));
-			sprites[37].Scale(glm::vec2(0));
-		}
-		else if (player->playerID == 0)
-		{
-			sprites[34].Scale(glm::vec2(0));
-			sprites[35].Scale(glm::vec2(0));
-			sprites[37].Scale(glm::vec2(0));
-		}
-
-		if (wIntTimer >= 2.0f)
-		{
-			wCommand = false;
-			wIntTimer = 0.0f;
-		}
-		if (eIntTimer >= 4.0f)
-		{
-			eCommand = false;
-			eIntTimer = 0.0f;
-		}
-		if (nIntTimer >= 3.0f)
-		{
-			nCommand = false;
-			nIntTimer = 0.0f;
-		}
+		spriteRenderer.comIntUI(sprites,player->pAbility,player->playerID,
+			sCommand,eCommand,nCommand,wCommand,eIntTimer,nIntTimer,wIntTimer,deltaTime);
 	}
 
 	//コンボタイマー管理.
@@ -3011,35 +2119,7 @@ void MainGameScene::Update(float deltaTime)
 		if (timer <= 0.0f && player->pHP > 0)
 		{
 			bgm->Stop();
-			sprites[0].Scale(glm::vec2(6.0f, 4.0f));
-			sprites[1].Scale(glm::vec2(1.5f, 4.0f));
-			sprites[1].Position(glm::vec3(1));
-
-			sprites[2].Scale(glm::vec2(0));
-			sprites[3].Scale(glm::vec2(0));
-			sprites[16].Scale(glm::vec2(0));
-			sprites[17].Scale(glm::vec2(0));
-			sprites[18].Scale(glm::vec2(0));
-			sprites[19].Scale(glm::vec2(0));
-			sprites[20].Scale(glm::vec2(0));
-			sprites[21].Scale(glm::vec2(0));
-			sprites[22].Scale(glm::vec2(0));
-			sprites[23].Scale(glm::vec2(0));
-			sprites[24].Scale(glm::vec2(0));
-			sprites[26].Scale(glm::vec2(0));
-			sprites[27].Scale(glm::vec2(0));
-			sprites[28].Scale(glm::vec2(0));
-			sprites[31].Scale(glm::vec2(0));
-			sprites[32].Scale(glm::vec2(0));
-			sprites[29].Scale(glm::vec2(0));
-			sprites[30].Scale(glm::vec2(0));
-			sprites[33].Scale(glm::vec2(0));
-			sprites[34].Scale(glm::vec2(0));
-			sprites[35].Scale(glm::vec2(0));
-			sprites[36].Scale(glm::vec2(0));
-			sprites[37].Scale(glm::vec2(0));
-			sprites[38].Scale(glm::vec2(0));
-			sprites[39].Scale(glm::vec2(0));
+			spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 10);
 			state = State::load;
 			loadTimer = 4.0f;
 		}
@@ -3059,16 +2139,7 @@ void MainGameScene::Update(float deltaTime)
 			{
 				player->GetMesh()->Play("Idle");
 			}
-			sprites[2].Scale(glm::vec2(0.3f, 0.7f));
-			sprites[3].Scale(glm::vec2(0.9f, 0.7f));
-			sprites[22].Scale(glm::vec2(0.83f, 0.11f));
-			sprites[23].Scale(glm::vec2(0.1f));
-			sprites[24].Scale(glm::vec2(0.1f));
-			sprites[2].Position(glm::vec3(0, -100, 0));
-			sprites[3].Position(glm::vec3(0, -250, 0));
-			sprites[24].Position(glm::vec3(82, -75, 0));
-			sprites[22].Position(glm::vec3(0, -75, 0));
-			sprites[23].Position(glm::vec3(-83, -75, 0));
+			spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 11);
 		}
 		allTimer = 0.0f;
 	}
@@ -3115,42 +2186,8 @@ void MainGameScene::Update(float deltaTime)
 				{
 					player->GetMesh()->Play("Idle");
 				}
-				sprites[11].Scale(glm::vec2(0));
-				sprites[16].Scale(glm::vec2(0));
-				sprites[17].Scale(glm::vec2(0));
-				sprites[18].Scale(glm::vec2(0));
-				sprites[19].Scale(glm::vec2(0));
-				sprites[20].Scale(glm::vec2(0));
-				sprites[21].Scale(glm::vec2(0));
-				sprites[25].Scale(glm::vec2(0));
-				sprites[26].Scale(glm::vec2(0));
-				sprites[27].Scale(glm::vec2(0));
-				sprites[28].Scale(glm::vec2(0));
-				sprites[29].Scale(glm::vec2(0));
-				sprites[30].Scale(glm::vec2(0));
-				sprites[31].Scale(glm::vec2(0));
-				sprites[32].Scale(glm::vec2(0));
-				sprites[33].Scale(glm::vec2(0));
-				sprites[34].Scale(glm::vec2(0));
-				sprites[35].Scale(glm::vec2(0));
-				sprites[36].Scale(glm::vec2(0));
-				sprites[37].Scale(glm::vec2(0));
-				sprites[38].Scale(glm::vec2(0));
-				sprites[39].Scale(glm::vec2(0));
-				sprites[40].Scale(glm::vec2(0));
-				sprites[41].Scale(glm::vec2(0));
-				sprites[42].Scale(glm::vec2(0));
-				sprites[43].Scale(glm::vec2(0));
-				sprites[44].Scale(glm::vec2(0));
-				sprites[45].Scale(glm::vec2(0));
-				sprites[46].Scale(glm::vec2(0));
-				sprites[47].Scale(glm::vec2(0));
-
+				spriteRenderer.SpriteChange(sprites, selectCount, skComCount, 12);
 				state = State::result;
-				sprites[1].Scale(glm::vec2(1, 3.5f));
-				sprites[1].Position(glm::vec3(100, 0, 0));
-				sprites[8].Scale(glm::vec2(1));
-				sprites[9].Scale(glm::vec2(1));
 
 				if (StageNo == 2)
 				{
@@ -3178,43 +2215,45 @@ void MainGameScene::Update(float deltaTime)
 	{
 		loadTimer -= deltaTime;
 
-		if (state == State::result && loadTimer <= 0.0f && player->pHP > 0)
+		if (loadTimer <= 0.0f && player->pHP > 0)
 		{
-			SceneStack::Instance().Replace(std::make_shared<TitleScene>());
-			return;
+			if (state == State::result)
+			{
+				SceneStack::Instance().Replace(std::make_shared<TitleScene>());
+				return;
+			}
+			else if (state == State::menu)
+			{
+				SceneStack::Instance().Replace(std::make_shared<TitleScene>());
+				return;
+			}
 		}
-		else if (state == State::menu && loadTimer <= 0.0f && player->pHP > 0)
+		if (state == State::load && loadTimer <= 0.0f && player->pHP > 0)
 		{
-			SceneStack::Instance().Replace(std::make_shared<TitleScene>());
-			return;
-		}
-		else if (state == State::load && loadTimer <= 0.0f &&
-			player->pHP > 0 && stageChage == 1)
-		{
-			StageNo += 1;
-			SceneStack::Instance().Replace(std::make_shared<MainGameScene>());
-			return;
-		}
-		else if (state == State::load && loadTimer <= 0.0f &&
-			player->pHP > 0 && stageChage == 2)
-		{
-			StageNo += 2;
-			SceneStack::Instance().Replace(std::make_shared<MainGameScene>());
-			return;
-		}
-		else if (state == State::load && loadTimer <= 0.0f &&
-			player->pHP > 0 && stageChage == 3)
-		{
-			StageNo += 3;
-			SceneStack::Instance().Replace(std::make_shared<MainGameScene>());
-			return;
-		}
-		else if (state == State::load && loadTimer <= 0.0f &&
-			player->pHP > 0 && stageChage == 4)
-		{
-			StageNo += 4;
-			SceneStack::Instance().Replace(std::make_shared<MainGameScene>());
-			return;
+			if(stageChage == 1)
+			{
+				StageNo += 1;
+				SceneStack::Instance().Replace(std::make_shared<MainGameScene>());
+				return;
+			}
+			else if (stageChage == 2)
+			{
+				StageNo += 2;
+				SceneStack::Instance().Replace(std::make_shared<MainGameScene>());
+				return;
+			}
+			else if (stageChage == 3)
+			{
+				StageNo += 3;
+				SceneStack::Instance().Replace(std::make_shared<MainGameScene>());
+				return;
+			}
+			else if (stageChage == 4)
+			{
+				StageNo += 4;
+				SceneStack::Instance().Replace(std::make_shared<MainGameScene>());
+				return;
+			}
 		}
 	}
 	fontRenderer.EndUpdate();
@@ -3411,69 +2450,27 @@ void MainGameScene::Render()
 			//プレイヤー名.
 			if (player->playerID == 0)
 			{
-				fontRenderer.AddString(glm::vec2(90, 200), L"ソウル");
-				fontRenderer.AddString(glm::vec2(-130, -90), L"本作の主人公。");
-				fontRenderer.AddString(glm::vec2(-130, -130), L"敵軍に実体を奪われ、実体のない魂の存在。");
-				fontRenderer.AddString(glm::vec2(-130, -170), L"彼は再び体を取り戻すべく奮闘する。");
-				fontRenderer.AddString(glm::vec2(-130, -210), L"しかし移動とジャンプしかできない。");
+				GameSceneFont(fontRenderer, 0);
 			}
 			else if (player->playerID == 1)
 			{
-				fontRenderer.AddString(glm::vec2(90, 200), L"ゴブリン");
-				fontRenderer.AddString(glm::vec2(-130, -90), L"ゴブリン族の一人。");
-				fontRenderer.AddString(glm::vec2(-130, -130), L"自分の存在をゴブリンと認めたくないと");
-				fontRenderer.AddString(glm::vec2(-130, -170), L"同族のゴブリンを絶滅させることを誓う。");
-				fontRenderer.AddString(glm::vec2(-130, -210), L"彼の夢は人間の女と結婚することである。");
+				GameSceneFont(fontRenderer, 1);
 			}
 			else if (player->playerID == 2)
 			{
-				fontRenderer.AddString(glm::vec2(90, 200), L"ウィザード");
-				fontRenderer.AddString(glm::vec2(-130, -90), L"人間の魔道師。");
-				fontRenderer.AddString(glm::vec2(-130, -130), L"魔法の名家で魔道師として育てられた。");
-				fontRenderer.AddString(glm::vec2(-130, -170), L"しかし彼は落ちこぼれを絵にかいたような");
-				fontRenderer.AddString(glm::vec2(-130, -210), L"人間だった。微力な攻撃魔法と");
-				fontRenderer.AddString(glm::vec2(-130, -250), L"主に杖を使った近接戦を得意とする。");
+				GameSceneFont(fontRenderer, 2);
 			}
 			else if (player->playerID == 3)
 			{
-				fontRenderer.AddString(glm::vec2(90, 200), L"スケルトン");
-				fontRenderer.AddString(glm::vec2(-130, -90), L"黄泉の国から復活した骸骨騎士。");
-				fontRenderer.AddString(glm::vec2(-130, -130), L"世界一とも名高い元エリート騎士。");
-				fontRenderer.AddString(glm::vec2(-130, -170), L"それと同じく無類の酒と女好きの");
-				fontRenderer.AddString(glm::vec2(-130, -210), L"遊び人だった。彼の死因は泥酔し、王の");
-				fontRenderer.AddString(glm::vec2(-130, -250), L"娘へのセクハラ行為により死刑。");
+				GameSceneFont(fontRenderer, 3);
 			}
 
 			//ステージNo表示.
-			{
-				wchar_t str[] = L"STAGE.  ";
-				int n = StageNo;
-				for (int i = 0; i < 2; ++i)
-				{
-					str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
-					n /= 10;
-					if (n <= 0)
-					{
-						break;
-					}
-				}
-				fontRenderer.AddString(glm::vec2(280, 200), str);
-			}
+			NumFont(fontRenderer,StageNo, 2, 0);
+			
 			//レベル表示.
-			{
-				wchar_t str[] = L"Lv.   ";
-				int n = player->pLevel;
-				for (int i = 0; i < 3; ++i)
-				{
-					str[(sizeof(str) / sizeof(str[0]) - 2) - i] = L'0' + n % 10;
-					n /= 10;
-					if (n <= 0)
-					{
-						break;
-					}
-				}
-				fontRenderer.AddString(glm::vec2(100, 150), str);
-			}
+			NumFont(fontRenderer,player->pLevel, 3, 1);
+			
 			//アビリティレベル.
 			{
 				wchar_t str[] = L"Ability:  ";
@@ -3587,219 +2584,46 @@ void MainGameScene::Render()
 		//コマンド表.
 		if (state == State::cMenu)
 		{
-			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-
+			GameSceneFont(fontRenderer, 4);
 			if (gamePadText)
 			{
-				fontRenderer.AddString(glm::vec2(0, 210), L"キーボードコマンド表");
-				fontRenderer.AddString(glm::vec2(-100, 150), L"WSAD:移動");
-				fontRenderer.AddString(glm::vec2(-100, 100), L"M：マップ表示");
-				fontRenderer.AddString(glm::vec2(-100, 50), L"U：スキル１");
-				fontRenderer.AddString(glm::vec2(-100, 0), L"H：スキル２");
-				fontRenderer.AddString(glm::vec2(-100, -50), L"K：スキル３");
-				fontRenderer.AddString(glm::vec2(-100, -100), L"J：スキル４");
-				fontRenderer.AddString(glm::vec2(170, 150), L"A：カメラ左回転");
-				fontRenderer.AddString(glm::vec2(170, 100), L"D：カメラ右回転");
-				fontRenderer.AddString(glm::vec2(170, 50), L"SPACE:メニュー画面");
-				fontRenderer.AddString(glm::vec2(170, 0), L"ENTER:決定キー");
-				fontRenderer.AddString(glm::vec2(-100, -200), L"Yボタン　または　Uボタンで");
-				fontRenderer.AddString(glm::vec2(-100, -250), L"ゲームパッド操作説明に切り替えます");
+				GameSceneFont(fontRenderer, 5);
 			}
 			else
 			{
-				fontRenderer.AddString(glm::vec2(0, 210), L"ゲームパッドコマンド表");
-				fontRenderer.AddString(glm::vec2(-100, 150), L"十字キー:移動");
-				fontRenderer.AddString(glm::vec2(-100, 100), L"R：マップ表示");
-				fontRenderer.AddString(glm::vec2(-100, 50), L"Y：スキル１");
-				fontRenderer.AddString(glm::vec2(-100, 0), L"X：スキル２");
-				fontRenderer.AddString(glm::vec2(-100, -50), L"B：スキル３");
-				fontRenderer.AddString(glm::vec2(-100, -100), L"A：スキル４");
-				fontRenderer.AddString(glm::vec2(170, 150), L"L2：カメラ左回転");
-				fontRenderer.AddString(glm::vec2(170, 100), L"R2：カメラ右回転");
-				fontRenderer.AddString(glm::vec2(170, 50), L"BACK:メニュー画面");
-				fontRenderer.AddString(glm::vec2(170, 0), L"START:決定キー");
-				fontRenderer.AddString(glm::vec2(-100, -200), L"Yボタン　または　Uボタンで");
-				fontRenderer.AddString(glm::vec2(-100, -250), L"キーボード操作説明に切り替えます");
+				GameSceneFont(fontRenderer, 6);
 			}
-			fontRenderer.AddString(glm::vec2(-500, -200), L"対応コマンドの");
-			fontRenderer.AddString(glm::vec2(-500, -250), L"確認ができます");
 		}
 		//スキル表.
 		else if (state == State::sMenu)
 		{
-			fontRenderer.AddString(glm::vec2(-510, -190), L"スキルの確認が");
-			fontRenderer.AddString(glm::vec2(-510, -230), L"できます。");
-			fontRenderer.AddString(glm::vec2(-125, -100), L"説明");
-			//プレイヤー名.
+			GameSceneFont(fontRenderer, 7);
+			//ソウルのスキル説明.
 			if (player->playerID == 0)
 			{
-				fontRenderer.AddString(glm::vec2(-110, 200), L"ソウル");
-				fontRenderer.AddString(glm::vec2(-125, 150), L"何もできない");
-				fontRenderer.AddString(glm::vec2(-125, 100), L"何もできない");
-				fontRenderer.AddString(glm::vec2(-125, 50), L"何もできない");
-				fontRenderer.AddString(glm::vec2(-125, 0), L"何もできない");
-
-				fontRenderer.AddString(glm::vec2(-125, -150), L"今のままでは何もできない");
-				fontRenderer.AddString(glm::vec2(-125, -200), L"他のキャラクターに憑依しよう");
+				GameSceneFont(fontRenderer, 8);
 			}
+			//ゴブリンのスキル説明.
 			if (player->playerID == 1)
 			{
-				fontRenderer.AddString(glm::vec2(-105, 200), L"ゴブリン");
-				int n = player->pAbility;
-				//スキルの説明.
-				if (skComCount == 1)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"強靭な爪で相手を攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"その爪は岩でも砕いてしまう");
-				}
-				else if (skComCount == 2)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"早歩きができるようになる");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
-				}
-				else if (skComCount == 3)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"ダッシュができるようになる");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
-				}
-				else if (skComCount == 4)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"高速移動ができるようになる");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"未実装");
-				}
-
-				fontRenderer.AddString(glm::vec2(-95, 150), L"通常攻撃");
-				//使えないスキルは半透明.
-				fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
-				fontRenderer.AddString(glm::vec2(-85, 100), L"早歩き");
-				fontRenderer.AddString(glm::vec2(-95, 50), L"ダッシュ");
-				fontRenderer.AddString(glm::vec2(-95, 0), L"高速移動");
-
-				if (n >= 4)
-				{
-					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-95, 0), L"高速移動");
-				}
-				if (n >= 3)
-				{
-					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-95, 50), L"ダッシュ");
-				}
-				if (n >= 2)
-				{
-					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-85, 100), L"早歩き");
-				}
+				PlayerFont(fontRenderer, skComCount, player->pAbility, 0);
 			}
+			//ウィザードのスキル説明.
 			if (player->playerID == 2)
 			{
-				fontRenderer.AddString(glm::vec2(-110, 200), L"ウィザード");
-				int n = player->pAbility;
-				//スキルの説明.
-				if (skComCount == 1)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"杖で突く近距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"杖は父からもらったものである");
-				}
-				else if (skComCount == 2)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"杖を振り下ろす近距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"父からは杖で人を殴るなと教えられた");
-				}
-				else if (skComCount == 3)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"前方に炎魔法を飛ばす中距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"スピードは遅いが範囲は広い");
-				}
-				else if (skComCount == 4)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"空から氷魔法を落とす遠距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"直線上につららを落とし敵を一掃する");
-				}
-
-				fontRenderer.AddString(glm::vec2(-95, 150), L"通常攻撃");
-				//使えないスキルは半透明.
-				fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
-				fontRenderer.AddString(glm::vec2(-100, 100), L"かぶと割り");
-				fontRenderer.AddString(glm::vec2(-95, 50), L"ファイア");
-				fontRenderer.AddString(glm::vec2(-95, 0), L"ブリザド");
-
-				if (n >= 4)
-				{
-					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-95, 0), L"ブリザド");
-				}
-				if (n >= 3)
-				{
-					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-95, 50), L"ファイア");
-				}
-				if (n >= 2)
-				{
-					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-100, 100), L"かぶと割り");
-				}
+				PlayerFont(fontRenderer, skComCount, player->pAbility, 1);
 			}
+			//骸骨のスキル説明.
 			if (player->playerID == 3)
 			{
-				fontRenderer.AddString(glm::vec2(-110, 200), L"スケルトン");
-				int n = player->pAbility;
-				//スキルの説明.
-				if (skComCount == 1)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"剣を振り下ろす近距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"型は自己流である");
-				}
-				else if (skComCount == 2)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"縦横の二段階攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"二段階による攻撃で敵を翻弄する");
-				}
-				else if (skComCount == 3)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"勢いよく剣を振り下ろす中距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"離れた敵を剣風で薙ぎ払う");
-				}
-				else if (skComCount == 4)
-				{
-					fontRenderer.AddString(glm::vec2(-125, -150), L"洗練された究極の中距離攻撃");
-					fontRenderer.AddString(glm::vec2(-125, -200), L"全方位の強力な一撃で敵を一掃する");
-				}
-
-				fontRenderer.AddString(glm::vec2(-95, 150), L"通常攻撃");
-				//使えないスキルは半透明.
-				fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 0.5f));
-				fontRenderer.AddString(glm::vec2(-95, 100), L"二段斬り");
-				fontRenderer.AddString(glm::vec2(-80, 50), L"爆裂斬");
-				fontRenderer.AddString(glm::vec2(-125, 0), L"全方位燕返し");
-
-				if (n >= 4)
-				{
-					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-125, 0), L"全方位燕返し");
-				}
-				if (n >= 3)
-				{
-					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-80, 50), L"爆裂斬");
-				}
-				if (n >= 2)
-				{
-					fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-					fontRenderer.AddString(glm::vec2(-95, 100), L"二段斬り");
-				}
+				PlayerFont(fontRenderer, skComCount, player->pAbility, 2);
 			}
 		}
 
 		//メニュー画面常時.
 		if (state == State::menu || state == State::cMenu || state == State::sMenu)
 		{
-			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-			fontRenderer.AddString(glm::vec2(-460, 200), L"プレイヤー");
-			fontRenderer.AddString(glm::vec2(-450, 150), L"コマンド");
-			fontRenderer.AddString(glm::vec2(-440, 100), L"スキル");
-			fontRenderer.AddString(glm::vec2(-460, 0), L"ゲーム終了");
-			fontRenderer.AddString(glm::vec2(-440, -50), L"閉じる");
+			GameSceneFont(fontRenderer, 9);
 		}
 
 		//プレイ画面の情報.
@@ -3897,73 +2721,16 @@ void MainGameScene::Render()
 			}
 		}
 
+		//ロード画面中にランダムでゲームに役立つヒントが表示される.
 		if (state == State::load)
 		{
-			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 10));
-			fontRenderer.AddString(glm::vec2(280, -280), L"NowLoading...");
-			//ロード画面中にランダムでゲームに役立つヒントが表示される.
-			int loadHint = stageChage;
-			if (loadHint == 1)
-			{
-				sprites[4].Scale(glm::vec2(0.4f));
-				fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 10));
-				fontRenderer.AddString(glm::vec2(-300, -100), L"火がついているのは一度クリアしたステージ。");
-				fontRenderer.AddString(glm::vec2(-300, -150), L"だが、何回でも挑戦可能。");
-			}
-			else if (loadHint == 2)
-			{
-				sprites[5].Scale(glm::vec2(0.4f));
-				fontRenderer.AddString(glm::vec2(-300, -100), L"主人公の肉体の情報が保管されたクリスタル。");
-				fontRenderer.AddString(glm::vec2(-300, -150), L"ステージごとにランダムで配置される。");
-				fontRenderer.AddString(glm::vec2(-300, -200), L"ステージが始まれば真っ先に場所を把握しよう。");
-			}
-			else if (loadHint == 3)
-			{
-				sprites[6].Scale(glm::vec2(0.4f));
-				fontRenderer.AddString(glm::vec2(-300, -100), L"個性豊かなキャラクターたちを使用できる。");
-				fontRenderer.AddString(glm::vec2(-300, -150), L"スキルやプロフィールはメニュー画面で確認可能。");
-			}
-			else if (loadHint == 4)
-			{
-				sprites[7].Scale(glm::vec2(0.4f));
-				fontRenderer.AddString(glm::vec2(-300, -100), L"敵は大きさにより性質が異なる。");
-				fontRenderer.AddString(glm::vec2(-300, -150), L"攻撃力が高いもの、移動が速いものなど。");
-				fontRenderer.AddString(glm::vec2(-300, -200), L"倒す順番には優先順位をつけよう。");
-			}
+			StChangeFont(fontRenderer, sprites, stageChage, false, 0);
 		}
 
 		//ステージ移行の有無を選択時.
 		if (state == State::select)
 		{
-			fontRenderer.Color(glm::vec4(1.0f, 1.0f, 1.0f, 1));
-			fontRenderer.AddString(glm::vec2(-30, -85), L"はい");
-			fontRenderer.AddString(glm::vec2(-45, -125), L"いいえ");
-			fontRenderer.AddString(glm::vec2(-200, -280), L"挑みますか？");
-
-			if (stageChage == 1)
-			{
-				fontRenderer.AddString(glm::vec2(-270, -240), L"天の声：Aの試練が待っている.");
-				fontRenderer.AddString(glm::vec2(20, -280), L"難易度★☆☆☆☆");
-				eventFrag = false;
-			}
-			else if (stageChage == 2)
-			{
-				fontRenderer.AddString(glm::vec2(-270, -240), L"天の声：Bの試練が待っている.");
-				fontRenderer.AddString(glm::vec2(20, -280), L"難易度★★☆☆☆");
-				eventFrag = false;
-			}
-			else if (stageChage == 3)
-			{
-				fontRenderer.AddString(glm::vec2(-270, -240), L"天の声：Cの試練が待っている.");
-				fontRenderer.AddString(glm::vec2(20, -280), L"難易度★★★☆☆");
-				eventFrag = false;
-			}
-			else if (stageChage == 4)
-			{
-				fontRenderer.AddString(glm::vec2(-270, -240), L"天の声：Dの試練が待っている.");
-				fontRenderer.AddString(glm::vec2(20, -280), L"難易度★★★★★");
-				eventFrag = false;
-			}
+			StChangeFont(fontRenderer, sprites, stageChage, eventFrag, 1);
 		}
 
 		fontRenderer.EndUpdate();
@@ -3982,101 +2749,6 @@ void MainGameScene::Render()
 		Mesh::Draw(simpleMesh, m);
 	}
 #endif
-}
-
-/**
-* お地蔵様に触れたときの処理.
-*
-* @param id  お地蔵様の番号.
-* @param pos お地蔵様の座標.
-*
-* @retval true  処理成功.
-* @retval false すでに戦闘中なので処理しなかった.
-*/
-bool MainGameScene::HandleJizoEffects(int id, const glm::vec3& pos)
-{
-	if (jizoId >= 0)
-	{
-		return false;
-	}
-	jizoId = id;
-	const size_t oniCount = 3;
-	for (size_t i = 0; i < oniCount; i++)
-	{
-		glm::vec3 position(pos);
-		position.x += std::uniform_real_distribution<float>(-15, 15)(rand);
-		position.z += std::uniform_real_distribution<float>(-15, 15)(rand);
-		position.y = heightMap.Height(position);
-
-		glm::vec3 rotation(0);
-		rotation.y = std::uniform_real_distribution<float>(0, 3.14f * 2.0f)(rand);
-		const Mesh::SkeletalMeshPtr mesh = meshBuffer.GetSkeletalMesh("oni_small");
-
-		if (position.y >= 4.0f)
-		{
-			SkeletalMeshActorPtr p = std::make_shared<SkeletalMeshActor>(
-				mesh, "Kooni", 13, position, rotation);
-			p->colLocal = Collision::CreateCapsule(
-				glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
-			enemies[0].Add(p);
-			mHouseFlag = true;
-		}
-		else
-		{
-			--i;
-		}
-	}
-	return true;
-}
-
-/**
-* ワープに触れたときの処理.
-*
-* @param id  ワープの番号.
-* @param pos ワープの座標.
-*
-* @retval true  処理成功.
-* @retval false すでに戦闘中なので処理しなかった.
-*/
-bool MainGameScene::HandleWarpEffects(int id, const glm::vec3& pos)
-{
-	if (warpID >= 0)
-	{
-		return false;
-	}
-	warpID = id;
-	glm::vec3 position(pos);
-	position.x += std::uniform_real_distribution<float>(0, 20)(rand);
-	position.z += std::uniform_real_distribution<float>(0, 20)(rand);
-	position.y = heightMap.Height(position) + 2;
-	player->position = position;
-
-	return true;
-}
-
-/**
-* コインに触れたときの処理.
-*
-* @param id  コインの番号.
-* @param pos コインの座標.
-*
-* @retval true  処理成功.
-* @retval false すでに戦闘中なので処理しなかった.
-*/
-bool MainGameScene::HandleCoinEffects(int id, const glm::vec3& pos)
-{
-
-	if (CoinID >= 0)
-	{
-		return false;
-	}
-
-	CoinID = id;
-
-	gameClearFlag = true;
-	Audio::Engine::Instance().Prepare("Res/Audio/GameClear.mp3")->Play();
-
-	return true;
 }
 
 /**

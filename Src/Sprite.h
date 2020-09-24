@@ -7,6 +7,7 @@
 #include "BufferObject.h"
 #include "Texture.h"
 #include "Shader.h"
+#include "Actor.h"
 #include <glm\glm.hpp>
 #include <vector>
 
@@ -97,6 +98,17 @@ public:
 	void Draw(const glm::vec2&) const;
 	void Clear();
 
+	void DeleteSprite(std::vector<Sprite>& sprites, int i[]);
+	void GameSceneUI(std::vector<Sprite>& sprites);
+	void SpriteChange(std::vector<Sprite>& sprites, int selCou, int skCou, int id);
+	void SprRootChange(std::vector<Sprite>& sprites, int other, int id);
+	void MiniMap(std::vector<Sprite>& sprites, ActorList& a,bool flag, glm::vec3 pos);
+	void DefenceUI(float DefLine, std::vector<Sprite>& sprites);
+	void comboUI(float combo, float comTimer, float comBuf, std::vector<Sprite>& sprites);
+	void pCommandUI(int pID, int pAb, std::vector<Sprite>& sprites);
+	void comIntUI(std::vector<Sprite>& sprites, int pAb,int pID, bool s, bool e, bool n, bool w,
+					float eT, float nT, float wT, float deltaTime);
+
 private:
 	BufferObject vbo;
 	BufferObject ibo;
@@ -119,6 +131,16 @@ private:
 		Texture::Image2DPtr texture;
 	};
 	std::vector<Primitive> primitives;
+
+	struct MiniMapIcon
+	{
+		glm::vec3 position = glm::vec3(530, 280, 0);
+		glm::vec3 velocity = glm::vec3(0);
+
+		float width = 1280 / 5; ///< 画面の幅(ピクセル数).
+		float height = 720 / 5; ///< 画面の高さ(ピクセル数).
+	};
+	MiniMapIcon mapIcon;
 };
 
 void DeleteSpriteA(std::vector<Sprite>& sprites, int id);

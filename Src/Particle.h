@@ -138,6 +138,20 @@ public:
 	void Update(float deltatime);
 	void Draw(const glm::mat4& matProj, const glm::mat4& matView);
 
+	void Dust(glm::vec3 pos);
+	void Soul(glm::vec3 pos);
+	void Crystal(glm::vec3 pos);
+	void Gate(bool stCleared, glm::vec3 pos, glm::vec3 epPos);
+
+	void BoneAttackY1(glm::vec3 pos, glm::vec3 rot);
+	void BoneAttackY2(glm::vec3 pos);
+	void BoneAttackB(glm::vec3 pos ,int id);
+
+	void WizardAttackB(glm::vec3 pos, glm::vec3 rot);
+	void WizardAttackY(glm::vec3 pos, glm::vec3 rot);
+
+	void LevelUp(glm::vec3 pos);
+
 private:
 	BufferObject vbo;
 	BufferObject ibo;
