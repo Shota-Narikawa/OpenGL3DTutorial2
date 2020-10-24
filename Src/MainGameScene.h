@@ -41,19 +41,18 @@ public:
 	void selectUI(int a, int b, int c, int d, int e, int f);
 	void skSelectUI(int a, int b, int c, int d, int e, int f);
 	void EnemyTargetID(ActorList& a);
-	void EnemySpawn();
+	void EnemySpawn(ActorList enemy[], glm::vec3 scale, int target, int n);
 	void EnemyAI(float, ActorList& x, int a, int b);
 	void EnemyDetectCollision(int i);
 
 	static int StageNo;
 	static bool StClearedE, StClearedW, StClearedS, StClearedN;	///<ステート移行可能状態.
 
+	std::mt19937 rand;
+
 private:
 	void RenderMesh(const Collision::Frustum*, Mesh::DrawType);
 
-	int jizoId = -1; ///< 現在戦闘中のお地蔵様のID.
-	bool achivements[4] = { false, false, false, false }; ///< 敵討伐状態.
-	std::mt19937 rand;
 	bool flag = false;
 	std::vector<Sprite> sprites;
 	SpriteRenderer spriteRenderer;
@@ -112,7 +111,7 @@ private:
 		playerBulletTimerC = 0, playerBulletTimerD = 0.0f;		//弾のタイマー.
 	float attackingTimer = 3.0f;								//敵の攻撃タイマー.
 	float enemyPopTimerA = 0, enemyPopTimerB = 0,
-		enemyPopTimerC = 0.0f, enemyPopTimerD = 0.0f;			//敵の出現時間間隔.
+		enemyPopTimerC = 0, enemyPopTimerD = 0;									//敵の出現時間間隔.
 	float itemTimerA = 0, itemTimerB = 0, itemTimerC = 0.0f;	//アイテム出現タイマー.
 	float eIntTimer = 0, wIntTimer = 0, 
 		sIntTimer = 0, nIntTimer = 0.0f;						//各攻撃のインターバル.

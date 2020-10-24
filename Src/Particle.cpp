@@ -651,24 +651,17 @@ void ParticleSystem::Crystal(glm::vec3 pos)
 /*
 *ゲートのパーティクル.
 */
-void ParticleSystem::Gate(bool stCleared, glm::vec3 pos,glm::vec3 epPos)
+void ParticleSystem::Gate(glm::vec3 pos,glm::vec3 epPos)
 {
-	//ステージクリアしたゲートの上に火のパーティクルを表示.
-	if (stCleared == true)
-	{
-		{
-			ParticleEmitterParameter ep;
-			ep.imagePath = "Res/FireParticle.tga";
-			ep.tiles = glm::ivec2(2, 2);
-			ep.position = pos + epPos;
-			ep.position.y = 5.0f;
-			ep.emissionsPerSecond = 20.0f;
-			ep.dstFactor = GL_ONE; // 加算合成.
-			ep.gravity = 0;
-			ParticleParameter pp;
-			pp.scale = glm::vec2(0.5f);
-			pp.color = glm::vec4(0.9f, 0.3f, 0.1f, 1.0f);
-			Add(ep, pp);
-		}
-	}
+	ParticleEmitterParameter ep;
+	ep.imagePath = "Res/FireParticle.tga";
+	ep.tiles = glm::ivec2(2, 2);
+	ep.position = pos + epPos;
+	ep.emissionsPerSecond = 20.0f;
+	ep.dstFactor = GL_ONE; // 加算合成.
+	ep.gravity = 0;
+	ParticleParameter pp;
+	pp.scale = glm::vec2(0.5f);
+	pp.color = glm::vec4(1.0f, 0.1f, 0.1f, 1.0f);
+	Add(ep, pp);
 }

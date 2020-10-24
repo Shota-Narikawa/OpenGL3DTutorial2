@@ -2,8 +2,10 @@
 * @file EnemyActor.cpp
 */
 #include "EnemyActor.h"
+#include "MainGameScene.h"
 #include "SkeletalMesh.h"
 #include "PlayerActor.h"
+#include <random>
 #include <glm/gtc/matrix_transform.hpp>
 
 /**
@@ -14,12 +16,11 @@
 *@param pos		プレイヤーの初期座標.
 *@param rot		プレイヤーの初期方向.
 */
-EnemyActor::EnemyActor(const Terrain::HeightMap* hm, const Mesh::Buffer& buffer,
-	const glm::vec3& pos, const glm::vec3& rot)
-	: SkeletalMeshActor(buffer.GetSkeletalMesh("oni_small"), "Enemy", 10, pos, rot),
-	heightMap(hm)
+EnemyActor::EnemyActor(MainGameScene* mainGameScene, const Mesh::SkeletalMeshPtr& m,
+	const std::string& name, int health, const glm::vec3& position,
+	const glm::vec3& rotation, const glm::vec3& scale)
+	: SkeletalMeshActor(m, name, health, position, rotation, scale), mainGameScene(mainGameScene)
 {
-	colLocal = Collision::CreateSphere(glm::vec3(0, 0.7f, 0), 0.7f);
 }
 
 /**
@@ -31,37 +32,6 @@ void EnemyActor::Update(float deltaTime)
 {
 	//座標の更新.
 	SkeletalMeshActor::Update(deltaTime);
-	if (attackCollision) {
-		attackCollision->Update(deltaTime);
-	}
-	//接地判定.
-	static const float gravity = 9.8f;
-	const float groundHeight = heightMap->Height(position);
-	if (position.y <= groundHeight) {
-		position.y = groundHeight;
-		velocity.y = 0;
-		isInAir = false;
-	}
-	else if (position.y > groundHeight) {
-		//乗っている物体から離れたら空中判定にする.
-		if (boardingActor) {
-			Collision::Shape col = colWorld;
-			col.s.r += 0.1f; // 衝突判定を少し大きくする.
-			glm::vec3 pa, pb;
-			if (!Collision::TestShapeShape(col, boardingActor->colWorld, &pa, &pb)) {
-				boardingActor.reset();
-			}
-		}
-		//落下判定.
-		const bool isFloating = position.y > groundHeight + 0.1f; // 地面から浮いているか.
-		if (!isInAir && isFloating && !boardingActor) {
-			isInAir = true;
-		}
-		//重力を加える.
-		if (isInAir) {
-			velocity.y -= gravity * deltaTime;
-		}
-	}
 
 	//敵が追いかけてくる.
 	Mesh::SkeletalMeshPtr mesh = GetMesh();
@@ -140,229 +110,61 @@ void EnemyActor::Update(float deltaTime)
 	}
 }
 
-///**
-//*入力を処理する.
-//*/
-//void EnemyActor::ProcessInput()
-//{
-//	const GamePad gamepad = GLFWEW::Window::Instance().GetGamePad();
-//	CheckRun(gamepad);
-//	CheckJump(gamepad);
-//	CheckAttack(gamepad);
-//	CheckShot(gamepad);
-//}
-//
-///**
-//*移動操作を処理する.
-//*
-//*@param gamepad	ゲームパッド入力.
-//*/
-//void EnemyActor::CheckRun(const GamePad& gamepad)
-//{
-//	//空中にいるときは移動できない.
-//	if (isInAir) {
-//		return;
-//	}
-//	//方向キーから移動方向を計算.
-//	const glm::vec3 front(0, 0, -2);
-//	const glm::vec3 left(-2, 0, 0);
-//	glm::vec3 move(0);
-//	if (pLevel >= 2) {
-//		glm::vec3 move(3);
-//	}
-//	if (gamepad.buttons & GamePad::DPAD_UP) {
-//		move += front;
-//
-//	}
-//	else if (gamepad.buttons & GamePad::DPAD_DOWN) {
-//		move -= front;
-//
-//	}
-//	if (gamepad.buttons & GamePad::DPAD_LEFT) {
-//		move += left;
-//
-//	}
-//	else if (gamepad.buttons & GamePad::DPAD_RIGHT) {
-//		move -= left;
-//	}
-//	//移動が行われていたら、移動方向に応じて向きと速度を更新.
-//	if (glm::dot(move, move)) {
-//		//向きを更新.
-//		move = glm::normalize(move);
-//		rotation.y = std::atan2(-move.z, move.x) + glm::radians(90.0f);
-//
-//		//物体に乗っていないときは地形の勾配を考慮して移動方向を調整する.
-//		if (!boardingActor) {
-//			//移動方向の地形の勾配(gradient)を計算.
-//			const float minGradient = glm::radians(-60.0f); // 沿うことのできる勾配の最小値.
-//			const float maxGradient = glm::radians(60.0f); // 沿うことのできる勾配の最大値.
-//			const float frontY =
-//				heightMap->Height(position + move * 0.05f) - position.y - 0.01f;
-//			const float gradient =
-//				glm::clamp(std::atan2(frontY, 0.05f), minGradient, maxGradient);
-//
-//			//地形に沿うように移動速度を設定.
-//			const glm::vec3 axis = glm::normalize(glm::cross(move, glm::vec3(0, 1, 0)));
-//			move = glm::rotate(glm::mat4(1), gradient, axis) * glm::vec4(move, 1.0f);
-//		}
-//		velocity = move * moveSpeed;
-//	}
-//	else {
-//		//移動していないので速度を0にする.
-//		velocity = glm::vec3(0);
-//	}
-//}
-//
-///**
-//*ジャンプ操作を処理する.
-//*
-//*@param gamepad		ゲームパッド入力.
-//*/
-//void EnemyActor::CheckJump(const GamePad& gamepad)
-//{
-//	if (isInAir) {
-//		return;
-//
-//	}
-//	if (gamepad.buttonDown & GamePad::R || gamepad.buttons & GamePad::R2 || gamepad.buttons & GamePad::L2) {
-//		Jump();
-//		if (playerID == 1) {
-//			Audio::Engine::Instance().Prepare("Res/Audio/Enemy.mp3")->Play();
-//		}
-//		else if (playerID == 2) {
-//			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack1.mp3")->Play();
-//		}
-//	}
-//}
-//
-//
-///**
-//*ジャンプさせる.
-//*/
-//void EnemyActor::Jump()
-//{
-//	velocity.y = 5.0f;
-//	if (pJump >= 2) {
-//		velocity.y = 7.0f;
-//	}
-//
-//	boardingActor.reset();
-//	isInAir = true;
-//}
-//
-///**
-//* 攻撃操作を処理する.
-//*
-//* @param gamepad ゲームパッド入力.
-//*/
-//void EnemyActor::CheckAttack(const GamePad& gamepad)
-//{
-//	if (isInAir) {
-//		return;
-//
-//	}
-//	if (playerID == 1) {
-//		if (gamepad.buttonDown & GamePad::A) {
-//			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-//			Audio::Engine::Instance().Prepare("Res/Audio/Enemy.mp3")->Play();
-//			GetMesh()->Play("Attack", false);
-//			attackTimer = 0;
-//			state = State::attack;
-//		}
-//	}
-//	else if (playerID == 2) {
-//		if (pAbility >= 1 && gamepad.buttonDown & GamePad::A) {
-//
-//			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-//			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack2.mp3")->Play();
-//			GetMesh()->Play("Attack.Light", false);
-//			attackTimer = 0;
-//			state = State::attack;
-//		}
-//		if (pAbility >= 2 && pMP > 0 && gamepad.buttonDown & GamePad::X) {
-//
-//			Audio::Engine::Instance().Prepare("Res/Audio/SmallAttack.mp3")->Play();
-//			Audio::Engine::Instance().Prepare("Res/Audio/game_wizard-attack3.mp3")->Play();
-//			GetMesh()->Play("Attack.Heavy", false);
-//			attackTimer = 0;
-//			state = State::attack;
-//			pMP -= 10;
-//		}
-//	}
-//}
-//
-///**
-//* 攻撃操作を処理する.
-//*
-//* @param gamepad ゲームパッド入力.
-//*/
-//void EnemyActor::CheckShot(const GamePad& gamepad)
-//{
-//	if (isInAir) {
-//		return;
-//	}
-//	//const Mesh::FilePtr meshWarpGate = meshBuffer.GetFile("Res/Gate.gltf");
-//	//PlayerActorPtr player;
-//	//if (playerBulletTimer <= 0) {
-//	//	if (gamepad.buttonDown & GamePad::H) {
-//	//		StaticMeshActorPtr GateE = std::make_shared<StaticMeshActor>(
-//	//			meshWarpGate, "GateE", 100, player->position, glm::vec3(0, 0, 0));
-//	//		const float speed = 10.0f;	//弾の移動速度(m/秒).
-//	//		const int x[] = { 0,10,-10,20,-20 };
-//	//		const glm::mat4 matRotY =
-//	//			glm::rotate(glm::mat4(1), player->rotation.y, glm::vec3(0, 1, 0));
-//	//		GateE->scale = glm::vec3(1, 1, 1);
-//	//		GateE->colLocal = Collision::CreateCapsule(
-//	//			glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.3f);
-//	//		GateE->velocity = matRotY * glm::vec4(0, 0, -speed, 1);
-//
-//	//		Audio::Engine::Instance().Prepare("Res/Audio/PlayerShot.xwm")->Play();
-//
-//	//	}
-//	//}
-//}
-
 /**
-*プレイヤーが乗っている物体を設定する.
-*
-*@param p	乗っている物体.
+*敵の出現.
 */
-void EnemyActor::SetBoardingActor(ActorPtr p)
+void EnemyActor::EnemySpawn(ActorList enemy[], int count,float deltaTime,float timer, int spawn,int target, int n)
 {
-	boardingActor = p;
-	if (p) {
-		isInAir = false;
+	if (deltaTime >= timer)
+	{
+		if (spawn >= 0)
+		{
+			for (size_t i = 0; i < count; i++)
+			{
+				position.x = std::uniform_real_distribution<float>(60, 100)(mainGameScene->rand);
+				position.z = std::uniform_real_distribution<float>(80, 120)(mainGameScene->rand);
+				glm::vec3 rotation(0);
+				rotation.y = std::uniform_real_distribution<float>(0, 3.14f * 2.0f)(mainGameScene->rand);
+				position.y = heightMap->Height(position);
+
+				const Mesh::SkeletalMeshPtr mesh = meshBuffer.GetSkeletalMesh("oni_small");
+				SkeletalMeshActorPtr p = std::make_shared<SkeletalMeshActor>(
+					mesh, "Kooni", 15, position, rotation);
+				p->colLocal = Collision::CreateCapsule(
+					glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
+				enemy[n].Add(p);
+				target = std::uniform_int_distribution<>(0, 2)(rand);
+				EnemyTarget(enemy[n],0);
+			}
+			timer = 0.0f;
+			spawn -= 3;
+		}
 	}
 }
 
 /**
-*衝突ハンドラ.
+*敵のターゲット情報を決める.
+*
+*@param a		ActorListの種類.
 */
-void EnemyActor::OnHit(const ActorPtr& b, const glm::vec3& p)
+void EnemyActor::EnemyTarget(ActorList& a, int enemyID)
 {
-	const glm::vec3 v = colWorld.s.center - p;
-	//衝突位置との距離が近すぎないか調べる.
-	if (dot(v, v) > FLT_EPSILON) {
-		//thisをbに重ならない位置まで移動.
-		const glm::vec3 vn = normalize(v);
-		float radiusSum = colWorld.s.r;
-		switch (b->colWorld.type) {
-		case Collision::Shape::Type::sphere: radiusSum += b->colWorld.s.r; break;
-		case Collision::Shape::Type::capsule: radiusSum += b->colWorld.c.r; break;
-
+	int id = std::uniform_int_distribution<>(0, 2)(rand);
+	//ターゲットの方向を調べる.
+	for (auto i = a.begin(); i != a.end(); ++i)
+	{
+		const int index = i - a.begin() - id;
+		if (index == 0)
+		{
+			enemyID = 0;
 		}
-		const float distance = radiusSum - glm::length(v) + 0.01f;
-		position += vn * distance;
-		colWorld.s.center += vn * distance;
-
+		if (index == 1)
+		{
+			enemyID = 1;
+		}
+		if (index == 2)
+		{
+			enemyID = 2;
+		}
 	}
-	else {
-		//移動を取り消す(距離が近すぎる場合の例外処理).
-		const float deltaTime = static_cast<float>(GLFWEW::Window::Instance().DeltaTime());
-		const glm::vec3 deltaVelocity = velocity * deltaTime;
-		position -= deltaVelocity;
-		colWorld.s.center -= deltaVelocity;
-
-	}
-	SetBoardingActor(b);
 }

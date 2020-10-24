@@ -8,7 +8,11 @@
 #include "PlayerActor.h"
 #include "Terrain.h"
 #include "Audio\Audio.h"
+#include <random>
 #include <memory>
+
+// 先行宣言
+class MainGameScene;
 
 /**
 * 敵のアクター.
@@ -16,37 +20,21 @@
 class EnemyActor : public SkeletalMeshActor
 {
 public:
-	EnemyActor(const Terrain::HeightMap* hm, const Mesh::Buffer& buffer,
-		const glm::vec3& pos, const glm::vec3& rot = glm::vec3(0));
+	EnemyActor(MainGameScene* mainGameScene, const Mesh::SkeletalMeshPtr& m, const std::string& name, int hp, const glm::vec3& pos,
+		const glm::vec3& rot , const glm::vec3& scale = glm::vec3(1));
 	virtual ~EnemyActor() = default;
 
 	virtual void Update(float) override;
-	virtual void OnHit(const ActorPtr&, const glm::vec3&);
-	/*void Jump();
-	void ProcessInput();*/
-	void SetBoardingActor(ActorPtr);
-	const ActorPtr& GetAttackCollision() const { return attackCollision; }
 
-	static int pLevel;		//プレイヤーレベル.
-	static int pAbility;	//アビリティレベル.
-	static int pExPoint;	//経験値.
-	static int pExCount;	//レベルアップまで.
-	static int pMP;			//MP.
-	static int pHP;			//HP.
-	static int maxHP;		//最大HP.
-	static int maxMP;		//最大MP.
-	static int playerID;	//プレイヤーのメッシュ.
-	static int pType;		//プレイヤーの属性.	0.無 1.火 2.水 3.風 4.土 5.光 6.闇
+	virtual void EnemySpawn(ActorList enemy[], int count, float deltaTime, float timer, int spawn, int target, int n);
+	virtual void EnemyTarget(ActorList& a, int id);
 
 private:
+	MainGameScene* mainGameScene = nullptr;
 
-	/*void CheckRun(const GamePad& gamepad);
-	void CheckJump(const GamePad& gamepad);
-	void CheckAttack(const GamePad& gamepad);
-	void CheckShot(const GamePad& gamepad);
-*/
 //アニメーション状態.
 	enum class State {
+		play,
 		idle,		///<停止.
 		run,		///<移動.
 		jump,		///<ジャンプ.
@@ -54,6 +42,7 @@ private:
 		shot,		///<ショット.
 
 	};
+	std::mt19937 rand;
 	Mesh::Buffer meshBuffer;
 	State state = State::idle; ///< 現在のアニメーション状態.
 	bool isInAir = false;      ///< 空中判定フラグ.
@@ -83,5 +72,5 @@ private:
 };
 using EnemyActorPtr = std::shared_ptr<EnemyActor>;
 
-#endif // PLAYERACTOR_H_INCLUDED
+#endif // ENEMYACTOR_H_INCLUDED
 

@@ -16186,7 +16186,7 @@
                     }
                 }
             ],
-            "name" : "Wait",
+            "name" : "Idle",
             "samplers" : [
                 {
                     "input" : 937,

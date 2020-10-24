@@ -97,3 +97,18 @@ void SkeletalMeshActor::Draw(Mesh::DrawType drawType)
 		Mesh::Draw(sMesh, matModel, drawType);
 	}
 }
+
+/*
+*プレイヤーのアクターの変更.
+*/
+void ActorChange(Mesh::SkeletalMeshPtr mesh, ActorList items[], glm::vec3 pPos, glm::vec3 pos, int n)
+{
+	glm::vec3 position = pPos + pos;
+	SkeletalMeshActorPtr p = std::make_shared<SkeletalMeshActor>(
+		mesh, "player", 13, position, glm::vec3(0));
+	p->GetMesh()->Play("Idle");
+	p->colLocal = Collision::CreateCapsule(
+		glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.5f);
+	items[n].Add(p);
+}
+

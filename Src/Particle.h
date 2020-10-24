@@ -141,7 +141,7 @@ public:
 	void Dust(glm::vec3 pos);
 	void Soul(glm::vec3 pos);
 	void Crystal(glm::vec3 pos);
-	void Gate(bool stCleared, glm::vec3 pos, glm::vec3 epPos);
+	void Gate(glm::vec3 pos, glm::vec3 epPos);
 
 	void BoneAttackY1(glm::vec3 pos, glm::vec3 rot);
 	void BoneAttackY2(glm::vec3 pos);

@@ -38,4 +38,6 @@ private:
 };
 using SkeletalMeshActorPtr = std::shared_ptr<SkeletalMeshActor>;
 
+void ActorChange(Mesh::SkeletalMeshPtr mesh, ActorList items[], glm::vec3 pPos, glm::vec3 pos, int n);
+
 #endif // SKELETALMESHACTOR_H_INCLUDED

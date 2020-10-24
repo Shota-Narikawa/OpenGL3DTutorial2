@@ -346,8 +346,19 @@ std::vector<ActorPtr> ActorList::FindNearbyActors(
 	return result;
 }
 
-/*
+/**
 *壁のアクター.
+*
+*@param	walls			壁のアクター.
+*@param	meshStoneWall	メッシュの種類.
+*@param	wallCou			壁のメッシュの数.
+*@param	pos				ポジション.
+*@param	posX			X軸のずらしていくポジション.
+*@param	posZ			Z軸のずらしていくポジション.
+*@param	colA			当たり判定のそれぞれの値.
+*@param	colB			当たり判定のそれぞれの値.
+*@param	colC			当たり判定のそれぞれの値.
+*@param	colD			当たり判定のそれぞれの値.
 */
 void Wall(ActorList& walls, Mesh::FilePtr meshStoneWall, const size_t wallCou, int pos, float posX, float posZ,
 			glm::vec3 colA, glm::vec3 colB, glm::vec3 colC, glm::vec3 colD)
@@ -364,6 +375,32 @@ void Wall(ActorList& walls, Mesh::FilePtr meshStoneWall, const size_t wallCou, i
 			colA, colB, colC, colD);
 		walls.Add(p);
 	}
+}
+
+/*
+*ゲートのアクター.
+*@param	warp			ワープのアクター.
+*@param	gate			ゲートブロックのアクター.
+*@param	meshWarpGate	ワープのメッシュ.
+*@param	meshGateBlock	ゲートブロックのメッシュ.
+*@param	pPos			プレイヤーの位置.
+*@param	pos				メッシュの位置.
+*@param	n				メッシュの管理番号.
+*/
+void Gate(ActorList warp[], ActorList& gate, Mesh::FilePtr meshWarpGate, Mesh::FilePtr meshGateBlock, 
+			glm::vec3 pPos, glm::vec3 pos, int n)
+{
+	glm::vec3 position = pPos + pos;
+
+	StaticMeshActorPtr GateE = std::make_shared<StaticMeshActor>(
+		meshWarpGate, "GateE", 100, position, glm::vec3(0, 0, 0));
+	StaticMeshActorPtr GateBlockE = std::make_shared<StaticMeshActor>(
+		meshGateBlock, "GateBlockE", 100, position, glm::vec3(0, 0, 0));
+	GateE->scale = glm::vec3(1, 3.5f, 1);
+	GateE->colLocal = Collision::CreateCapsule(
+		glm::vec3(0, 0.5f, 0), glm::vec3(0, 1, 0), 0.4f);
+	warp[n].Add(GateE);
+	gate.Add(GateBlockE);
 }
 
 /**

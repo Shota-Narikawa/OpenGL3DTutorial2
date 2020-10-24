@@ -402,7 +402,7 @@ void SpriteRenderer::GameSceneUI(std::vector<Sprite>& sprites) {
 
 	//敵の残数アイコン.
 	Sprite enemyIcon27(Texture::Image2D::Create("Res/Gobrin.tga"));
-	enemyIcon27.Position(glm::vec3(300, 350, 0));
+	enemyIcon27.Position(glm::vec3(290, 350, 0));
 	enemyIcon27.Scale(glm::vec2(0));
 	sprites.push_back(enemyIcon27);
 
@@ -929,7 +929,7 @@ void SpriteRenderer::DefenceUI(float defLine, std::vector<Sprite>& sprites)
 	if (defLine >= 0)
 	{
 		sprites[25].Scale(glm::vec2(13.0f * defLine / 100, 0.8f));
-		sprites[25].Position(glm::vec3((520 * defLine / 100) / 2 - 365, 345, 0));
+		sprites[25].Position(glm::vec3((520 * defLine / 100) / 2 - 370, 345, 0));
 
 		sprites[28].Scale(glm::vec2(0.4f, 0.3f));
 		sprites[28].Position(glm::vec3(-80, 350, 0));

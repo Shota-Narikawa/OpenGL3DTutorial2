@@ -16,7 +16,7 @@
 //animation[6] = GetUp(1.5sec)
 //animation[7] = Idle.ScrachButt(2sec)
 //animation[8] = Idle.LookAround(3.5sec)
-//animation[9] = Wait(2sec)
+//animation[9] = Idle(2sec)
 //animation[10] = DownWithMove(1sec)
 //animation[11] = Attack(1sec)
 //
